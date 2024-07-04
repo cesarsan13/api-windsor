@@ -15,3 +15,11 @@ Route::middleware('auth:sanctum')->controller(TipoCobroController::class)->group
     Route::post('/tipo_cobro', 'store');
     Route::post('/tipo_cobro/update', 'update');
 });
+
+Route::controller(ProductoController::class)->group(function () {
+    Route::get('/product', 'showProduct');
+    Route::get('/product/last', 'lastProduct');
+    Route::get('/product/bajas', 'bajaProduct');
+    Route::post('/product/save', 'storeProduct');
+    Route::put('/product/update/{id}', 'updateProduct');
+});
