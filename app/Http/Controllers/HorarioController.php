@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Horario;
+use App\Models\ObjectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -27,6 +28,7 @@ class HorarioController extends Controller
     ];
     public function getHorarios()
     {
+        $response = ObjectResponse::DefaultResponse();
         $horario = DB::table('horarios')->where('baja', '<>', '*')->get();
         $response = [
             "status_code" => 200,
@@ -34,10 +36,14 @@ class HorarioController extends Controller
             "message" => "petición satisfactoria.",
             "data" => [$horario]
         ];
-        return response()->json($response, 200);
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'peticion satisfactoria | lista de Horarios');
+        data_set($response, 'data', $horario);
+        return response()->json($response, $response['status_code']);
     }
     public function getHorariosBaja()
     {
+        $response = ObjectResponse::DefaultResponse();
         $horario = DB::table('horarios')->where('baja', '=', '*')->get();
         $response = [
             "status_code" => 200,
@@ -45,19 +51,20 @@ class HorarioController extends Controller
             "message" => "petición satisfactoria.",
             "data" => [$horario]
         ];
-        return response()->json($response, 200);
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'peticion satisfactoria | lista de Horarios inactivos');
+        data_set($response, 'data', $horario);
+        return response()->json($response, $response['status_code']);
     }
     public function postHorario(Request $request)
     {
+        $response = ObjectResponse::DefaultResponse();
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         if ($validator->fails()) {
-            $response = [
-                "status_code" => 400,
-                "status" => false,
-                "message" => "Informacion Invalida",
-                "data" => [$validator->errors()->all()]
-            ];
-            return response()->json($response, 400);
+            $alert_text = "Ingrese bien los datos, no estas ingresando completamente todos los campos (no campos vacios).";
+            $response = ObjectResponse::BadResponse($alert_text);
+            data_set($response, 'message', 'Informacion no valida');
+            return response()->json($response, $response['status_code']);
         }
         $datosFiltrados = $request->only([
             'numero',
@@ -81,25 +88,19 @@ class HorarioController extends Controller
             'edad_fin' => $datosFiltrados['edad_fin'],
             'baja' => $datosFiltrados['baja'] ?? ''
         ]);
-        $response = [
-            "status_code" => 200,
-            "status" => true,
-            "message" => "petición satisfactoria.",
-            "data" => []
-        ];
-        return response()->json($response, 200);
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'Petición satisfactoria : Datos insertados correctamente');
+        data_set($response, 'data', $nuevoHorario);
+        return response()->json($response, $response['status_code']);
     }
     public function updateHorario(Request $request)
     {
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         if ($validator->fails()) {
-            $response = [
-                "status_code" => 400,
-                "status" => false,
-                "message" => "Informacion Invalida",
-                "data" => [$validator->errors()->all()]
-            ];
-            return response()->json($response, 400);
+            $alert_text = "Ingrese bien los datos, no estas ingresando completamente todos los campos (no campos vacios).";
+            $response = ObjectResponse::BadResponse($alert_text);
+            data_set($response, 'message', 'Informacion no valida');
+            return response()->json($response, $response['status_code']);
         }
         $horario = Horario::where('numero', $request->numero)
             ->update([
@@ -112,23 +113,19 @@ class HorarioController extends Controller
                 'edad_fin' => $request->edad_fin,
                 'baja' => $request->baja ?? ''
             ]);
-        $response = [
-            "status_code" => 200,
-            "status" => true,
-            "message" => "petición satisfactoria.",
-            "data" => []
-        ];
-        return response()->json($response, 200);
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'Peticion satisfactoria : Datos Actualizados');
+        data_set($response, 'data', $horario);
+        return response()->json($response, $response['status_code']);
     }
     public function ultimoHorario()
     {
-        $siguiente = Horario::max('numero') + 1;
-        $response = [
-            "status_code" => 200,
-            "status" => true,
-            "message" => "petición satisfactoria.",
-            "data" => $siguiente
-        ];
-        return response()->json($response, 200);
+        $response = ObjectResponse::DefaultResponse();
+        $siguiente = Horario::max('numero');
+        $siguiente = $siguiente !== null ? $siguiente + 1 : 1;
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'peticion satisfactoria | lista de Horarios');
+        data_set($response, 'data', $siguiente);
+        return response()->json($response, $response['status_code']);
     }
 }
