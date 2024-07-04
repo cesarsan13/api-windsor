@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TipoCobroController;
+use App\Http\Controllers\ProductoController;
 
 
 Route::post('/login', [AuthController::class, 'login']);
