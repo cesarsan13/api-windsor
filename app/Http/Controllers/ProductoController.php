@@ -19,7 +19,7 @@ class ProductoController extends Controller
         'numeric' => 'El campo :attribute debe ser un número decimal.',
         'string' => 'El campo :attribute debe ser una cadena.',
         'integer' => 'El campo :attribute debe ser un número.',
-
+        'boolean' => 'El campo :attribute debe ser un valor booleano.',
     ];
     protected $rules = [
         'descripcion' => 'required|string',
@@ -29,7 +29,7 @@ class ProductoController extends Controller
         'aplicacion' => 'required|string',
         'iva' => 'required|numeric',
         'cond_1' => 'required|integer',
-        'cam_precio' => 'required|integer',
+        'cam_precio' => 'required|boolean',
         'ref' => 'required|string',
     ];
     public function showProduct()
