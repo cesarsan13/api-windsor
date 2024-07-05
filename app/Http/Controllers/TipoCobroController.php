@@ -13,7 +13,7 @@ class TipoCobroController extends Controller
         'max' => 'El campo :attribute no puede tener más de :max caracteres.',
         'unique' => 'El campo :attribute ya ha sido registrado',
         ];
-         protected $rules = [
+        protected $rules = [
             'id'=> 'required|integer',
             'descripcion'=>'required|string|max:50',
             'comision'=>'nullable|float',
