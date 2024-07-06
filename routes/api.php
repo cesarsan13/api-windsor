@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->controller(CajeroController::class)->group(fu
 
 Route::controller(ProductoController::class)->group(function () {
     Route::get('/product', 'showProduct');
+    Route::get('/product/filter/{type}/{value}', 'productFilter');
     Route::get('/product/last', 'lastProduct');
     Route::get('/product/bajas', 'bajaProduct');
     Route::post('/product/save', 'storeProduct');

@@ -32,6 +32,90 @@ class ProductoController extends Controller
         'cam_precio' => 'required|boolean',
         'ref' => 'required|string',
     ];
+
+    public function productFilter($type, $value)
+    {
+        switch ($type) {
+            case 'id':
+                $productos = DB::table('productos')->where('id', 'like', "%{$value}%")->where('baja', '<>', '*')->orderBy('id', 'ASC')->get();
+                $response = ObjectResponse::CorrectResponse();
+                data_set($response, 'message', 'Peticion satisfactoria');
+                data_set($response, 'data', $productos);
+                return response()->json($response, $response['status_code']);
+                break;
+
+            case 'descripcion':
+                $productos = DB::table('productos')->where('descripcion', 'like', "%{$value}%")->where('baja', '<>', '*')->orderBy('descripcion', 'ASC')->get();
+                $response = ObjectResponse::CorrectResponse();
+                data_set($response, 'message', 'Peticion satisfactoria');
+                data_set($response, 'data', $productos);
+                return response()->json($response, $response['status_code']);
+                break;
+            case 'costo':
+                $productos = DB::table('productos')->where('costo', 'like', "%{$value}%")->where('baja', '<>', '*')->orderBy('costo', 'ASC')->get();
+                $response = ObjectResponse::CorrectResponse();
+                data_set($response, 'message', 'Peticion satisfactoria');
+                data_set($response, 'data', $productos);
+                return response()->json($response, $response['status_code']);
+                break;
+            case 'frecuencia':
+                $productos = DB::table('productos')->where('frecuencia', 'like', "%{$value}%")->where('baja', '<>', '*')->orderBy('frecuencia', 'ASC')->get();
+                $response = ObjectResponse::CorrectResponse();
+                data_set($response, 'message', 'Peticion satisfactoria');
+                data_set($response, 'data', $productos);
+                return response()->json($response, $response['status_code']);
+                break;
+            case 'pro_recargo':
+                $productos = DB::table('productos')->where('pro_recargo', 'like', "%{$value}%")->where('baja', '<>', '*')->orderBy('pro_recargo', 'ASC')->get();
+                $response = ObjectResponse::CorrectResponse();
+                data_set($response, 'message', 'Peticion satisfactoria');
+                data_set($response, 'data', $productos);
+                return response()->json($response, $response['status_code']);
+                break;
+            case 'aplicacion':
+                $productos = DB::table('productos')->where('aplicacion', 'like', "%{$value}%")->where('baja', '<>', '*')->orderBy('aplicacion', 'ASC')->get();
+                $response = ObjectResponse::CorrectResponse();
+                data_set($response, 'message', 'Peticion satisfactoria');
+                data_set($response, 'data', $productos);
+                return response()->json($response, $response['status_code']);
+                break;
+            case 'iva':
+                $productos = DB::table('productos')->where('iva', 'like', "%{$value}%")->where('baja', '<>', '*')->orderBy('iva', 'ASC')->get();
+                $response = ObjectResponse::CorrectResponse();
+                data_set($response, 'message', 'Peticion satisfactoria');
+                data_set($response, 'data', $productos);
+                return response()->json($response, $response['status_code']);
+                break;
+            case 'cond_1':
+                $productos = DB::table('productos')->where('cond_1', 'like', "%{$value}%")->where('baja', '<>', '*')->orderBy('cond_1', 'ASC')->get();
+                $response = ObjectResponse::CorrectResponse();
+                data_set($response, 'message', 'Peticion satisfactoria');
+                data_set($response, 'data', $productos);
+                return response()->json($response, $response['status_code']);
+                break;
+            case 'cam_precio':
+                $productos = DB::table('productos')->where('cam_precio', 'like', "%{$value}%")->where('baja', '<>', '*')->orderBy('cam_precio', 'ASC')->get();
+                $response = ObjectResponse::CorrectResponse();
+                data_set($response, 'message', 'Peticion satisfactoria');
+                data_set($response, 'data', $productos);
+                return response()->json($response, $response['status_code']);
+                break;
+            case 'ref':
+                $productos = DB::table('productos')->where('ref', 'like', "%{$value}%")->where('baja', '<>', '*')->orderBy('ref', 'ASC')->get();
+                $response = ObjectResponse::CorrectResponse();
+                data_set($response, 'message', 'Peticion satisfactoria');
+                data_set($response, 'data', $productos);
+                return response()->json($response, $response['status_code']);
+                break;
+            case 'nothing':
+                $productos = DB::table('productos')->where('baja', '<>', '*')->orderBy('descripcion', 'ASC')->get();
+                $response = ObjectResponse::CorrectResponse();
+                data_set($response, 'message', 'Peticion satisfactoria');
+                data_set($response, 'data', $productos);
+                return response()->json($response, $response['status_code']);
+                break;
+        }
+    }
     public function showProduct()
     {
         $response = ObjectResponse::DefaultResponse();
