@@ -16,7 +16,7 @@ class TipoCobroController extends Controller
         protected $rules = [
             'id'=> 'required|integer',
             'descripcion'=>'required|string|max:50',
-            'comision'=>'nullable|float',
+            'comision'=>'nullable|numeric',
             'aplicacion'=>'nullable|string|max:30',
             'cue_banco'=>'nullable|string|max:34',
             'baja'=>'nullable|string|max:1',
