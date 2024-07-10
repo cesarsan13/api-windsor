@@ -6,7 +6,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TipoCobroController;
 use App\Http\Controllers\ProductoController;
 
-
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->controller(TipoCobroController::class)->group(function () {
