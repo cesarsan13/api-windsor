@@ -81,7 +81,7 @@ class TipoCobroController extends Controller
                 ]);
             $nuevoCobro = TipoCobro::create([
                 "id"=>$datosFiltrados['id'],
-                "descripcion"=>$datosFiltrados['descripcion'],
+                    "descripcion"=>$datosFiltrados['descripcion'],
                         "comision"=>$datosFiltrados['comision'],
                         "aplicacion"=>$datosFiltrados['aplicacion'] ?? '',
                         "cue_banco"=>$datosFiltrados['cue_banco'] ?? '',
