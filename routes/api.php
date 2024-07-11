@@ -8,7 +8,6 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\CajeroController;
 use App\Http\Controllers\FormFactController;
 
-
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->controller(TipoCobroController::class)->group(function () {
