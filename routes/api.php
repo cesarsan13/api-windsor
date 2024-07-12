@@ -7,6 +7,8 @@ use App\Http\Controllers\TipoCobroController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\CajeroController;
 use App\Http\Controllers\FormFactController;
+use App\Http\Controllers\ComentariosController;
+
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -43,4 +45,12 @@ Route::controller(ProductoController::class)->group(function () {
     Route::get('/product/bajas', 'bajaProduct');
     Route::post('/product/save', 'storeProduct');
     Route::put('/product/update/{id}', 'updateProduct');
+});
+
+Route::middleware('auth:sanctum')->controller(ComentariosController::class)->group(function () {
+    Route::get("/comentarios", "index");
+    Route::get("/comentarios/baja", "indexBaja");
+    Route::get("/comentarios/siguiente", "siguiente");
+    Route::post('/comentarios', 'store');
+    Route::post('/comentarios/update', 'update');
 });
