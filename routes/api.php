@@ -6,8 +6,10 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TipoCobroController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\CajeroController;
-use App\Http\Controllers\ComentariosController;
 use App\Http\Controllers\FormFactController;
+use App\Http\Controllers\ComentariosController;
+use App\Http\Controllers\HorarioController;
+
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -52,4 +54,15 @@ Route::middleware('auth:sanctum')->controller(ComentariosController::class)->gro
     Route::get("/comentarios/siguiente", "siguiente");
     Route::post('/comentarios', 'store');
     Route::post('/comentarios/update', 'update');
+});
+
+
+
+
+Route::controller(HorarioController::class)->group(function (){
+    Route::get('/horarios','getHorarios');
+    Route::get('/horarios/baja','getHorariosBaja');
+    Route::post('/horarios/post','postHorario');
+    Route::post('/horarios/update','updateHorario');
+    Route::get('/horarios/ultimo','ultimoHorario');
 });
