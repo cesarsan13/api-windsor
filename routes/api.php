@@ -7,7 +7,7 @@ use App\Http\Controllers\TipoCobroController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\CajeroController;
 use App\Http\Controllers\ComentariosController;
-
+use App\Http\Controllers\FormFactController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -26,6 +26,15 @@ Route::middleware('auth:sanctum')->controller(CajeroController::class)->group(fu
     Route::get('/Cajero/baja','indexBaja');
     Route::get("/Cajero","index");
     Route::get("/Cajero/siguiente", "siguiente");
+});
+
+//FormFact
+Route::middleware('auth:sanctum')->controller(FormFactController::class)->group(function () {
+    Route::post('/FormFact','PostFormFact');
+    Route::post('/FormFact/UpdateFormFact','UpdateFormFact');
+    Route::get('/FormFact/baja','indexBaja');
+    Route::get("/FormFact","index");
+    Route::get("/FormFact/siguiente", "siguiente");
 });
 
 Route::controller(ProductoController::class)->group(function () {
