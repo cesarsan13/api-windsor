@@ -58,14 +58,17 @@ class HorarioController extends Controller
     }
     public function postHorario(Request $request)
     {
-        $response = ObjectResponse::DefaultResponse();
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
+        $response = ObjectResponse::DefaultResponse();
         if ($validator->fails()) {
             $alert_text = "Ingrese bien los datos, no estas ingresando completamente todos los campos (no campos vacios).";
             $response = ObjectResponse::BadResponse($alert_text);
             data_set($response, 'message', 'Informacion no valida');
             return response()->json($response, $response['status_code']);
         }
+        try {
+
+        
         $datosFiltrados = $request->only([
             'numero',
             'cancha',
@@ -75,7 +78,7 @@ class HorarioController extends Controller
             'sexo',
             'edad_ini',
             'edad_fin',
-            'baja'
+            'baja',
         ]);
         $nuevoHorario = Horario::create([
             'numero' => $datosFiltrados['numero'],
@@ -86,11 +89,13 @@ class HorarioController extends Controller
             'sexo' => $datosFiltrados['sexo'],
             'edad_ini' => $datosFiltrados['edad_ini'],
             'edad_fin' => $datosFiltrados['edad_fin'],
-            'baja' => $datosFiltrados['baja'] ?? ''
+            'baja' => $datosFiltrados['baja'] ?? '',
         ]);
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Petición satisfactoria : Datos insertados correctamente');
-        data_set($response, 'data', $nuevoHorario);
+        } catch(\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+        }
         return response()->json($response, $response['status_code']);
     }
     public function updateHorario(Request $request)
