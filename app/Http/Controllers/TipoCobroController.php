@@ -30,7 +30,7 @@ class TipoCobroController extends Controller
             data_set($response,'message','peticion satisfactoria | lista de tipos de cobro');
             data_set($response,'data',$tipos_cobro);
 
-        } catch (\Excepction $ex) {
+        } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response,$response["status_code"]);
@@ -44,7 +44,7 @@ class TipoCobroController extends Controller
             data_set($response,'message','peticion satisfactoria | lista de tipos de cobro inactivos');
             data_set($response,'data',$tipos_cobro);
 
-        } catch (\Excepction $ex) {
+        } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response,$response["status_code"]);
@@ -58,7 +58,7 @@ class TipoCobroController extends Controller
             data_set($response,'alert_text','Siguiente tipo de cobro');
             data_set($response,'data',$siguiente);
 
-        } catch (\Excepction $ex) {
+        } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response,$response["status_code"]);
