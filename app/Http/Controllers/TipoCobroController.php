@@ -13,10 +13,10 @@ class TipoCobroController extends Controller
         'max' => 'El campo :attribute no puede tener más de :max caracteres.',
         'unique' => 'El campo :attribute ya ha sido registrado',
         ];
-         protected $rules = [
+        protected $rules = [
             'id'=> 'required|integer',
             'descripcion'=>'required|string|max:50',
-            'comision'=>'nullable|float',
+            'comision'=>'nullable|numeric',
             'aplicacion'=>'nullable|string|max:30',
             'cue_banco'=>'nullable|string|max:34',
             'baja'=>'nullable|string|max:1',
@@ -81,7 +81,7 @@ class TipoCobroController extends Controller
                 ]);
             $nuevoCobro = TipoCobro::create([
                 "id"=>$datosFiltrados['id'],
-                "descripcion"=>$datosFiltrados['descripcion'],
+                    "descripcion"=>$datosFiltrados['descripcion'],
                         "comision"=>$datosFiltrados['comision'],
                         "aplicacion"=>$datosFiltrados['aplicacion'] ?? '',
                         "cue_banco"=>$datosFiltrados['cue_banco'] ?? '',

@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TipoCobroController;
 use App\Http\Controllers\ProductoController;
-use App\Http\Controllers\AlumnoController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -15,6 +14,24 @@ Route::controller(TipoCobroController::class)->group(function () {
     Route::get("/tipo_cobro/siguiente", "siguiente");
     Route::post('/tipo_cobro', 'store');
     Route::post('/tipo_cobro/update', 'update');
+});
+
+//Cajeros
+Route::middleware('auth:sanctum')->controller(CajeroController::class)->group(function () {
+    Route::post('/Cajero','PostCajeros');
+    Route::post('/Cajero/UpdateCajeros','UpdateCajeros');
+    Route::get('/Cajero/baja','indexBaja');
+    Route::get("/Cajero","index");
+    Route::get("/Cajero/siguiente", "siguiente");
+});
+
+//FormFact
+Route::middleware('auth:sanctum')->controller(FormFactController::class)->group(function () {
+    Route::post('/FormFact','PostFormFact');
+    Route::post('/FormFact/UpdateFormFact','UpdateFormFact');
+    Route::get('/FormFact/baja','indexBaja');
+    Route::get("/FormFact","index");
+    Route::get("/FormFact/siguiente", "siguiente");
 });
 
 Route::middleware('auth:sanctum')->controller(ProductoController::class)->group(function () {
@@ -33,4 +50,23 @@ Route::controller(AlumnoController::class)->group(function () {
     Route::get('/students/bajas', 'bajaAlumn');
     Route::post('/students/save', 'storeAlumn');
     Route::post('/students/update/{id}', 'updateAlumn');
+});
+
+Route::middleware('auth:sanctum')->controller(ComentariosController::class)->group(function () {
+    Route::get("/comentarios", "index");
+    Route::get("/comentarios/baja", "indexBaja");
+    Route::get("/comentarios/siguiente", "siguiente");
+    Route::post('/comentarios', 'store');
+    Route::post('/comentarios/update', 'update');
+});
+
+
+
+
+Route::controller(HorarioController::class)->group(function (){
+    Route::get('/horarios','getHorarios');
+    Route::get('/horarios/baja','getHorariosBaja');
+    Route::post('/horarios/post','postHorario');
+    Route::post('/horarios/update','updateHorario');
+    Route::get('/horarios/ultimo','ultimoHorario');
 });

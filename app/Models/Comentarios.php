@@ -5,27 +5,29 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TipoCobro extends Model
+class Comentarios extends Model
 {
     use HasFactory;
     public $timestamps = false;
 
-     protected $table = 'tipo_cobro';
+    protected $table = 'comentarios';
+
     protected $fillable = [
         'id',
-        'descripcion',
-        'comision',
-        'aplicacion',
+        'comentario_1',
+        'comentario_2',
+        'comentario_3',
         'baja',
-        'cue_banco',
+        'generales',
     ];
+
     protected $primaryKey = 'id';
     protected $attributes = [
         'id' => '0',
-        'descripcion' => '',
-        'comision' => '0',
-        'aplicacion' => '',
+        'comentario_1' => '',
+        'comentario_2' => '',
+        'comentario_3' => '',
         'baja' => '',
-        'cue_banco' => '',
+        'generales' => '',
     ];
 }
