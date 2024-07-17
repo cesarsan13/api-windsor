@@ -39,6 +39,12 @@ Route::middleware('auth:sanctum')->controller(FormFactController::class)->group(
     Route::get("/FormFact/siguiente", "siguiente");
 });
 
+//RepDosSel
+Route::middleware('auth:sanctum')->controller(RepDosSelController::class)->group(function () {
+    Route::post('/RepDosSel/UpdateRepDosSel','UpdateRepDosSel');
+    Route::get("/RepDosSel/siguiente", "siguiente");
+});
+
 Route::controller(ProductoController::class)->group(function () {
     Route::get('/product', 'showProduct');
     Route::get('/product/filter/{type}/{value}', 'productFilter');
