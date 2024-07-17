@@ -9,6 +9,7 @@ use App\Http\Controllers\CajeroController;
 use App\Http\Controllers\FormFactController;
 use App\Http\Controllers\ComentariosController;
 use App\Http\Controllers\HorarioController;
+use App\Http\Controllers\AlumnosPorClaseController;
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -56,13 +57,14 @@ Route::middleware('auth:sanctum')->controller(ComentariosController::class)->gro
     Route::post('/comentarios/update', 'update');
 });
 
-
-
-
 Route::controller(HorarioController::class)->group(function (){
     Route::get('/horarios','getHorarios');
     Route::get('/horarios/baja','getHorariosBaja');
     Route::post('/horarios/post','postHorario');
     Route::post('/horarios/update','updateHorario');
     Route::get('/horarios/ultimo','ultimoHorario');
+});
+
+Route::controller(AlumnosPorClaseController::class)->group(function(){
+    Route::get('/HorariosAPC', 'getHorariosAPC');
 });
