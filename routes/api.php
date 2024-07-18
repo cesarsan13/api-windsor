@@ -65,9 +65,6 @@ Route::middleware('auth:sanctum')->controller(ComentariosController::class)->gro
     Route::post('/comentarios/update', 'update');
 });
 
-
-
-
 Route::controller(HorarioController::class)->group(function () {
     Route::get('/horarios', 'getHorarios');
     Route::get('/horarios/baja', 'getHorariosBaja');
