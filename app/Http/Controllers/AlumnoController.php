@@ -1,0 +1,421 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\ObjectResponse;
+use App\Models\Alumno;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+
+class AlumnoController extends Controller
+{
+    protected $messages = [
+        'required' => 'El campo :attribute es obligatorio.',
+        'max' => 'El campo :attribute no puede tener más de :max caracteres.',
+        'min' => 'El campo :attribute debe tener al menos :min caracteres.',
+        'unique' => 'El  :attribute ya ha sido registrado anteriormente',
+        'numeric' => 'El campo :attribute debe ser un número decimal.',
+        'string' => 'El campo :attribute debe ser una cadena.',
+        'integer' => 'El campo :attribute debe ser un número.',
+        'boolean' => 'El campo :attribute debe ser un valor booleano.',
+    ];
+    protected $rules = [
+        'nombre' => 'required|string|max:50',
+        'a_paterno' => 'required|string|max:50',
+        'a_materno' => 'required|string|max:50',
+        'a_nombre' => 'nullable|string|max:50',
+        'fecha_nac' => 'required',
+        'fecha_inscripcion' => 'required',
+        'fecha_baja' => 'nullable',
+        'sexo' => 'required|string|max:15',
+        'telefono_1' => 'required|string|max:15',
+        'telefono_2' => 'nullable|string|max:15',
+        'celular' => 'required|string|max:15',
+        'codigo_barras' => 'required|string',
+        'direccion' => 'required|string',
+        'colonia' => 'required|string|max:100',
+        'ciudad' => 'required|string|max:100',
+        'estado' => 'required|string|max:100',
+        'cp' => 'required|string|max:10',
+        'email' => 'required|string|email',
+        'imagen' => 'nullable',
+        'dia_1' => 'nullable|string|max:20',
+        'dia_2' => 'nullable|string|max:20',
+        'dia_3' => 'nullable|string|max:20',
+        'dia_4' => 'nullable|string|max:20',
+        'hora_1' => 'nullable|string|max:30',
+        'hora_2' => 'nullable|string|max:30',
+        'hora_3' => 'nullable|string|max:30',
+        'hora_4' => 'nullable|string|max:30',
+        'cancha_1' => 'nullable',
+        'cancha_2' => 'nullable',
+        'cancha_3' => 'nullable',
+        'cancha_4' => 'nullable',
+        'horario_1' => 'nullable',
+        'horario_2' => 'nullable',
+        'horario_3' => 'nullable',
+        'horario_4' => 'nullable',
+        'horario_5' => 'nullable',
+        'horario_6' => 'nullable',
+        'horario_7' => 'nullable',
+        'horario_8' => 'nullable',
+        'horario_9' => 'nullable',
+        'horario_10' => 'nullable',
+        'horario_11' => 'nullable',
+        'horario_12' => 'nullable',
+        'horario_13' => 'nullable',
+        'horario_14' => 'nullable',
+        'horario_15' => 'nullable',
+        'horario_16' => 'nullable',
+        'horario_17' => 'nullable',
+        'horario_18' => 'nullable',
+        'horario_19' => 'nullable',
+        'horario_20' => 'nullable',
+        'cond_1' => 'nullable',
+        'cond_2' => 'nullable',
+        'cond_3' => 'nullable',
+        'nom_pediatra' => 'nullable|string|max:50',
+        'tel_p_1' => 'nullable|string|max:15',
+        'tel_p_2' => 'nullable|string|max:15',
+        'cel_p_1' => 'nullable|string|max:15',
+        'tipo_sangre' => 'nullable|string|max:20',
+        'alergia' => 'nullable|string|max:50',
+        'aseguradora' => 'nullable|string|max:100',
+        'poliza' => 'nullable|string|max:30',
+        'tel_ase_1' => 'nullable|string|max:15',
+        'tel_ase_2' => 'nullable|string|max:15',
+        'razon_social' => 'nullable|string|max:30',
+        'raz_direccion' => 'nullable|string',
+        'raz_colonia' => 'nullable|string|max:100',
+        'raz_ciudad' => 'nullable|string|max:100',
+        'raz_estado' => 'nullable|string|max:100',
+        'raz_cp' => 'nullable|string|max:10',
+        'nom_padre' => 'nullable|string|max:50',
+        'tel_pad_1' => 'nullable|string|max:15',
+        'tel_pad_2' => 'nullable|string|max:15',
+        'cel_pad_1' => 'nullable|string|max:15',
+        'nom_madre' => 'nullable|string|max:50',
+        'tel_mad_1' => 'nullable|string|max:15',
+        'tel_mad_2' => 'nullable|string|max:15',
+        'cel_mad_1' => 'nullable|string|max:15',
+        'nom_avi' => 'nullable|string|max:50',
+        'tel_avi_1' => 'nullable|string|max:15',
+        'tel_avi_2' => 'nullable|string|max:15',
+        'cel_avi_1' => 'nullable|string|max:15',
+        'ciclo_escolar' => 'nullable|string|max:50',
+        'descuento' => 'nullable|numeric',
+        'rfc_factura' => 'nullable|string|max:50',
+        'estatus' => 'required|string|max:20',
+        'escuela' => 'nullable|string|max:50',
+        'baja' => 'nullable|string|max:1',
+    ];
+
+    public function showImageStudents($imagen)
+    {
+        if (file_exists(public_path('images/alumnos/' . $imagen))) {
+            return response()->file(public_path('images/alumnos/' . $imagen));
+        }
+        // else {
+        //     return  response()->file(public_path('images/materiales/nothing.png'));
+        // }
+    }
+
+    public function showAlumn()
+    {
+        $response = ObjectResponse::DefaultResponse();
+        try {
+            $alumnos = DB::table('alumnos')->where('baja', '<>', '*')->orderBy('nombre', 'ASC')->get();
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Peticion satisfactoria');
+            data_set($response, 'data', $alumnos);
+            return response()->json($response, $response['status_code']);
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+            return response()->json($response, $response['status_code']);
+        }
+    }
+    public function lastAlumn()
+    {
+        $maxId = DB::table('alumnos')->max('id');
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'Peticion satisfactoria');
+        data_set($response, 'data', $maxId);
+        return response()->json($response, $response['status_code']);
+    }
+    public function bajaAlumn()
+    {
+        $response = ObjectResponse::DefaultResponse();
+        try {
+            $alumnos = DB::table('alumnos')->where('baja', '=', '*')->orderBy('nombre', 'ASC')->get();
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Peticion satisfactoria');
+            data_set($response, 'data', $alumnos);
+            return response()->json($response, $response['status_code']);
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+            return response()->json($response, $response['status_code']);
+        }
+    }
+    public function storeAlumn(Request $request)
+    {
+        $validator = Validator::make($request->all(), $this->rules);
+        if ($validator->fails()) {
+            $response = ObjectResponse::BadResponse('Error de validacion');
+            data_set($response, 'errors', $validator->errors());
+            return response()->json($response, $response['status_code']);
+        }
+
+        $alumno = Alumno::find($request->id);
+        if ($alumno) {
+            $response = ObjectResponse::BadResponse('El alumno ya existe');
+            data_set($response, 'errors', ['id' => ['Alumno ya existe']]);
+            return response()->json($response, $response['status_code']);
+        }
+
+        $alumno = new Alumno();
+        $alumno->id = $request->id ?? 0;
+        $alumno->nombre = $request->nombre ?? '';
+        $alumno->a_paterno = $request->a_paterno ?? '';
+        $alumno->a_materno = $request->a_materno ?? '';
+        $alumno->a_nombre = $request->a_nombre ?? '';
+        $alumno->fecha_nac = $request->fecha_nac ?? '';
+        $alumno->fecha_inscripcion = $request->fecha_inscripcion ?? '';
+        $alumno->fecha_baja = $request->fecha_baja ?? '';
+        $alumno->sexo = $request->sexo ?? '';
+        $alumno->telefono_1 = $request->telefono_1 ?? '';
+        $alumno->telefono_2 = $request->telefono_2 ?? '';
+        $alumno->celular = $request->celular ?? '';
+        $alumno->codigo_barras = $request->codigo_barras ?? '';
+        $alumno->direccion = $request->direccion ?? '';
+        $alumno->colonia = $request->colonia ?? '';
+        $alumno->ciudad = $request->ciudad ?? '';
+        $alumno->estado = $request->estado ?? '';
+        $alumno->cp = $request->cp ?? '';
+        $alumno->email = $request->email ?? '';
+        $alumno->dia_1 = $request->dia_1 ?? '';
+        $alumno->dia_2 = $request->dia_2 ?? '';
+        $alumno->dia_3 = $request->dia_3 ?? '';
+        $alumno->dia_4 = $request->dia_4 ?? '';
+        $alumno->hora_1 = $request->hora_1 ?? '';
+        $alumno->hora_2 = $request->hora_2 ?? '';
+        $alumno->hora_3 = $request->hora_3 ?? '';
+        $alumno->hora_4 = $request->hora_4 ?? '';
+        $alumno->cancha_1 = $request->cancha_1 ?? 0;
+        $alumno->cancha_2 = $request->cancha_2 ?? 0;
+        $alumno->cancha_3 = $request->cancha_3 ?? 0;
+        $alumno->cancha_4 = $request->cancha_4 ?? 0;
+        $alumno->horario_1 = $request->horario_1 ?? 0;
+        $alumno->horario_2 = $request->horario_2 ?? 0;
+        $alumno->horario_3 = $request->horario_3 ?? 0;
+        $alumno->horario_4 = $request->horario_4 ?? 0;
+        $alumno->horario_5 = $request->horario_5 ?? 0;
+        $alumno->horario_6 = $request->horario_6 ?? 0;
+        $alumno->horario_7 = $request->horario_7 ?? 0;
+        $alumno->horario_8 = $request->horario_8 ?? 0;
+        $alumno->horario_9 = $request->horario_9 ?? 0;
+        $alumno->horario_10 = $request->horario_10 ?? 0;
+        $alumno->horario_11 = $request->horario_11 ?? 0;
+        $alumno->horario_12 = $request->horario_12 ?? 0;
+        $alumno->horario_13 = $request->horario_13 ?? 0;
+        $alumno->horario_14 = $request->horario_14 ?? 0;
+        $alumno->horario_15 = $request->horario_15 ?? 0;
+        $alumno->horario_16 = $request->horario_16 ?? 0;
+        $alumno->horario_17 = $request->horario_17 ?? 0;
+        $alumno->horario_18 = $request->horario_18 ?? 0;
+        $alumno->horario_19 = $request->horario_19 ?? 0;
+        $alumno->horario_20 = $request->horario_20 ?? 0;
+        $alumno->cond_1 = $request->cond_1 ?? 0;
+        $alumno->cond_2 = $request->cond_2 ?? 0;
+        $alumno->cond_3 = $request->cond_3 ?? 0;
+        $alumno->nom_pediatra = $request->nom_pediatra ?? '';
+        $alumno->tel_p_1 = $request->tel_p_1 ?? '';
+        $alumno->tel_p_2 = $request->tel_p_2 ?? '';
+        $alumno->cel_p_1 = $request->cel_p_1 ?? '';
+        $alumno->tipo_sangre = $request->tipo_sangre ?? '';
+        $alumno->alergia = $request->alergia ?? '';
+        $alumno->aseguradora = $request->aseguradora ?? '';
+        $alumno->poliza = $request->poliza ?? '';
+        $alumno->tel_ase_1 = $request->tel_ase_1 ?? '';
+        $alumno->tel_ase_2 = $request->tel_ase_2 ?? '';
+        $alumno->razon_social = $request->razon_social ?? '';
+        $alumno->raz_direccion = $request->raz_direccion ?? '';
+        $alumno->raz_colonia = $request->raz_colonia ?? '';
+        $alumno->raz_ciudad = $request->raz_ciudad ?? '';
+        $alumno->raz_estado = $request->raz_estado ?? '';
+        $alumno->raz_cp = $request->raz_cp ?? '';
+        $alumno->nom_padre = $request->nom_padre ?? '';
+        $alumno->tel_pad_1 = $request->tel_pad_1 ?? '';
+        $alumno->tel_pad_2 = $request->tel_pad_2 ?? '';
+        $alumno->cel_pad_1 = $request->cel_pad_1 ?? '';
+        $alumno->nom_madre = $request->nom_madre ?? '';
+        $alumno->tel_mad_1 = $request->tel_mad_1 ?? '';
+        $alumno->tel_mad_2 = $request->tel_mad_2 ?? '';
+        $alumno->cel_mad_1 = $request->cel_mad_1 ?? '';
+        $alumno->nom_avi = $request->nom_avi ?? '';
+        $alumno->tel_avi_1 = $request->tel_avi_1 ?? '';
+        $alumno->tel_avi_2 = $request->tel_avi_2 ?? '';
+        $alumno->cel_avi_1 = $request->cel_avi_1 ?? '';
+        $alumno->ciclo_escolar = $request->ciclo_escolar ?? '';
+        $alumno->descuento = $request->descuento ?? 0;
+        $alumno->rfc_factura = $request->rfc_factura ?? '';
+        $alumno->estatus = $request->estatus ?? '';
+        $alumno->escuela = $request->escuela ?? '';
+        $alumno->baja = $request->baja ?? '';
+        if ($request->hasFile('imagen')) {
+            $image = $request->file('imagen');
+            $destinationPath = "images/alumnos";
+            $imageName = $image->getClientOriginalName();
+            // $fullPath = $destinationPath . '/' . $imageName;
+            $fullPath = $imageName;
+            if (file_exists($fullPath)) {
+                $alumno->imagen = $fullPath;
+            } else {
+                $uploadSuccess = $image->move($destinationPath, $imageName);
+                $alumno->imagen = $fullPath;
+            }
+            $alumno->save();
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Petición satisfactoria | Alumno registrado.');
+            data_set($response, 'alert_text', 'Alumno registrado');
+            return response()->json($response, $response['status_code']);
+        } else {
+            $alumno->save();
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Petición satisfactoria | Alumno registrado.');
+            data_set($response, 'alert_text', 'Alumno registrado');
+            return response()->json($response, $response['status_code']);
+        }
+    }
+
+    public function updateAlumn(Request $request, $id)
+    {
+        $rules = $this->rules;
+        $rules['id'] = 'required|integer|unique:alumnos,id,' . $id;
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $response = ObjectResponse::BadResponse('Error de validacion');
+            data_set($response, 'errors', $validator->errors());
+            return response()->json($response, $response['status_code']);
+        }
+        $alumno = Alumno::find($id);
+        if (!$alumno) {
+            $response = ObjectResponse::BadResponse('El alumno no existe');
+            data_set($response, 'errors', ['id' => ['Alumno no existe']]);
+            return response()->json($response, $response['status_code']);
+        }
+
+        $alumno->nombre = $request->nombre ?? '';
+        $alumno->a_paterno = $request->a_paterno ?? '';
+        $alumno->a_materno = $request->a_materno ?? '';
+        $alumno->a_nombre = $request->a_nombre ?? '';
+        $alumno->fecha_nac = $request->fecha_nac ?? '';
+        $alumno->fecha_inscripcion = $request->fecha_inscripcion ?? '';
+        $alumno->fecha_baja = $request->fecha_baja ?? '';
+        $alumno->sexo = $request->sexo ?? '';
+        $alumno->telefono_1 = $request->telefono_1 ?? '';
+        $alumno->telefono_2 = $request->telefono_2 ?? '';
+        $alumno->celular = $request->celular ?? '';
+        $alumno->codigo_barras = $request->codigo_barras ?? '';
+        $alumno->direccion = $request->direccion ?? '';
+        $alumno->colonia = $request->colonia ?? '';
+        $alumno->ciudad = $request->ciudad ?? '';
+        $alumno->estado = $request->estado ?? '';
+        $alumno->cp = $request->cp ?? '';
+        $alumno->email = $request->email ?? '';
+        $alumno->dia_1 = $request->dia_1 ?? '';
+        $alumno->dia_2 = $request->dia_2 ?? '';
+        $alumno->dia_3 = $request->dia_3 ?? '';
+        $alumno->dia_4 = $request->dia_4 ?? '';
+        $alumno->hora_1 = $request->hora_1 ?? '';
+        $alumno->hora_2 = $request->hora_2 ?? '';
+        $alumno->hora_3 = $request->hora_3 ?? '';
+        $alumno->hora_4 = $request->hora_4 ?? '';
+        $alumno->cancha_1 = $request->cancha_1 ?? 0;
+        $alumno->cancha_2 = $request->cancha_2 ?? 0;
+        $alumno->cancha_3 = $request->cancha_3 ?? 0;
+        $alumno->cancha_4 = $request->cancha_4 ?? 0;
+        $alumno->horario_1 = $request->horario_1 ?? 0;
+        $alumno->horario_2 = $request->horario_2 ?? 0;
+        $alumno->horario_3 = $request->horario_3 ?? 0;
+        $alumno->horario_4 = $request->horario_4 ?? 0;
+        $alumno->horario_5 = $request->horario_5 ?? 0;
+        $alumno->horario_6 = $request->horario_6 ?? 0;
+        $alumno->horario_7 = $request->horario_7 ?? 0;
+        $alumno->horario_8 = $request->horario_8 ?? 0;
+        $alumno->horario_9 = $request->horario_9 ?? 0;
+        $alumno->horario_10 = $request->horario_10 ?? 0;
+        $alumno->horario_11 = $request->horario_11 ?? 0;
+        $alumno->horario_12 = $request->horario_12 ?? 0;
+        $alumno->horario_13 = $request->horario_13 ?? 0;
+        $alumno->horario_14 = $request->horario_14 ?? 0;
+        $alumno->horario_15 = $request->horario_15 ?? 0;
+        $alumno->horario_16 = $request->horario_16 ?? 0;
+        $alumno->horario_17 = $request->horario_17 ?? 0;
+        $alumno->horario_18 = $request->horario_18 ?? 0;
+        $alumno->horario_19 = $request->horario_19 ?? 0;
+        $alumno->horario_20 = $request->horario_20 ?? 0;
+        $alumno->cond_1 = $request->cond_1 ?? 0;
+        $alumno->cond_2 = $request->cond_2 ?? 0;
+        $alumno->cond_3 = $request->cond_3 ?? 0;
+        $alumno->nom_pediatra = $request->nom_pediatra ?? '';
+        $alumno->tel_p_1 = $request->tel_p_1 ?? '';
+        $alumno->tel_p_2 = $request->tel_p_2 ?? '';
+        $alumno->cel_p_1 = $request->cel_p_1 ?? '';
+        $alumno->tipo_sangre = $request->tipo_sangre ?? '';
+        $alumno->alergia = $request->alergia ?? '';
+        $alumno->aseguradora = $request->aseguradora ?? '';
+        $alumno->poliza = $request->poliza ?? '';
+        $alumno->tel_ase_1 = $request->tel_ase_1 ?? '';
+        $alumno->tel_ase_2 = $request->tel_ase_2 ?? '';
+        $alumno->razon_social = $request->razon_social ?? '';
+        $alumno->raz_direccion = $request->raz_direccion ?? '';
+        $alumno->raz_colonia = $request->raz_colonia ?? '';
+        $alumno->raz_ciudad = $request->raz_ciudad ?? '';
+        $alumno->raz_estado = $request->raz_estado ?? '';
+        $alumno->raz_cp = $request->raz_cp ?? '';
+        $alumno->nom_padre = $request->nom_padre ?? '';
+        $alumno->tel_pad_1 = $request->tel_pad_1 ?? '';
+        $alumno->tel_pad_2 = $request->tel_pad_2 ?? '';
+        $alumno->cel_pad_1 = $request->cel_pad_1 ?? '';
+        $alumno->nom_madre = $request->nom_madre ?? '';
+        $alumno->tel_mad_1 = $request->tel_mad_1 ?? '';
+        $alumno->tel_mad_2 = $request->tel_mad_2 ?? '';
+        $alumno->cel_mad_1 = $request->cel_mad_1 ?? '';
+        $alumno->nom_avi = $request->nom_avi ?? '';
+        $alumno->tel_avi_1 = $request->tel_avi_1 ?? '';
+        $alumno->tel_avi_2 = $request->tel_avi_2 ?? '';
+        $alumno->cel_avi_1 = $request->cel_avi_1 ?? '';
+        $alumno->ciclo_escolar = $request->ciclo_escolar ?? '';
+        $alumno->descuento = $request->descuento ?? 0;
+        $alumno->rfc_factura = $request->rfc_factura ?? '';
+        $alumno->estatus = $request->estatus ?? '';
+        $alumno->escuela = $request->escuela ?? '';
+        $alumno->baja = $request->baja ?? '';
+        if ($request->hasFile('imagen')) {
+            $image = $request->file('imagen');
+            $destinationPath = "images/alumnos";
+            $imageName = $image->getClientOriginalName();
+            // $fullPath = $destinationPath . '/' . $imageName;
+            $fullPath = $imageName;
+            if (file_exists($fullPath)) {
+                $alumno->imagen = $fullPath;
+            } else {
+                $uploadSuccess = $image->move($destinationPath, $imageName);
+                $alumno->imagen = $fullPath;
+            }
+            $alumno->save();
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Petición satisfactoria | Alumno registrado.');
+            data_set($response, 'alert_text', 'Alumno registrado');
+            return response()->json($response, $response['status_code']);
+        } else {
+            $alumno->save();
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Petición satisfactoria | Alumno registrado.');
+            data_set($response, 'alert_text', 'Alumno registrado');
+            return response()->json($response, $response['status_code']);
+        }
+    }
+}
