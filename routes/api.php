@@ -79,5 +79,6 @@ Route::controller(HorarioController::class)->group(function (){
 });
 
 Route::controller(AlumnosPorClaseController::class)->group(function(){
-    Route::get('/HorariosAPC', 'getHorariosAPC');
+    Route::get('/AlumnosPC/HorariosAPC', 'getHorariosAPC');
+    Route::get ('/AlumnosPC/Lista/{idHorario}/{orden}' , 'getListaHorariosAPC');
 });
