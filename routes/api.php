@@ -12,6 +12,7 @@ use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ComentariosController;
 use App\Http\Controllers\AlumnosPorClaseController;
 use App\Http\Controllers\FacturasFormatoController;
+use App\Http\Controllers\RepDosSelController;
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -44,7 +45,7 @@ Route::middleware('auth:sanctum')->controller(FormFactController::class)->group(
 
 
 Route::middleware('auth:sanctum')->controller(RepDosSelController::class)->group(function () {
-    Route::post('/RepDosSel/UpdateRepDosSel','UpdateRepDosSel');
+    Route::post('/RepDosSel/UpdateRepDosSel', 'UpdateRepDosSel');
     Route::get("/RepDosSel/siguiente", "siguiente");
 });
 
@@ -75,20 +76,19 @@ Route::middleware('auth:sanctum')->controller(ComentariosController::class)->gro
 });
 Route::middleware('auth:sanctum')->controller(FacturasFormatoController::class)->group(function () {
     Route::get("/facturasformato/{id}", "index");
-   
 });
 
 
 
-Route::controller(HorarioController::class)->group(function (){
-    Route::get('/horarios','getHorarios');
-    Route::get('/horarios/baja','getHorariosBaja');
-    Route::post('/horarios/post','postHorario');
-    Route::post('/horarios/update','updateHorario');
-    Route::get('/horarios/ultimo','ultimoHorario');
+Route::controller(HorarioController::class)->group(function () {
+    Route::get('/horarios', 'getHorarios');
+    Route::get('/horarios/baja', 'getHorariosBaja');
+    Route::post('/horarios/post', 'postHorario');
+    Route::post('/horarios/update', 'updateHorario');
+    Route::get('/horarios/ultimo', 'ultimoHorario');
 });
 
-Route::controller(AlumnosPorClaseController::class)->group(function(){
+Route::controller(AlumnosPorClaseController::class)->group(function () {
     Route::get('/AlumnosPC/HorariosAPC', 'getHorariosAPC');
-    Route::get ('/AlumnosPC/Lista/{idHorario}/{orden}' , 'getListaHorariosAPC');
+    Route::get('/AlumnosPC/Lista/{idHorario}/{orden}', 'getListaHorariosAPC');
 });

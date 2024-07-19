@@ -126,7 +126,141 @@ class AlumnoController extends Controller
     {
         $response = ObjectResponse::DefaultResponse();
         try {
-            $alumnos = DB::table('alumnos')->where('baja', '<>', '*')->orderBy('nombre', 'ASC')->get();
+            $alumnos = DB::table('alumnos as al')
+                ->join('horarios as hr1', 'al.horario_1', '=', 'hr1.numero')
+                ->join('horarios as hr2', 'al.horario_2', '=', 'hr2.numero')
+                ->join('horarios as hr3', 'al.horario_3', '=', 'hr3.numero')
+                ->join('horarios as hr4', 'al.horario_4', '=', 'hr4.numero')
+                ->join('horarios as hr5', 'al.horario_5', '=', 'hr5.numero')
+                ->join('horarios as hr6', 'al.horario_6', '=', 'hr6.numero')
+                ->join('horarios as hr7', 'al.horario_7', '=', 'hr7.numero')
+                ->join('horarios as hr8', 'al.horario_8', '=', 'hr8.numero')
+                ->join('horarios as hr9', 'al.horario_9', '=', 'hr9.numero')
+                ->join('horarios as hr10', 'al.horario_10', '=', 'hr10.numero')
+                ->join('horarios as hr11', 'al.horario_11', '=', 'hr11.numero')
+                ->join('horarios as hr12', 'al.horario_12', '=', 'hr12.numero')
+                ->join('horarios as hr13', 'al.horario_13', '=', 'hr13.numero')
+                ->join('horarios as hr14', 'al.horario_14', '=', 'hr14.numero')
+                ->join('horarios as hr15', 'al.horario_15', '=', 'hr15.numero')
+                ->join('horarios as hr16', 'al.horario_16', '=', 'hr16.numero')
+                ->join('horarios as hr17', 'al.horario_17', '=', 'hr17.numero')
+                ->join('horarios as hr18', 'al.horario_18', '=', 'hr18.numero')
+                ->join('horarios as hr19', 'al.horario_19', '=', 'hr19.numero')
+                ->join('horarios as hr20', 'al.horario_20', '=', 'hr20.numero')
+                ->select(
+                    'al.id',
+                    'al.nombre',
+                    'al.a_paterno',
+                    'al.a_materno',
+                    'al.a_nombre',
+                    'al.fecha_nac',
+                    'al.fecha_inscripcion',
+                    'al.fecha_baja',
+                    'al.sexo',
+                    'al.telefono_1',
+                    'al.telefono_2',
+                    'al.celular',
+                    'al.codigo_barras',
+                    'al.direccion',
+                    'al.colonia',
+                    'al.ciudad',
+                    'al.estado',
+                    'al.cp',
+                    'al.email',
+                    'al.imagen',
+                    'al.dia_1',
+                    'al.dia_2',
+                    'al.dia_3',
+                    'al.dia_4',
+                    'al.hora_1',
+                    'al.hora_2',
+                    'al.hora_3',
+                    'al.hora_4',
+                    'al.cancha_1',
+                    'al.cancha_2',
+                    'al.cancha_3',
+                    'al.cancha_4',
+                    'al.horario_1',
+                    'hr1.horario as horario_1_nombre',
+                    'al.horario_2',
+                    'hr2.horario as horario_2_nombre',
+                    'al.horario_3',
+                    'hr3.horario as horario_3_nombre',
+                    'al.horario_4',
+                    'hr4.horario as horario_4_nombre',
+                    'al.horario_5',
+                    'hr5.horario as horario_5_nombre',
+                    'al.horario_6',
+                    'hr6.horario as horario_6_nombre',
+                    'al.horario_7',
+                    'hr7.horario as horario_7_nombre',
+                    'al.horario_8',
+                    'hr8.horario as horario_8_nombre',
+                    'al.horario_9',
+                    'hr9.horario as horario_9_nombre',
+                    'al.horario_10',
+                    'hr10.horario as horario_10_nombre',
+                    'al.horario_11',
+                    'hr11.horario as horario_11_nombre',
+                    'al.horario_12',
+                    'hr12.horario as horario_12_nombre',
+                    'al.horario_13',
+                    'hr13.horario as horario_13_nombre',
+                    'al.horario_14',
+                    'hr14.horario as horario_14_nombre',
+                    'al.horario_15',
+                    'hr15.horario as horario_15_nombre',
+                    'al.horario_16',
+                    'hr16.horario as horario_16_nombre',
+                    'al.horario_17',
+                    'hr17.horario as horario_17_nombre',
+                    'al.horario_18',
+                    'hr18.horario as horario_18_nombre',
+                    'al.horario_19',
+                    'hr19.horario as horario_19_nombre',
+                    'al.horario_20',
+                    'hr20.horario as horario_20_nombre',
+                    'al.cond_1',
+                    'al.cond_2',
+                    'al.cond_3',
+                    'al.nom_pediatra',
+                    'al.tel_p_1',
+                    'al.tel_p_2',
+                    'al.cel_p_1',
+                    'al.tipo_sangre',
+                    'al.alergia',
+                    'al.aseguradora',
+                    'al.poliza',
+                    'al.tel_ase_1',
+                    'al.tel_ase_2',
+                    'al.razon_social',
+                    'al.raz_direccion',
+                    'al.raz_colonia',
+                    'al.raz_ciudad',
+                    'al.raz_estado',
+                    'al.raz_cp',
+                    'al.nom_padre',
+                    'al.tel_pad_1',
+                    'al.tel_pad_2',
+                    'al.cel_pad_1',
+                    'al.nom_madre',
+                    'al.tel_mad_1',
+                    'al.tel_mad_2',
+                    'al.cel_mad_1',
+                    'al.nom_avi',
+                    'al.tel_avi_1',
+                    'al.tel_avi_2',
+                    'al.cel_avi_1',
+                    'al.ciclo_escolar',
+                    'al.descuento',
+                    'al.rfc_factura',
+                    'al.estatus',
+                    'al.escuela',
+                    'al.baja'
+                )
+                ->where('al.baja', '<>', '*')
+                ->orderBy('al.nombre', 'ASC')
+                ->get();
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'Peticion satisfactoria');
             data_set($response, 'data', $alumnos);
@@ -148,7 +282,141 @@ class AlumnoController extends Controller
     {
         $response = ObjectResponse::DefaultResponse();
         try {
-            $alumnos = DB::table('alumnos')->where('baja', '=', '*')->orderBy('nombre', 'ASC')->get();
+            $alumnos = DB::table('alumnos as al')
+                ->join('horarios as hr1', 'al.horario_1', '=', 'hr1.numero')
+                ->join('horarios as hr2', 'al.horario_2', '=', 'hr2.numero')
+                ->join('horarios as hr3', 'al.horario_3', '=', 'hr3.numero')
+                ->join('horarios as hr4', 'al.horario_4', '=', 'hr4.numero')
+                ->join('horarios as hr5', 'al.horario_5', '=', 'hr5.numero')
+                ->join('horarios as hr6', 'al.horario_6', '=', 'hr6.numero')
+                ->join('horarios as hr7', 'al.horario_7', '=', 'hr7.numero')
+                ->join('horarios as hr8', 'al.horario_8', '=', 'hr8.numero')
+                ->join('horarios as hr9', 'al.horario_9', '=', 'hr9.numero')
+                ->join('horarios as hr10', 'al.horario_10', '=', 'hr10.numero')
+                ->join('horarios as hr11', 'al.horario_11', '=', 'hr11.numero')
+                ->join('horarios as hr12', 'al.horario_12', '=', 'hr12.numero')
+                ->join('horarios as hr13', 'al.horario_13', '=', 'hr13.numero')
+                ->join('horarios as hr14', 'al.horario_14', '=', 'hr14.numero')
+                ->join('horarios as hr15', 'al.horario_15', '=', 'hr15.numero')
+                ->join('horarios as hr16', 'al.horario_16', '=', 'hr16.numero')
+                ->join('horarios as hr17', 'al.horario_17', '=', 'hr17.numero')
+                ->join('horarios as hr18', 'al.horario_18', '=', 'hr18.numero')
+                ->join('horarios as hr19', 'al.horario_19', '=', 'hr19.numero')
+                ->join('horarios as hr20', 'al.horario_20', '=', 'hr20.numero')
+                ->select(
+                    'al.id',
+                    'al.nombre',
+                    'al.a_paterno',
+                    'al.a_materno',
+                    'al.a_nombre',
+                    'al.fecha_nac',
+                    'al.fecha_inscripcion',
+                    'al.fecha_baja',
+                    'al.sexo',
+                    'al.telefono_1',
+                    'al.telefono_2',
+                    'al.celular',
+                    'al.codigo_barras',
+                    'al.direccion',
+                    'al.colonia',
+                    'al.ciudad',
+                    'al.estado',
+                    'al.cp',
+                    'al.email',
+                    'al.imagen',
+                    'al.dia_1',
+                    'al.dia_2',
+                    'al.dia_3',
+                    'al.dia_4',
+                    'al.hora_1',
+                    'al.hora_2',
+                    'al.hora_3',
+                    'al.hora_4',
+                    'al.cancha_1',
+                    'al.cancha_2',
+                    'al.cancha_3',
+                    'al.cancha_4',
+                    'al.horario_1',
+                    'hr1.horario as horario_1_nombre',
+                    'al.horario_2',
+                    'hr2.horario as horario_2_nombre',
+                    'al.horario_3',
+                    'hr3.horario as horario_3_nombre',
+                    'al.horario_4',
+                    'hr4.horario as horario_4_nombre',
+                    'al.horario_5',
+                    'hr5.horario as horario_5_nombre',
+                    'al.horario_6',
+                    'hr6.horario as horario_6_nombre',
+                    'al.horario_7',
+                    'hr7.horario as horario_7_nombre',
+                    'al.horario_8',
+                    'hr8.horario as horario_8_nombre',
+                    'al.horario_9',
+                    'hr9.horario as horario_9_nombre',
+                    'al.horario_10',
+                    'hr10.horario as horario_10_nombre',
+                    'al.horario_11',
+                    'hr11.horario as horario_11_nombre',
+                    'al.horario_12',
+                    'hr12.horario as horario_12_nombre',
+                    'al.horario_13',
+                    'hr13.horario as horario_13_nombre',
+                    'al.horario_14',
+                    'hr14.horario as horario_14_nombre',
+                    'al.horario_15',
+                    'hr15.horario as horario_15_nombre',
+                    'al.horario_16',
+                    'hr16.horario as horario_16_nombre',
+                    'al.horario_17',
+                    'hr17.horario as horario_17_nombre',
+                    'al.horario_18',
+                    'hr18.horario as horario_18_nombre',
+                    'al.horario_19',
+                    'hr19.horario as horario_19_nombre',
+                    'al.horario_20',
+                    'hr20.horario as horario_20_nombre',
+                    'al.cond_1',
+                    'al.cond_2',
+                    'al.cond_3',
+                    'al.nom_pediatra',
+                    'al.tel_p_1',
+                    'al.tel_p_2',
+                    'al.cel_p_1',
+                    'al.tipo_sangre',
+                    'al.alergia',
+                    'al.aseguradora',
+                    'al.poliza',
+                    'al.tel_ase_1',
+                    'al.tel_ase_2',
+                    'al.razon_social',
+                    'al.raz_direccion',
+                    'al.raz_colonia',
+                    'al.raz_ciudad',
+                    'al.raz_estado',
+                    'al.raz_cp',
+                    'al.nom_padre',
+                    'al.tel_pad_1',
+                    'al.tel_pad_2',
+                    'al.cel_pad_1',
+                    'al.nom_madre',
+                    'al.tel_mad_1',
+                    'al.tel_mad_2',
+                    'al.cel_mad_1',
+                    'al.nom_avi',
+                    'al.tel_avi_1',
+                    'al.tel_avi_2',
+                    'al.cel_avi_1',
+                    'al.ciclo_escolar',
+                    'al.descuento',
+                    'al.rfc_factura',
+                    'al.estatus',
+                    'al.escuela',
+                    'al.baja'
+                )
+                ->where('al.baja', '=', '*')
+                ->orderBy('al.nombre', 'ASC')
+                ->get();
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'Peticion satisfactoria');
             data_set($response, 'data', $alumnos);
