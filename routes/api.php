@@ -11,6 +11,7 @@ use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ComentariosController;
 use App\Http\Controllers\AlumnosPorClaseController;
+use App\Http\Controllers\FacturasFormatoController;
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -66,7 +67,10 @@ Route::middleware('auth:sanctum')->controller(ComentariosController::class)->gro
     Route::post('/comentarios', 'store');
     Route::post('/comentarios/update', 'update');
 });
-
+Route::middleware('auth:sanctum')->controller(FacturasFormatoController::class)->group(function () {
+    Route::get("/facturasformato/{id}", "index");
+   
+});
 
 
 
