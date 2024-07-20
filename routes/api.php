@@ -90,5 +90,5 @@ Route::controller(HorarioController::class)->group(function (){
 
 Route::controller(AlumnosPorClaseController::class)->group(function(){
     Route::get('/AlumnosPC/HorariosAPC', 'getHorariosAPC');
-    Route::get ('/AlumnosPC/Lista/{idHorario}/{orden}' , 'getListaHorariosAPC');
+    Route::get ('/AlumnosPC/Lista/{idHorario1}/{idHorario2}/{orden}' , 'UpdateRepDosSel');
 });
