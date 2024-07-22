@@ -62,6 +62,7 @@ Route::controller(AlumnoController::class)->group(function () {
     Route::get('/students/imagen/{imagen}', 'showImageStudents');
     Route::get('/students', 'showAlumn');
     Route::get('/students/last', 'lastAlumn');
+    Route::post('/students/report', 'getReportAlumn');
     Route::get('/students/bajas', 'bajaAlumn');
     Route::post('/students/save', 'storeAlumn');
     Route::post('/students/update/{id}', 'updateAlumn');
