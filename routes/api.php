@@ -59,7 +59,7 @@ Route::middleware('auth:sanctum')->controller(ProductoController::class)->group(
     Route::put('/product/update/{id}', 'updateProduct');
 });
 
-Route::controller(AlumnoController::class)->group(function () {
+Route::middleware('auth:sanctum')->controller(AlumnoController::class)->group(function () {
     Route::get('/students/imagen/{imagen}', 'showImageStudents');
     Route::get('/students', 'showAlumn');
     Route::get('/students/last', 'lastAlumn');
@@ -82,7 +82,7 @@ Route::middleware('auth:sanctum')->controller(FacturasFormatoController::class)-
 
 
 
-Route::controller(HorarioController::class)->group(function () {
+Route::middleware('auth:sanctum')->controller(HorarioController::class)->group(function () {
     Route::get('/horarios', 'getHorarios');
     Route::get('/horarios/baja', 'getHorariosBaja');
     Route::post('/horarios/post', 'postHorario');
@@ -90,7 +90,7 @@ Route::controller(HorarioController::class)->group(function () {
     Route::get('/horarios/ultimo', 'ultimoHorario');
 });
 
-Route::controller(AlumnosPorClaseController::class)->group(function () {
+Route::middleware('auth:sanctum')->controller(AlumnosPorClaseController::class)->group(function () {
     Route::get('/AlumnosPC/HorariosAPC', 'getHorariosAPC');
     Route::get ('/AlumnosPC/Lista/{idHorario1}/{idHorario2}/{orden}' , 'UpdateRepDosSel');
     Route::get('/AlumnosPC/Lista/{idHorario}/{orden}', 'getListaHorariosAPC');
