@@ -14,6 +14,7 @@ use App\Http\Controllers\AlumnosPorClaseController;
 use App\Http\Controllers\CobranzaController;
 use App\Http\Controllers\FacturasFormatoController;
 use App\Http\Controllers\RepDosSelController;
+use App\Http\Controllers\ReportesController;
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -96,3 +97,8 @@ Route::middleware('auth:sanctum')->controller(AlumnosPorClaseController::class)-
     Route::get('/AlumnosPC/Lista/{idHorario}/{orden}', 'getListaHorariosAPC');
 });
 Route::get('/cobranza/{Fecha_Inicial}/{Fecha_Final}/{cajero?}', [CobranzaController::class, 'PDF'])->middleware('auth:sanctum');
+
+
+Route::middleware('auth:sanctum')->controller(ReportesController::class)->group(function () {
+    Route::post("/reportes/rep_femac_13", "getAlumnosPorClaseSemanal");
+});

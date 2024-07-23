@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class RepDosSel extends Model
 {
+     
     use HasFactory;
-
     protected $fillable = [
         'numero',
         'numero_1',
