@@ -11,13 +11,14 @@ use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ComentariosController;
 use App\Http\Controllers\AlumnosPorClaseController;
+use App\Http\Controllers\CobranzaController;
 use App\Http\Controllers\FacturasFormatoController;
 use App\Http\Controllers\RepDosSelController;
 
 
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::controller(TipoCobroController::class)->group(function () {
+Route::middleware('auth:sanctum')->controller(TipoCobroController::class)->group(function () {
     Route::get("/tipo_cobro", "index");
     Route::get("/tipo_cobro/baja", "indexBaja");
     Route::get("/tipo_cobro/siguiente", "siguiente");
@@ -94,3 +95,4 @@ Route::controller(AlumnosPorClaseController::class)->group(function () {
     Route::get ('/AlumnosPC/Lista/{idHorario1}/{idHorario2}/{orden}' , 'UpdateRepDosSel');
     Route::get('/AlumnosPC/Lista/{idHorario}/{orden}', 'getListaHorariosAPC');
 });
+Route::get('/cobranza/{Fecha_Inicial}/{Fecha_Final}/{cajero?}', [CobranzaController::class, 'PDF'])->middleware('auth:sanctum');
