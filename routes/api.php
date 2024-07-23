@@ -11,6 +11,7 @@ use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ComentariosController;
 use App\Http\Controllers\AlumnosPorClaseController;
+use App\Http\Controllers\CobranzaController;
 use App\Http\Controllers\FacturasFormatoController;
 
 
@@ -92,3 +93,4 @@ Route::controller(AlumnosPorClaseController::class)->group(function(){
     Route::get('/AlumnosPC/HorariosAPC', 'getHorariosAPC');
     Route::get ('/AlumnosPC/Lista/{idHorario}/{orden}' , 'getListaHorariosAPC');
 });
+Route::get('/cobranza/{Fecha_Inicial}/{Fecha_Final}/{cajero?}', [CobranzaController::class, 'PDF'])->middleware('auth:sanctum');
