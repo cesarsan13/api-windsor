@@ -40,7 +40,7 @@ class FacturasFormato extends Model
         'visible',
         'importe_transaccion',
     ];
-      protected $primaryKey = ['numero_forma','numero_dato'];
+      protected $primaryKey = 'numero_forma,numero_dato';
     protected $attributes = [
         'numero_forma'=>'0',
         'numero_dato'=>'0',

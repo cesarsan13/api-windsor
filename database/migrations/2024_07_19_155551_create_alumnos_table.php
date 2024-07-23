@@ -36,10 +36,10 @@ return new class extends Migration
             $table->string('dia_2', 20)->nullable(true)->default('');
             $table->string('dia_3', 20)->nullable(true)->default('');
             $table->string('dia_4', 20)->nullable(true)->default('');
-            $table->string('hora_1', 30)->nullable(true)->default('');
-            $table->string('hora_2', 30)->nullable(true)->default('');
-            $table->string('hora_3', 30)->nullable(true)->default('');
-            $table->string('hora_4', 30)->nullable(true)->default('');
+            $table->bigInteger('hora_1')->nullable(true)->default(0);
+            $table->bigInteger('hora_2')->nullable(true)->default(0);
+            $table->bigInteger('hora_3')->nullable(true)->default(0);
+            $table->bigInteger('hora_4')->nullable(true)->default(0);
             $table->bigInteger('cancha_1')->nullable(true)->default(0);
             $table->bigInteger('cancha_2')->nullable(true)->default(0);
             $table->bigInteger('cancha_3')->nullable(true)->default(0);
