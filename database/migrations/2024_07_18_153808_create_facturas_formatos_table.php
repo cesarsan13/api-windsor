@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('facturas_formato', function (Blueprint $table) {
             $table->unsignedBigInteger('numero_forma')->nullable(false)->default(0);
             $table->bigInteger('numero_dato')->nullable(false)->default(0);
-             $table->primary(['numero_forma', 'numero_dato']);
+            $table->primary(['numero_forma', 'numero_dato']);
             $table->double('forma_renglon')->nullable(false)->default(0);
             $table->double('forma_columna')->nullable(false)->default(0);
             $table->double('forma_renglon_dos')->nullable(false)->default(0);

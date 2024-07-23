@@ -14,6 +14,7 @@ class FacturasFormatoSeeder extends Seeder
     {
          $registros=[
                 [
+                    
                     'numero_forma' => 1,
                     'numero_dato' => 1,
                     'forma_renglon' => 5040,
@@ -42,6 +43,7 @@ class FacturasFormatoSeeder extends Seeder
                     'importe_transaccion' => 0,
                 ],
 [
+    
     'numero_forma' => 1,
     'numero_dato' => 2,
     'forma_renglon' => 4800,
@@ -70,6 +72,7 @@ class FacturasFormatoSeeder extends Seeder
     'importe_transaccion' => 0,
 ],
 [
+    
     'numero_forma' => 1,
     'numero_dato' => 3,
     'forma_renglon' => 6000,
@@ -98,6 +101,7 @@ class FacturasFormatoSeeder extends Seeder
     'importe_transaccion' => 0,
 ],
 [
+    
     'numero_forma' => 1,
     'numero_dato' => 4,
     'forma_renglon' => 2880,
@@ -126,6 +130,7 @@ class FacturasFormatoSeeder extends Seeder
     'importe_transaccion' => 0,
 ],
 [
+    
     'numero_forma' => 1,
     'numero_dato' => 5,
     'forma_renglon' => 2400,
@@ -154,6 +159,7 @@ class FacturasFormatoSeeder extends Seeder
     'importe_transaccion' => 0,
 ],
 [
+    
     'numero_forma' => 1,
     'numero_dato' => 6,
     'forma_renglon' => 3120,
@@ -182,7 +188,8 @@ class FacturasFormatoSeeder extends Seeder
     'importe_transaccion' => 0,
 ],
 [
-        'numero_forma' => 1,
+        
+    'numero_forma' => 1,
         'numero_dato' => 7,
         'forma_renglon' => 3120,
         'forma_columna' => 4515,
@@ -210,6 +217,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
 ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 8,
         'forma_renglon' => 3120,
@@ -238,6 +246,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 9,
         'forma_renglon' => 5040,
@@ -266,6 +275,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 10,
         'forma_renglon' => 5040,
@@ -294,6 +304,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 11,
         'forma_renglon' => 3120,
@@ -322,6 +333,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 12,
         'forma_renglon' => 2640,
@@ -350,7 +362,8 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
           [
-        'numero_forma' => 1,
+        
+            'numero_forma' => 1,
         'numero_dato' => 13,
         'forma_renglon' => 2400,
         'forma_columna' => 1920,
@@ -378,6 +391,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 14,
         'forma_renglon' => 3120,
@@ -406,6 +420,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 15,
         'forma_renglon' => 6000,
@@ -434,6 +449,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 16,
         'forma_renglon' => 3120,
@@ -462,6 +478,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 17,
         'forma_renglon' => 3120,
@@ -490,6 +507,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 18,
         'forma_renglon' => 5760,
@@ -518,6 +536,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 19,
         'forma_renglon' => 1200,
@@ -546,6 +565,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
      [
+        
         'numero_forma' => 1,
         'numero_dato' => 20,
         'forma_renglon' => 720,
@@ -574,6 +594,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 21,
         'forma_renglon' => 1920,
@@ -602,6 +623,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 22,
         'forma_renglon' => 2400,
@@ -630,6 +652,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 23,
         'forma_renglon' => 3120,
@@ -658,6 +681,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 24,
         'forma_renglon' => 6000,
@@ -686,6 +710,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 25,
         'forma_renglon' => 6240,
@@ -714,6 +739,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 26,
         'forma_renglon' => 2400,
@@ -742,6 +768,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
      [
+        
         'numero_forma' => 1,
         'numero_dato' => 27,
         'forma_renglon' => 720,
@@ -770,6 +797,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 28,
         'forma_renglon' => 1200,
@@ -798,6 +826,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 29,
         'forma_renglon' => 1920,
@@ -826,6 +855,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 30,
         'forma_renglon' => 1920,
@@ -854,6 +884,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 31,
         'forma_renglon' => 1920,
@@ -882,6 +913,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 32,
         'forma_renglon' => 2880,
@@ -910,6 +942,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 33,
         'forma_renglon' => 2880,
@@ -938,6 +971,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 34,
         'forma_renglon' => 2880,
@@ -966,6 +1000,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 35,
         'forma_renglon' => 2880,
@@ -994,6 +1029,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 36,
         'forma_renglon' => 2880,
@@ -1022,6 +1058,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 37,
         'forma_renglon' => 2160,
@@ -1050,6 +1087,7 @@ class FacturasFormatoSeeder extends Seeder
         'importe_transaccion' => 0,
     ],
     [
+        
         'numero_forma' => 1,
         'numero_dato' => 38,
         'forma_renglon' => 2880,
@@ -1080,7 +1118,8 @@ class FacturasFormatoSeeder extends Seeder
         ];
  foreach ($registros as $registro) {
             DB::table('facturas_formato')->updateOrInsert(
-                ['numero_forma' => $registro['numero_forma'],
+                [
+                    'numero_forma' => $registro['numero_forma'],
                 'numero_dato' => $registro['numero_dato']
             ], // Condiciones para encontrar el registro
                 $registro // Datos que se actualizarán o insertarán

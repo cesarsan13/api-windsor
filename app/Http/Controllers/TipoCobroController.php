@@ -33,6 +33,8 @@ class TipoCobroController extends Controller
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
+        // dd($response);
+
         return response()->json($response,$response["status_code"]);
     }
      public function indexBaja(){
