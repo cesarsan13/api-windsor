@@ -88,7 +88,7 @@ class ReportesController extends Controller
         $response  = ObjectResponse::DefaultResponse();
         try {
             $horario= Horario::where('numero','=',$request->horario)->get();
-            $idHorario =$request->horario;
+            $idHorario =$request->horario1;
             $alumnosHorario1 = Alumno::where('baja','<>','*')
                 ->where(function ($query) use ($idHorario){
                 $query->orWhere("horario_1", "=", $idHorario)
@@ -113,7 +113,7 @@ class ReportesController extends Controller
                     ->orWhere("horario_20", "=", $idHorario);
                 })
             ->orderBy($request->orden, 'ASC' )->get(['id','nombre','fecha_nac', 'telefono_1']);
-            $idHorario2=2;
+            $idHorario2 =$request->horario2;
             $alumnosHorario2 = Alumno::where('baja','<>','*')
                 ->where(function ($query) use ($idHorario2){
                      $query->orWhere("horario_1", "=", $idHorario2)
