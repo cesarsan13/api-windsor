@@ -101,4 +101,5 @@ Route::get('/cobranza/{Fecha_Inicial}/{Fecha_Final}/{cajero?}', [CobranzaControl
 
 Route::middleware('auth:sanctum')->controller(ReportesController::class)->group(function () {
     Route::post("/reportes/rep_femac_13", "getAlumnosPorClaseSemanal");
+    Route::post("/reportes/rep_femac_3", "getAlumnosPorMes");
 });
