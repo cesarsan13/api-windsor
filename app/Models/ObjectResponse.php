@@ -13,16 +13,16 @@ class ObjectResponse extends Model
         for ($i=1; $i < $tamaño_ciclo ; $i++) { 
             $objeto = new \stdClass();
             $objeto->Num_Renglon = $i;
-            $objeto->Numero_1 = 0;
+            $objeto->Numero_1 = "";
             $objeto->Nombre_1 = "";
-            $objeto->Año_Nac_1 = 0; 
-            $objeto->Mes_Nac_1 = 0; 
-            $objeto->Telefono_1 = 0; 
-            $objeto->Numero_2 = 0;
+            $objeto->Año_Nac_1 = ""; 
+            $objeto->Mes_Nac_1 = ""; 
+            $objeto->Telefono_1 = ""; 
+            $objeto->Numero_2 = "";
             $objeto->Nombre_2 = "";
-            $objeto->Año_Nac_2 = 0; 
-            $objeto->Mes_Nac_2 = 0; 
-            $objeto->Telefono_2 = 0; 
+            $objeto->Año_Nac_2 = ""; 
+            $objeto->Mes_Nac_2 = ""; 
+            $objeto->Telefono_2 = ""; 
             $rep_dos_sel[] = $objeto;          
         }
         return $rep_dos_sel;
