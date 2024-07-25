@@ -94,7 +94,7 @@ Route::middleware('auth:sanctum')->controller(HorarioController::class)->group(f
 
 Route::middleware('auth:sanctum')->controller(AlumnosPorClaseController::class)->group(function () {
     Route::get('/AlumnosPC/HorariosAPC', 'getHorariosAPC');
-    Route::get ('/AlumnosPC/Lista/{idHorario1}/{idHorario2}/{orden}' , 'UpdateRepDosSel');
+    Route::get('/AlumnosPC/Lista/{idHorario1}/{idHorario2}/{orden}', 'UpdateRepDosSel');
     Route::get('/AlumnosPC/Lista/{idHorario}/{orden}', 'getListaHorariosAPC');
 });
 Route::get('/cobranza/{Fecha_Inicial}/{Fecha_Final}/{cajero?}', [CobranzaController::class, 'PDF'])->middleware('auth:sanctum');
@@ -102,4 +102,5 @@ Route::get('/cobranza/{Fecha_Inicial}/{Fecha_Final}/{cajero?}', [CobranzaControl
 
 Route::middleware('auth:sanctum')->controller(ReportesController::class)->group(function () {
     Route::post("/reportes/rep_femac_13", "getAlumnosPorClaseSemanal");
+    Route::post("/reportes/rep_femac_8_anexo_1", "getRelaciondeRecibos");
 });
