@@ -16,7 +16,7 @@ class TipoCobroController extends Controller
         protected $rules = [
             'id'=> 'required|integer',
             'descripcion'=>'required|string|max:50',
-            'comision'=>'nullable|numeric',
+            'comision'=>'nullable|string',
             'aplicacion'=>'nullable|string|max:30',
             'cue_banco'=>'nullable|string|max:34',
             'baja'=>'nullable|string|max:1',
@@ -104,21 +104,30 @@ class TipoCobroController extends Controller
             return response()->json($response,$response['status_code']);
         }
         try {
-            $tipo_cobro = TipoCobro::where('id',$request->id)
-                ->update(["descripcion"=>$request->descripcion,
-                        "comision"=>$request->comision,
-                        "aplicacion"=>$request->aplicacion ?? '',
-                        "cue_banco"=>$request->cue_banco ?? '',
-                        "baja"=>$request->baja ?? '',
-                        ]);
+            // Limpiar las comas de los importes
+            $descripcion = $request->descripcion;
+            $comision = str_replace(',', '', $request->comision);
+            $aplicacion = $request->aplicacion ? str_replace(',', '', $request->aplicacion) : '';
+            $cue_banco = $request->cue_banco ? str_replace(',', '', $request->cue_banco) : '';
+            $baja = $request->baja ? str_replace(',', '', $request->baja) : '';
+    
+            $tipo_cobro = TipoCobro::where('id', $request->id)
+                ->update([
+                    "descripcion" => $descripcion,
+                    "comision" => $comision,
+                    "aplicacion" => $aplicacion,
+                    "cue_banco" => $cue_banco,
+                    "baja" => $baja,
+                ]);
             $response = ObjectResponse::CorrectResponse();
-            data_set($response,'message','peticion satisfactoria | Tipo de cobro actualizado');
-            data_set($response,'alert_text','Tipo de Cobro actualizado');
+            data_set($response, 'message', 'Petición satisfactoria | Tipo de cobro actualizado');
+            data_set($response, 'alert_text', 'Tipo de Cobro actualizado');
         } catch (\Exception $ex) {
-                $response = ObjectResponse::CatchResponse($ex->getMessage());
-                data_set($response, 'message', 'Peticion fallida | Actualizacion de Tipo de Cobro');
-                data_set($response, 'data', $ex);
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+            data_set($response, 'message', 'Petición fallida | Actualización de Tipo de Cobro');
+            data_set($response, 'data', $ex);
         }
-        return response()->json($response,$response['status_code']);
+        return response()->json($response, $response['status_code']);
     }
+    
 }
