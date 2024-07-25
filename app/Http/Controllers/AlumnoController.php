@@ -120,6 +120,142 @@ class AlumnoController extends Controller
         }
     }
 
+    public function getReportAltaBajaAlumno(Request $request)
+    {
+        $baja = $request->input('baja');
+        $tipoOrden = $request->input('tipoOrden');
+        $fecha_ini = $request->input('fecha_ini');
+        $fecha_fin = $request->input('fecha_fin');
+
+        $query = DB::table('alumnos as al')
+            ->leftJoin('horarios as hr1', 'al.horario_1', '=', 'hr1.numero')
+            ->select(
+                'al.id',
+                DB::raw("CONCAT(al.nombre, ' ', al.a_paterno, ' ', al.a_materno) as nombre_completo"),
+                'al.nombre',
+                'al.a_paterno',
+                'al.a_materno',
+                'al.a_nombre',
+                'al.fecha_nac',
+                'al.fecha_inscripcion',
+                'al.fecha_baja',
+                'al.sexo',
+                'al.telefono_1',
+                'al.telefono_2',
+                'al.celular',
+                'al.codigo_barras',
+                'al.direccion',
+                'al.colonia',
+                'al.ciudad',
+                'al.estado',
+                'al.cp',
+                'al.email',
+                'al.imagen',
+                'al.dia_1',
+                'al.dia_2',
+                'al.dia_3',
+                'al.dia_4',
+                'al.hora_1',
+                'al.hora_2',
+                'al.hora_3',
+                'al.hora_4',
+                'al.cancha_1',
+                'al.cancha_2',
+                'al.cancha_3',
+                'al.cancha_4',
+                'al.horario_1',
+                'hr1.horario as horario_1_nombre',
+                'al.horario_2',
+                'al.horario_3',
+                'al.horario_4',
+                'al.horario_5',
+                'al.horario_6',
+                'al.horario_7',
+                'al.horario_8',
+                'al.horario_9',
+                'al.horario_10',
+                'al.horario_11',
+                'al.horario_12',
+                'al.horario_13',
+                'al.horario_14',
+                'al.horario_15',
+                'al.horario_16',
+                'al.horario_17',
+                'al.horario_18',
+                'al.horario_19',
+                'al.horario_20',
+                'al.cond_1',
+                'al.cond_2',
+                'al.cond_3',
+                'al.nom_pediatra',
+                'al.tel_p_1',
+                'al.tel_p_2',
+                'al.cel_p_1',
+                'al.tipo_sangre',
+                'al.alergia',
+                'al.aseguradora',
+                'al.poliza',
+                'al.tel_ase_1',
+                'al.tel_ase_2',
+                'al.razon_social',
+                'al.raz_direccion',
+                'al.raz_colonia',
+                'al.raz_ciudad',
+                'al.raz_estado',
+                'al.raz_cp',
+                'al.nom_padre',
+                'al.tel_pad_1',
+                'al.tel_pad_2',
+                'al.cel_pad_1',
+                'al.nom_madre',
+                'al.tel_mad_1',
+                'al.tel_mad_2',
+                'al.cel_mad_1',
+                'al.nom_avi',
+                'al.tel_avi_1',
+                'al.tel_avi_2',
+                'al.cel_avi_1',
+                'al.ciclo_escolar',
+                'al.descuento',
+                'al.rfc_factura',
+                'al.estatus',
+                'al.escuela',
+                'al.baja'
+            );
+
+        if ($baja === 'Alta') {
+            if ($fecha_ini > 0 || $fecha_fin > 0) {
+                if ($fecha_fin == 0) {
+                    $query->where('al.fecha_inscripcion', '=', $fecha_ini);
+                } else {
+                    $query->whereBetween('al.fecha_inscripcion', [$fecha_ini, $fecha_fin]);
+                }
+            }
+        } else {
+            if ($fecha_ini > 0 || $fecha_fin > 0) {
+                if ($fecha_fin == 0) {
+                    $query->where('al.fecha_baja', '=', $fecha_ini);
+                } else {
+                    $query->whereBetween('al.fecha_baja', [$fecha_ini, $fecha_fin]);
+                }
+            }
+        }
+
+        if ($tipoOrden == 'Nombre') {
+            $query->orderBy('al.nombre', 'ASC');
+        } else if ($tipoOrden == 'Numero') {
+            $query->orderBy('al.id', 'ASC');
+        } else if ($tipoOrden == 'Fecha_nac') {
+            $query->orderBy('al.fecha_nac', 'ASC');
+        }
+
+        $resultados = $query->get();
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'Peticion satisfactoria');
+        data_set($response, 'data', $resultados);
+        return response()->json($response, $response['status_code']);
+    }
+
     public function getReportAlumn(Request $request)
     {
         $baja = $request->input('baja');

@@ -65,6 +65,7 @@ Route::middleware('auth:sanctum')->controller(AlumnoController::class)->group(fu
     Route::get('/students', 'showAlumn');
     Route::get('/students/last', 'lastAlumn');
     Route::post('/students/report', 'getReportAlumn');
+    Route::post('/students/report/AltaBaja', 'getReportAltaBajaAlumno');
     Route::get('/students/bajas', 'bajaAlumn');
     Route::post('/students/save', 'storeAlumn');
     Route::post('/students/update/{id}', 'updateAlumn');
