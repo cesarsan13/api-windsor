@@ -13,6 +13,7 @@ use Illuminate\Database\Query\Builder;
 
 class ReportesController extends Controller
 {
+    //Lista Alumnos semanal
  public function getAlumnosPorClaseSemanal(Request $request){
         $response  = ObjectResponse::DefaultResponse();
         try {
@@ -41,35 +42,11 @@ class ReportesController extends Controller
                     ->orWhere("horario_19", "=", $idHorario)
                     ->orWhere("horario_20", "=", $idHorario);
                 })
-            ->orderBy($request->orden, 'ASC' )->get(['id','a_nombre','fecha_nac']);
-            $idHorario2=2;
-            $alumnosHorario2 = Alumno::where('baja','<>','*')
-                ->where(function ($query) use ($idHorario2){
-                     $query->orWhere("horario_1", "=", $idHorario2)
-                    ->orWhere("horario_2", "=", $idHorario2)
-                    ->orWhere("horario_3", "=", $idHorario2)
-                    ->orWhere("horario_4", "=", $idHorario2)
-                    ->orWhere("horario_5", "=", $idHorario2)
-                    ->orWhere("horario_6", "=", $idHorario2)
-                    ->orWhere("horario_7", "=", $idHorario2)
-                    ->orWhere("horario_8", "=", $idHorario2)
-                    ->orWhere("horario_9", "=", $idHorario2)
-                    ->orWhere("horario_10", "=", $idHorario2)
-                    ->orWhere("horario_11", "=", $idHorario2)
-                    ->orWhere("horario_12", "=", $idHorario2)
-                    ->orWhere("horario_13", "=", $idHorario2)
-                    ->orWhere("horario_14", "=", $idHorario2)
-                    ->orWhere("horario_15", "=", $idHorario2)
-                    ->orWhere("horario_16", "=", $idHorario2)
-                    ->orWhere("horario_17", "=", $idHorario2)
-                    ->orWhere("horario_18", "=", $idHorario2)
-                    ->orWhere("horario_19", "=", $idHorario2)
-                    ->orWhere("horario_20", "=", $idHorario2);
-                })
-            ->orderBy($request->orden, 'ASC' )->get(['id','a_nombre','fecha_nac']);
-            $rep_dos_sel =ObjectResponse::Rep_Dos_Sel(100);
+            ->orderBy($request->orden, 'ASC' )->get(['id','nombre','fecha_nac', 'telefono_1']);
+           
+            $rep_dos_sel =ObjectResponse::Rep_Dos_Sel(32);
             $rep_dos_sel=ObjectResponse::PrepHorario($alumnosHorario1,$rep_dos_sel,1);
-            $rep_dos_sel=ObjectResponse::PrepHorario($alumnosHorario2,$rep_dos_sel,2);
+            //$rep_dos_sel=ObjectResponse::PrepHorario($alumnosHorario2,$rep_dos_sel,2);
             $reporte=[
                 "horario"=>$horario,
                 "data"=>$rep_dos_sel,
