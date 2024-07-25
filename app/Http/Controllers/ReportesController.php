@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\ObjectResponse;
 use App\Models\Horario;
 use App\Models\Alumno;
+use App\Models\Encab_Pedido;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Query\Builder;
@@ -13,34 +14,34 @@ use Illuminate\Database\Query\Builder;
 
 class ReportesController extends Controller
 {
-    //Lista Alumnos semanal
- public function getAlumnosPorClaseSemanal(Request $request){
+    public function getAlumnosPorClaseSemanal(Request $request)
+    {
         $response  = ObjectResponse::DefaultResponse();
         try {
-            $horario= Horario::where('numero','=',$request->horario)->get();
-            $idHorario =$request->horario;
-            $alumnosHorario1 = Alumno::where('baja','<>','*')
-                ->where(function ($query) use ($idHorario){
-                $query->orWhere("horario_1", "=", $idHorario)
-                    ->orWhere("horario_2", "=", $idHorario)
-                    ->orWhere("horario_3", "=", $idHorario)
-                    ->orWhere("horario_4", "=", $idHorario)
-                    ->orWhere("horario_5", "=", $idHorario)
-                    ->orWhere("horario_6", "=", $idHorario)
-                    ->orWhere("horario_7", "=", $idHorario)
-                    ->orWhere("horario_8", "=", $idHorario)
-                    ->orWhere("horario_9", "=", $idHorario)
-                    ->orWhere("horario_10", "=", $idHorario)
-                    ->orWhere("horario_11", "=", $idHorario)
-                    ->orWhere("horario_12", "=", $idHorario)
-                    ->orWhere("horario_13", "=", $idHorario)
-                    ->orWhere("horario_14", "=", $idHorario)
-                    ->orWhere("horario_15", "=", $idHorario)
-                    ->orWhere("horario_16", "=", $idHorario)
-                    ->orWhere("horario_17", "=", $idHorario)
-                    ->orWhere("horario_18", "=", $idHorario)
-                    ->orWhere("horario_19", "=", $idHorario)
-                    ->orWhere("horario_20", "=", $idHorario);
+            $horario = Horario::where('numero', '=', $request->horario)->get();
+            $idHorario = $request->horario;
+            $alumnosHorario1 = Alumno::where('baja', '<>', '*')
+                ->where(function ($query) use ($idHorario) {
+                    $query->orWhere("horario_1", "=", $idHorario)
+                        ->orWhere("horario_2", "=", $idHorario)
+                        ->orWhere("horario_3", "=", $idHorario)
+                        ->orWhere("horario_4", "=", $idHorario)
+                        ->orWhere("horario_5", "=", $idHorario)
+                        ->orWhere("horario_6", "=", $idHorario)
+                        ->orWhere("horario_7", "=", $idHorario)
+                        ->orWhere("horario_8", "=", $idHorario)
+                        ->orWhere("horario_9", "=", $idHorario)
+                        ->orWhere("horario_10", "=", $idHorario)
+                        ->orWhere("horario_11", "=", $idHorario)
+                        ->orWhere("horario_12", "=", $idHorario)
+                        ->orWhere("horario_13", "=", $idHorario)
+                        ->orWhere("horario_14", "=", $idHorario)
+                        ->orWhere("horario_15", "=", $idHorario)
+                        ->orWhere("horario_16", "=", $idHorario)
+                        ->orWhere("horario_17", "=", $idHorario)
+                        ->orWhere("horario_18", "=", $idHorario)
+                        ->orWhere("horario_19", "=", $idHorario)
+                        ->orWhere("horario_20", "=", $idHorario);
                 })
             ->orderBy($request->orden, 'ASC' )->get(['id','nombre','fecha_nac', 'telefono_1']);
            
@@ -173,5 +174,78 @@ class ReportesController extends Controller
                 $response = ObjectResponse::CatchResponse($ex->getMessage());
             }
             return response()->json($response,$response["status_code"]);
+    }
+
+    public function getRelaciondeRecibos(Request $request)
+    {
+        $tomaFecha = $request->input('tomaFecha');
+        $fecha_ini = $request->input('fecha_ini');
+        $fecha_fin = $request->input('fecha_fin');
+        $factura_ini = $request->input('factura_ini');
+        $factura_fin = $request->input('factura_fin');
+        $recibo_ini = $request->input('recibo_ini');
+        $recibo_fin = $request->input('recibo_fin');
+        $alumno_ini = $request->input('alumno_ini');
+        $alumno_fin = $request->input('alumno_fin');
+
+        $query = DB::table('encab_pedidos as ep')
+            ->leftJoin('alumnos as al', 'ep.alumno', 'al.id')
+            ->leftJoin('cajeros as cj', 'ep.cajero', 'cj.numero')
+            ->select(
+                'ep.recibo',
+                'ep.fecha',
+                'ep.alumno',
+                DB::raw("CONCAT(al.nombre, ' ', al.a_paterno, ' ', al.a_materno) as nombre_alumno"),
+                'ep.cajero',
+                'cj.nombre as nombre_cajero',
+                'ep.importe_total',
+                'ep.tipo_pago_1',
+                'ep.importe_pago_1',
+                'ep.referencia_1',
+                'ep.tipo_pago_2',
+                'ep.importe_pago_2',
+                'ep.referencia_2',
+                'ep.nombre_quien',
+                'ep.comentario',
+                'ep.comentario_ad',
+                'ep.facturado',
+                'ep.numero_factura',
+                'ep.fecha_factura',
+            );
+
+        if ($tomaFecha === true) {
+            $query->whereBetween('ep.fecha', [$fecha_ini, $fecha_fin]);
+        }
+
+        if ($recibo_ini > 0 || $recibo_fin > 0) {
+            if ($recibo_fin == 0) {
+                $query->where('ep.recibo', '=', $recibo_ini);
+            } else {
+                $query->whereBetween('ep.recibo', [$recibo_ini, $recibo_fin]);
+            }
+        }
+
+        if ($factura_ini > 0 || $factura_fin > 0) {
+            if ($factura_fin == 0) {
+                $query->where('ep.Numero_Factura', '=', $factura_ini);
+            } else {
+                $query->whereBetween('ep.Numero_Factura', [$factura_ini, $factura_fin]);
+            }
+        }
+
+        if ($alumno_ini > 0 || $alumno_fin > 0) {
+            if ($alumno_fin == 0) {
+                $query->where('ep.alumno', '=', $alumno_ini);
+            } else {
+                $query->whereBetween('ep.alumno', [$alumno_ini, $alumno_fin]);
+            }
+        }
+
+        $query->orderBy('ep.recibo', 'ASC');
+        $resultados = $query->get();
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'Peticion satisfactoria');
+        data_set($response, 'data', $resultados);
+        return response()->json($response, $response['status_code']);
     }
 }
