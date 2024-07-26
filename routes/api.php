@@ -12,6 +12,7 @@ use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ComentariosController;
 use App\Http\Controllers\AlumnosPorClaseController;
 use App\Http\Controllers\CobranzaController;
+use App\Http\Controllers\DocumentosCobranzaController;
 use App\Http\Controllers\FacturasFormatoController;
 
 
@@ -94,3 +95,8 @@ Route::controller(AlumnosPorClaseController::class)->group(function(){
     Route::get ('/AlumnosPC/Lista/{idHorario}/{orden}' , 'getListaHorariosAPC');
 });
 Route::get('/cobranza/{Fecha_Inicial}/{Fecha_Final}/{cajero?}', [CobranzaController::class, 'PDF'])->middleware('auth:sanctum');
+Route::controller(DocumentosCobranzaController::class)->group(function (){
+    Route::get('/documentoscobranza/{fecha}/{grupo?}','imprimir')->middleware('auth:sanctum');
+    Route::get('/documentoscobranza','get_Grupo_Cobranza')->middleware('auth:sanctum');
+    Route::put('/documentoscobranza/grupo','poner_Grupo_Cobranza')->middleware('auth:sanctum');
+});
