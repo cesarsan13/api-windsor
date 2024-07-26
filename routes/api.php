@@ -13,6 +13,7 @@ use App\Http\Controllers\ComentariosController;
 use App\Http\Controllers\AlumnosPorClaseController;
 use App\Http\Controllers\CobranzaController;
 use App\Http\Controllers\FacturasFormatoController;
+use App\Http\Controllers\Pagos1Controller;
 use App\Http\Controllers\RepDosSelController;
 use App\Http\Controllers\ReportesController;
 
@@ -103,4 +104,9 @@ Route::get('/cobranza/{Fecha_Inicial}/{Fecha_Final}/{cajero?}', [CobranzaControl
 Route::middleware('auth:sanctum')->controller(ReportesController::class)->group(function () {
     Route::post("/reportes/rep_femac_13", "getAlumnosPorClaseSemanal");
     Route::post("/reportes/rep_femac_8_anexo_1", "getRelaciondeRecibos");
+});
+
+Route::middleware('auth:sanctum')->controller(Pagos1Controller::class)->group(function () {
+    Route::post("/pagos1/validar-clave-cajero", "validarClaveCajero");
+    Route::post("/pagos1/buscar-articulo", "buscarArticulo");
 });
