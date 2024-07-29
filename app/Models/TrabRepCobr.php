@@ -17,14 +17,22 @@ class TrabRepCobr extends Model
         'nombre',
         'importe'
     ];
+    protected $table = 'trab_rep_cobr'; 
+    public $incrementing = false;
     protected $primaryKey = ['recibo', 'fecha', 'articulo', 'documento', 'alumno'];
-    protected $attributes =[
-        'recibo'=>'0',
-        'fecha'=>'',
-        'articulo'=>'0',
-        'documento'=>'0',
-        'alumno'=>'0',
-        'nombre'=>'',
-        'importe'=>'0'
-    ];
+
+    
+    public function getKeyName()
+    {
+        return $this->primaryKey;
+    }
+    // protected $attributes =[
+    //     'recibo'=>'0',
+    //     'fecha'=>'',
+    //     'articulo'=>'0',
+    //     'documento'=>'0',
+    //     'alumno'=>'0',
+    //     'nombre'=>'',
+    //     'importe'=>'0'
+    // ];
 }
