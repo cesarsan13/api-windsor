@@ -35,7 +35,7 @@ class FacturasFormato extends Model
         'font_tamaño',
         'font_bold',
         'font_italic',
-        'font_subrayado',
+        'font_subrallado',
         'font_rallado',
         'visible',
         'importe_transaccion',

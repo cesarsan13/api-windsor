@@ -80,6 +80,7 @@ Route::middleware('auth:sanctum')->controller(ComentariosController::class)->gro
 });
 Route::middleware('auth:sanctum')->controller(FacturasFormatoController::class)->group(function () {
     Route::get("/facturasformato/{id}", "index");
+    Route::post("/facturasformato/update","updateFormato");
 });
 
 
