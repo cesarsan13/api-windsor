@@ -11,7 +11,7 @@ class FacturasFormato extends Model
     public $timestamps = false;
 
     protected $table ='facturas_formato';
-
+       protected $primaryKey = "numero_dato";
     protected $fillable =[
         'numero_forma',
         'numero_dato',
@@ -40,7 +40,8 @@ class FacturasFormato extends Model
         'visible',
         'importe_transaccion',
     ];
-      protected $primaryKey = 'numero_forma,numero_dato';
+  
+   
     protected $attributes = [
         'numero_forma'=>'0',
         'numero_dato'=>'0',
@@ -64,7 +65,7 @@ class FacturasFormato extends Model
         'font_tamaño'=>'0',
         'font_bold'=>'',
         'font_italic'=>'',
-        'font_subrayado'=>'',
+        'font_subrallado'=>'',
         'font_rallado'=>'',
         'visible'=>'',
         'importe_transaccion'=>'0',

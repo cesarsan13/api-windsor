@@ -21,10 +21,10 @@ class FacturasFormatoController extends Controller
         'forma_renglon_dos'=>'required|numeric',
         'forma_columna_dos'=>'required|numeric',
         'numero_archivo'=>'required|integer',
-        'nombre_campo'=>'required|string|max:35',
+        'nombre_campo'=>'string|max:35',
         'longitud'=>'required|numeric',
         'tipo_campo'=>'required|integer',
-        'descripcion_campo'=>'required|string|max:240',
+        'descripcion_campo'=>'string|max:240',
         'formato'=>'required|integer',
         'cuenta'=>'required|integer',
         'funcion'=>'required|integer',
@@ -58,20 +58,50 @@ class FacturasFormatoController extends Controller
         return response()->json($response,$response["status_code"]);
     }
     public function updateFormato(Request $request,FacturasFormato $factuas_formato){
-        $response = ObjectResponse::DefaultResponse();
-        $validator = Validator::make($request->all(), $this->rules, $this->messages);
-        if($validator->fails()){
-            $response = ObjectResponse::CatchResponse($validator->errors()->all());
-            return response()->json($response,$response['status_code']);
-        }
-        dd($request);
+        // $response = ObjectResponse::DefaultResponse();
+        // $validator = Validator::make($request->all(), $this->rules, $this->messages);
+        // echo($request);
+        // if($validator->fails()){
+        //     $response = ObjectResponse::CatchResponse($validator->errors()->all());
+        //     return response()->json($response,$response['status_code']);
+        // }
+        $datos= $request->input('datos');
+                // dd($request->request);
         try {
-            $formatos = FacturasFormato::where("Numero_Forma",'=',$id)->get();
-            
+    //  dd($datos);
+            foreach ($datos as $value ) {
+                FacturasFormato::updateOrCreate(['numero_forma' => $value["numero_forma"], 'numero_dato' => $value["numero_dato"]],[
+                'forma_renglon'=> $value["forma_renglon"],
+                'forma_columna'=> $value["forma_columna"],
+                'forma_renglon_dos'=> $value["forma_renglon_dos"],
+                'forma_columna_dos'=> $value["forma_columna_dos"],
+                'numero_archivo'=> $value["numero_archivo"],
+                'nombre_campo'=> $value["nombre_campo"]??'',
+                'longitud'=> $value["longitud"],
+                'tipo_campo'=> $value["tipo_campo"],
+                'descripcion_campo'=> $value["descripcion_campo"]??'',
+                'formato'=> $value["formato"],
+                'cuenta'=> $value["cuenta"],
+                'funcion'=> $value["funcion"],
+                'naturaleza'=> $value["naturaleza"],
+                'tiempo_operacion'=> $value["tiempo_operacion"],
+                'renglon_impresion'=> $value["renglon_impresion"],
+                'columna_impresion'=> $value["columna_impresion"],
+                'font_nombre'=> $value["font_nombre"],
+                'font_tamaño'=> $value["font_tamaño"],
+                'font_bold'=> $value["font_bold"]??'',
+                'font_italic'=> $value["font_italic"]??'',
+                'font_subrallado'=> $value["font_subrallado"]??'',
+                'font_rallado'=> $value["font_rallado"]??'',
+                'visible'=> $value["visible"]??'',
+                'importe_transaccion'=> $value["importe_transaccion"]
+                ]);
+                
+             }
+            // $formatos = FacturasFormato::where("Numero_Forma",'=',$id)->get();
+            // dd($result);
             $response = ObjectResponse::CorrectResponse();
-            data_set($response,'message','peticion satisfactoria | lista de tipos de cobro');
-            data_set($response,'data',$formatos);
-            // dd($response['data']);
+            data_set($response,'message','peticion satisfactoria | formato actualizado');
 
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
