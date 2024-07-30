@@ -109,7 +109,7 @@ Route::controller(DocumentosCobranzaController::class)->group(function (){
 });
 Route::middleware('auth:sanctum')->controller(CobranzaProductosController::class)->group(function () {
     Route::get('/cobranzaProducto/{fecha1}/{fecha2}/{articulo?}/{artFin?}','infoDetallePedido');
-    Route::get('/cobranzaProducto/info/{porNombre?}','infoTrabRepCobr');
+    Route::get('/cobranzaProductos/{porNombre?}','infoTrabRepCobr');
     Route::post('/cobranzaProducto/insert','insertTrabRepCobr');
 });
 
