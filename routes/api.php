@@ -12,6 +12,7 @@ use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ComentariosController;
 use App\Http\Controllers\AlumnosPorClaseController;
 use App\Http\Controllers\CobranzaController;
+use App\Http\Controllers\DocumentosCobranzaController;
 use App\Http\Controllers\FacturasFormatoController;
 use App\Http\Controllers\RepDosSelController;
 use App\Http\Controllers\ReportesController;
@@ -105,4 +106,11 @@ Route::middleware('auth:sanctum')->controller(ReportesController::class)->group(
     Route::post("/reportes/rep_femac_8_anexo_1", "getRelaciondeRecibos");
     Route::post("/reportes/rep_femac_2", "getAlumnosPorClase");
     Route::post("/reportes/rep_femac_3", "getAlumnosPorMes");
+    Route::post("/reportes/rep_femac_11_anexo_3", "getCobranzaAlumno");
+});
+
+Route::controller(DocumentosCobranzaController::class)->group(function (){
+    Route::get('/documentoscobranza/{fecha}/{grupo?}','imprimir')->middleware('auth:sanctum');
+    Route::get('/documentoscobranza','get_Grupo_Cobranza')->middleware('auth:sanctum');
+    Route::put('/documentoscobranza/grupo','poner_Grupo_Cobranza')->middleware('auth:sanctum');
 });
