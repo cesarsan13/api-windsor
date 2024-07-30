@@ -109,4 +109,8 @@ Route::middleware('auth:sanctum')->controller(ReportesController::class)->group(
 Route::middleware('auth:sanctum')->controller(Pagos1Controller::class)->group(function () {
     Route::post("/pagos1/validar-clave-cajero", "validarClaveCajero");
     Route::post("/pagos1/buscar-articulo", "buscarArticulo");
+    Route::post("/pagos1/busca-documentos", "buscaDocumentosCobranza");
+    Route::post("/pagos1/guarda-documentos", "guardarDocumentoCobranza");
+    Route::post("/pagos1/busca-propietario", "buscaPropietario");
+    Route::post("/pagos1/guardar-detalle-pedido", "guardarDetallePedido");
 });
