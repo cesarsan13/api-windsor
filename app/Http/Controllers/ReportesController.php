@@ -6,11 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\ObjectResponse;
 use App\Models\Horario;
 use App\Models\Alumno;
+use App\Models\Cobranza_Diaria;
 use App\Models\Encab_Pedido;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Query\Builder;
-
+use Illuminate\Database\Query\JoinClause;
 
 class ReportesController extends Controller
 {
@@ -187,7 +188,7 @@ class ReportesController extends Controller
         $recibo_fin = $request->input('recibo_fin');
         $alumno_ini = $request->input('alumno_ini');
         $alumno_fin = $request->input('alumno_fin');
-
+        
         $query = DB::table('encab_pedidos as ep')
             ->leftJoin('alumnos as al', 'ep.alumno', 'al.id')
             ->leftJoin('cajeros as cj', 'ep.cajero', 'cj.numero')
@@ -248,4 +249,58 @@ class ReportesController extends Controller
         data_set($response, 'data', $resultados);
         return response()->json($response, $response['status_code']);
     }
+
+    public function getCobranzaAlumno(Request $request) {
+        $tomaFecha = $request->input('tomafecha');
+        $fecha_cobro_ini = $request->input('fecha_cobro_ini');
+        $fecha_cobro_fin = $request->input('fecha_cobro_fin');
+        $alumno_ini = $request->input('alumno_ini');
+        $alumno_fin = $request->input('alumno_fin');
+        $cajero_ini = $request->input('cajero_ini');
+        $cajero_fin = $request->input('cajero_fin');
+
+        $query = DB::table('detalle_pedido AS DP')
+            ->select('A.id AS id_al','A.nombre AS nom_al','DP.articulo','PS.descripcion','DC.numero_doc','DP.fecha', 
+            DB::raw('round((DP.cantidad * DP.precio_unitario) - ((DP.cantidad * DP.precio_unitario) * (DP.descuento / 100) ), 2) AS importe'), 
+            'DP.recibo', 'TC1.descripcion AS desc_Tipo_Pago_1', 'TC1.descripcion AS desc_Tipo_Pago_2', 'CS.nombre')
+
+        ->Join('productos AS PS','DP.articulo','=','PS.id')
+        ->Join('alumnos AS A', 'DP.alumno','=', 'A.id')
+        ->Join('cobranza_diaria AS CD', 'DP.recibo','=','CD.recibo')
+        ->Join('cajeros AS CS', 'CD.cajero', '=','CS.numero')
+        ->Join('documentos_cobranza AS DC','DP.alumno','=','DC.alumno')
+        ->Join('tipo_cobro AS TC1', 'CD.tipo_pago_1', '=','TC1.id');
+
+        $query->where('importe_cobro','>', 0);
+
+        if ($tomaFecha === true) {
+            $query->whereBetween('CD.fecha_cobro', [$fecha_cobro_ini, $fecha_cobro_fin]); 
+        }
+
+        if ($alumno_ini > 0 || $alumno_fin > 0){
+            if($alumno_fin == 0){
+                $query->where('CD.alumno', '=', $alumno_ini);
+            }else{
+                $query->whereBetween('CD.alumno', [$alumno_ini, $alumno_fin]);
+            }
+        }
+
+        if($cajero_ini > 0 || $cajero_fin > 0){
+            if($cajero_fin == 0){
+                $query->where('CD.cajero', '=', $cajero_ini);
+            }else{
+                $query->whereBetween('CD.cajero', [$cajero_ini, $cajero_fin]);
+            }
+        }    
+
+        $query->orderBy('id_al', 'ASC');
+        $respuesta = $query->get();
+        $groupResult = $respuesta->groupBy('id_al');
+
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'peticion satisfactoria | lista de Cobranza Alumnos');
+        data_set($response,'data',$groupResult);
+        return response()->json($response, $response['status_code']);
+    }
+
 }
