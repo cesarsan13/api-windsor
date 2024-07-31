@@ -138,7 +138,7 @@ class ReportesController extends Controller
         try {
             $horario= Horario::where('numero','=',$request->horario)->get();
             $idHorario =$request->horario;
-            $alumnosHorario1 = Alumno::where('baja','<>','*')
+            $alumnosHorario = Alumno::where('baja','<>','*')
                 ->where(function ($query) use ($idHorario){
                 $query->orWhere("horario_1", "=", $idHorario)
                     ->orWhere("horario_2", "=", $idHorario)
@@ -161,9 +161,9 @@ class ReportesController extends Controller
                     ->orWhere("horario_19", "=", $idHorario)
                     ->orWhere("horario_20", "=", $idHorario);
                 })
-                ->orderBy($request->orden, 'ASC' )->get(['id','a_nombre','fecha_nac']);
+                ->orderBy($request->orden, 'ASC' )->get(['id','nombre','fecha_nac']);
                 $rep_dos_sel =ObjectResponse::Rep_Dos_Sel(32);
-                $rep_dos_sel=ObjectResponse::PrepHorario($alumnosHorario1,$rep_dos_sel,1);
+                $rep_dos_sel=ObjectResponse::PrepHorario($alumnosHorario,$rep_dos_sel,1);
                 $reporte=[
                     "horario"=>$horario,
                     "data"=>$rep_dos_sel,
@@ -251,6 +251,7 @@ class ReportesController extends Controller
     }
 
     public function getCobranzaAlumno(Request $request) {
+       
         $tomaFecha = $request->input('tomafecha');
         $fecha_cobro_ini = $request->input('fecha_cobro_ini');
         $fecha_cobro_fin = $request->input('fecha_cobro_fin');
@@ -262,16 +263,16 @@ class ReportesController extends Controller
         $query = DB::table('detalle_pedido AS DP')
             ->select('A.id AS id_al','A.nombre AS nom_al','DP.articulo','PS.descripcion','DC.numero_doc','DP.fecha', 
             DB::raw('round((DP.cantidad * DP.precio_unitario) - ((DP.cantidad * DP.precio_unitario) * (DP.descuento / 100) ), 2) AS importe'), 
-            'DP.recibo', 'TC1.descripcion AS desc_Tipo_Pago_1', 'TC1.descripcion AS desc_Tipo_Pago_2', 'CS.nombre')
+            'DP.recibo', 'TC1.descripcion AS desc_Tipo_Pago_1', 'TC2.descripcion AS desc_Tipo_Pago_2', 'CS.nombre')
 
-        ->Join('productos AS PS','DP.articulo','=','PS.id')
-        ->Join('alumnos AS A', 'DP.alumno','=', 'A.id')
-        ->Join('cobranza_diaria AS CD', 'DP.recibo','=','CD.recibo')
-        ->Join('cajeros AS CS', 'CD.cajero', '=','CS.numero')
-        ->Join('documentos_cobranza AS DC','DP.alumno','=','DC.alumno')
-        ->Join('tipo_cobro AS TC1', 'CD.tipo_pago_1', '=','TC1.id');
-
-        $query->where('importe_cobro','>', 0);
+            ->Join('productos AS PS','DP.articulo','=','PS.id')
+            ->Join('alumnos AS A', 'DP.alumno','=', 'A.id')
+            ->Join('cobranza_diaria AS CD', 'DP.recibo','=','CD.recibo')
+            ->Join('cajeros AS CS', 'CD.cajero', '=','CS.numero')
+            ->Join('documentos_cobranza AS DC','DP.alumno','=','DC.alumno')       
+            ->leftJoin(DB::raw('tipo_cobro AS TC1'), 'TC1.id', '=', 'CD.tipo_pago_1')
+            ->leftJoin(DB::raw('tipo_cobro AS TC2'), 'TC2.id', '=', 'CD.tipo_pago_2')
+            ->where('importe_cobro','>', 0);
 
         if ($tomaFecha === true) {
             $query->whereBetween('CD.fecha_cobro', [$fecha_cobro_ini, $fecha_cobro_fin]); 
@@ -295,11 +296,11 @@ class ReportesController extends Controller
 
         $query->orderBy('id_al', 'ASC');
         $respuesta = $query->get();
-        $groupResult = $respuesta->groupBy('id_al');
+        /*dd($query->toSql());*/
 
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'peticion satisfactoria | lista de Cobranza Alumnos');
-        data_set($response,'data',$groupResult);
+        data_set($response,'data',$respuesta);
         return response()->json($response, $response['status_code']);
     }
 
