@@ -101,7 +101,14 @@ Route::middleware('auth:sanctum')->controller(AlumnosPorClaseController::class)-
     Route::get('/AlumnosPC/Lista/{idHorario1}/{idHorario2}/{orden}', 'UpdateRepDosSel');
     Route::get('/AlumnosPC/Lista/{idHorario}/{orden}', 'getListaHorariosAPC');
 });
+
 Route::get('/cobranza/{Fecha_Inicial}/{Fecha_Final}/{cajero?}', [CobranzaController::class, 'PDF'])->middleware('auth:sanctum');
+
+Route::controller(DocumentosCobranzaController::class)->group(function (){
+    Route::get('/documentoscobranza/{fecha}/{grupo?}','imprimir')->middleware('auth:sanctum');
+    Route::get('/documentoscobranza','get_Grupo_Cobranza')->middleware('auth:sanctum');
+    Route::put('/documentoscobranza/grupo','poner_Grupo_Cobranza')->middleware('auth:sanctum');
+});
 Route::middleware('auth:sanctum')->controller(CobranzaProductosController::class)->group(function () {
     Route::get('/cobranzaProducto/{fecha1}/{fecha2}/{articulo?}/{artFin?}','infoDetallePedido');
     Route::get('/cobranzaProductos/{porNombre?}','infoTrabRepCobr');
@@ -126,8 +133,3 @@ Route::middleware('auth:sanctum')->controller(Pagos1Controller::class)->group(fu
     Route::post("/pagos1/guardar-detalle-pedido", "guardarDetallePedido");
 });
 
-Route::controller(DocumentosCobranzaController::class)->group(function (){
-    Route::get('/documentoscobranza/{fecha}/{grupo?}','imprimir')->middleware('auth:sanctum');
-    Route::get('/documentoscobranza','get_Grupo_Cobranza')->middleware('auth:sanctum');
-    Route::put('/documentoscobranza/grupo','poner_Grupo_Cobranza')->middleware('auth:sanctum');
-});
