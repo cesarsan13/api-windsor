@@ -124,13 +124,12 @@ Route::middleware('auth:sanctum')->controller(ReportesController::class)->group(
     Route::post("/reportes/rep_femac_11_anexo_3", "getCobranzaAlumno");
 });
 
-Route::controller(DocumentosCobranzaController::class)->group(function (){
-    Route::get('/documentoscobranza/{fecha}/{grupo?}','imprimir')->middleware('auth:sanctum');
-    Route::get('/documentoscobranza','get_Grupo_Cobranza')->middleware('auth:sanctum');
-    Route::put('/documentoscobranza/grupo','poner_Grupo_Cobranza')->middleware('auth:sanctum');
-});
-
 Route::middleware('auth:sanctum')->controller(Pagos1Controller::class)->group(function () {
     Route::post("/pagos1/validar-clave-cajero", "validarClaveCajero");
     Route::post("/pagos1/buscar-articulo", "buscarArticulo");
+    Route::post("/pagos1/busca-documentos", "buscaDocumentosCobranza");
+    Route::post("/pagos1/guarda-documentos", "guardarDocumentoCobranza");
+    Route::post("/pagos1/busca-propietario", "buscaPropietario");
+    Route::post("/pagos1/guardar-detalle-pedido", "guardarDetallePedido");
 });
+
