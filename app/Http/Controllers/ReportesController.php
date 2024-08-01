@@ -48,7 +48,6 @@ class ReportesController extends Controller
            
             $rep_dos_sel =ObjectResponse::Rep_Dos_Sel(32);
             $rep_dos_sel=ObjectResponse::PrepHorario($alumnosHorario1,$rep_dos_sel,1);
-            //$rep_dos_sel=ObjectResponse::PrepHorario($alumnosHorario2,$rep_dos_sel,2);
             $reporte=[
                 "horario"=>$horario,
                 "data"=>$rep_dos_sel,
@@ -66,7 +65,7 @@ class ReportesController extends Controller
     public function getAlumnosPorClase(Request $request){
         $response  = ObjectResponse::DefaultResponse();
         try {
-            $horario= Horario::where('numero','=',$request->horario)->get();
+            $horario= Horario::where('numero','=',$request->horario1)->get();
             $idHorario =$request->horario1;
             $alumnosHorario1 = Alumno::where('baja','<>','*')
                 ->where(function ($query) use ($idHorario){
