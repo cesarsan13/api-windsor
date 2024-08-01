@@ -113,4 +113,6 @@ Route::middleware('auth:sanctum')->controller(Pagos1Controller::class)->group(fu
     Route::post("/pagos1/guarda-documentos", "guardarDocumentoCobranza");
     Route::post("/pagos1/busca-propietario", "buscaPropietario");
     Route::post("/pagos1/guardar-detalle-pedido", "guardarDetallePedido");
+    Route::post("/pagos1/guarda-EncabYCobrD", "guardaEcabYCobrD");
+    Route::post("/pagos1/busca-doc-cobranza", "obtenerDocumentosCobranza");
 });
