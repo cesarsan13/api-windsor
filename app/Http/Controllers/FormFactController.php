@@ -71,6 +71,7 @@ class FormFactController extends Controller
         'required' => 'El campo :attribute es obligatorio.',
         'max' => 'El campo :attribute no puede tener más de :max caracteres.',
         'unique' => 'El campo :attribute ya ha sido registrado',
+        'min' => 'El campo :attribute debe tener al menos :min caracteres.',
     ];
 
     public function PostFormFact(Request $request){
