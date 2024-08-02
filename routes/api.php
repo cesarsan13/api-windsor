@@ -19,7 +19,6 @@ use App\Http\Controllers\Pagos1Controller;
 use App\Http\Controllers\RepDosSelController;
 use App\Http\Controllers\ReportesController;
 
-
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->controller(TipoCobroController::class)->group(function () {
@@ -83,7 +82,7 @@ Route::middleware('auth:sanctum')->controller(ComentariosController::class)->gro
 });
 Route::middleware('auth:sanctum')->controller(FacturasFormatoController::class)->group(function () {
     Route::get("/facturasformato/{id}", "index");
-    Route::post("/facturasformato/update","updateFormato");
+    Route::post("/facturasformato/update", "updateFormato");
 });
 
 
@@ -104,15 +103,15 @@ Route::middleware('auth:sanctum')->controller(AlumnosPorClaseController::class)-
 
 Route::get('/cobranza/{Fecha_Inicial}/{Fecha_Final}/{cajero?}', [CobranzaController::class, 'PDF'])->middleware('auth:sanctum');
 
-Route::controller(DocumentosCobranzaController::class)->group(function (){
-    Route::get('/documentoscobranza/{fecha}/{grupo?}','imprimir')->middleware('auth:sanctum');
-    Route::get('/documentoscobranza','get_Grupo_Cobranza')->middleware('auth:sanctum');
-    Route::put('/documentoscobranza/grupo','poner_Grupo_Cobranza')->middleware('auth:sanctum');
+Route::controller(DocumentosCobranzaController::class)->group(function () {
+    Route::get('/documentoscobranza/{fecha}/{grupo?}', 'imprimir')->middleware('auth:sanctum');
+    Route::get('/documentoscobranza', 'get_Grupo_Cobranza')->middleware('auth:sanctum');
+    Route::put('/documentoscobranza/grupo', 'poner_Grupo_Cobranza')->middleware('auth:sanctum');
 });
 Route::middleware('auth:sanctum')->controller(CobranzaProductosController::class)->group(function () {
-    Route::get('/cobranzaProducto/{fecha1}/{fecha2}/{articulo?}/{artFin?}','infoDetallePedido');
-    Route::get('/cobranzaProductos/{porNombre?}','infoTrabRepCobr');
-    Route::post('/cobranzaProducto/insert','insertTrabRepCobr');
+    Route::get('/cobranzaProducto/{fecha1}/{fecha2}/{articulo?}/{artFin?}', 'infoDetallePedido');
+    Route::get('/cobranzaProductos/{porNombre?}', 'infoTrabRepCobr');
+    Route::post('/cobranzaProducto/insert', 'insertTrabRepCobr');
 });
 
 
@@ -122,6 +121,7 @@ Route::middleware('auth:sanctum')->controller(ReportesController::class)->group(
     Route::post("/reportes/rep_femac_2", "getAlumnosPorClase");
     Route::post("/reportes/rep_femac_3", "getAlumnosPorMes");
     Route::post("/reportes/rep_femac_11_anexo_3", "getCobranzaAlumno");
+    Route::get("/reportes/rep_inscritos", "getConsultasInscripcion");
 });
 
 Route::middleware('auth:sanctum')->controller(Pagos1Controller::class)->group(function () {
@@ -134,4 +134,3 @@ Route::middleware('auth:sanctum')->controller(Pagos1Controller::class)->group(fu
     Route::post("/pagos1/guarda-EncabYCobrD", "guardaEcabYCobrD");
     Route::post("/pagos1/busca-doc-cobranza", "obtenerDocumentosCobranza");
 });
-

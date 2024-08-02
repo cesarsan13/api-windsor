@@ -44,136 +44,138 @@ class ReportesController extends Controller
                         ->orWhere("horario_19", "=", $idHorario)
                         ->orWhere("horario_20", "=", $idHorario);
                 })
-            ->orderBy($request->orden, 'ASC' )->get(['id','nombre','fecha_nac', 'telefono_1']);
-           
-            $rep_dos_sel =ObjectResponse::Rep_Dos_Sel(32);
-            $rep_dos_sel=ObjectResponse::PrepHorario($alumnosHorario1,$rep_dos_sel,1);
-            $reporte=[
-                "horario"=>$horario,
-                "data"=>$rep_dos_sel,
+                ->orderBy($request->orden, 'ASC')->get(['id', 'nombre', 'fecha_nac', 'telefono_1']);
+
+            $rep_dos_sel = ObjectResponse::Rep_Dos_Sel(32);
+            $rep_dos_sel = ObjectResponse::PrepHorario($alumnosHorario1, $rep_dos_sel, 1);
+            $reporte = [
+                "horario" => $horario,
+                "data" => $rep_dos_sel,
             ];
             $response = ObjectResponse::CorrectResponse();
-            data_set($response,'message','peticion satisfactoria | lista de tipos de cobro');
-            data_set($response,'data',$reporte);
+            data_set($response, 'message', 'peticion satisfactoria | lista de tipos de cobro');
+            data_set($response, 'data', $reporte);
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
-        return response()->json($response,$response["status_code"]);
+        return response()->json($response, $response["status_code"]);
     }
 
     //Alumnos por clase
-    public function getAlumnosPorClase(Request $request){
+    public function getAlumnosPorClase(Request $request)
+    {
         $response  = ObjectResponse::DefaultResponse();
         try {
-            $horario= Horario::where('numero','=',$request->horario1)->get();
-            $idHorario =$request->horario1;
-            $alumnosHorario1 = Alumno::where('baja','<>','*')
-                ->where(function ($query) use ($idHorario){
-                $query->orWhere("horario_1", "=", $idHorario)
-                    ->orWhere("horario_2", "=", $idHorario)
-                    ->orWhere("horario_3", "=", $idHorario)
-                    ->orWhere("horario_4", "=", $idHorario)
-                    ->orWhere("horario_5", "=", $idHorario)
-                    ->orWhere("horario_6", "=", $idHorario)
-                    ->orWhere("horario_7", "=", $idHorario)
-                    ->orWhere("horario_8", "=", $idHorario)
-                    ->orWhere("horario_9", "=", $idHorario)
-                    ->orWhere("horario_10", "=", $idHorario)
-                    ->orWhere("horario_11", "=", $idHorario)
-                    ->orWhere("horario_12", "=", $idHorario)
-                    ->orWhere("horario_13", "=", $idHorario)
-                    ->orWhere("horario_14", "=", $idHorario)
-                    ->orWhere("horario_15", "=", $idHorario)
-                    ->orWhere("horario_16", "=", $idHorario)
-                    ->orWhere("horario_17", "=", $idHorario)
-                    ->orWhere("horario_18", "=", $idHorario)
-                    ->orWhere("horario_19", "=", $idHorario)
-                    ->orWhere("horario_20", "=", $idHorario);
+            $horario = Horario::where('numero', '=', $request->horario1)->get();
+            $idHorario = $request->horario1;
+            $alumnosHorario1 = Alumno::where('baja', '<>', '*')
+                ->where(function ($query) use ($idHorario) {
+                    $query->orWhere("horario_1", "=", $idHorario)
+                        ->orWhere("horario_2", "=", $idHorario)
+                        ->orWhere("horario_3", "=", $idHorario)
+                        ->orWhere("horario_4", "=", $idHorario)
+                        ->orWhere("horario_5", "=", $idHorario)
+                        ->orWhere("horario_6", "=", $idHorario)
+                        ->orWhere("horario_7", "=", $idHorario)
+                        ->orWhere("horario_8", "=", $idHorario)
+                        ->orWhere("horario_9", "=", $idHorario)
+                        ->orWhere("horario_10", "=", $idHorario)
+                        ->orWhere("horario_11", "=", $idHorario)
+                        ->orWhere("horario_12", "=", $idHorario)
+                        ->orWhere("horario_13", "=", $idHorario)
+                        ->orWhere("horario_14", "=", $idHorario)
+                        ->orWhere("horario_15", "=", $idHorario)
+                        ->orWhere("horario_16", "=", $idHorario)
+                        ->orWhere("horario_17", "=", $idHorario)
+                        ->orWhere("horario_18", "=", $idHorario)
+                        ->orWhere("horario_19", "=", $idHorario)
+                        ->orWhere("horario_20", "=", $idHorario);
                 })
-            ->orderBy($request->orden, 'ASC' )->get(['id','nombre','fecha_nac', 'telefono_1']);
-            $idHorario2 =$request->horario2;
-            $alumnosHorario2 = Alumno::where('baja','<>','*')
-                ->where(function ($query) use ($idHorario2){
-                     $query->orWhere("horario_1", "=", $idHorario2)
-                    ->orWhere("horario_2", "=", $idHorario2)
-                    ->orWhere("horario_3", "=", $idHorario2)
-                    ->orWhere("horario_4", "=", $idHorario2)
-                    ->orWhere("horario_5", "=", $idHorario2)
-                    ->orWhere("horario_6", "=", $idHorario2)
-                    ->orWhere("horario_7", "=", $idHorario2)
-                    ->orWhere("horario_8", "=", $idHorario2)
-                    ->orWhere("horario_9", "=", $idHorario2)
-                    ->orWhere("horario_10", "=", $idHorario2)
-                    ->orWhere("horario_11", "=", $idHorario2)
-                    ->orWhere("horario_12", "=", $idHorario2)
-                    ->orWhere("horario_13", "=", $idHorario2)
-                    ->orWhere("horario_14", "=", $idHorario2)
-                    ->orWhere("horario_15", "=", $idHorario2)
-                    ->orWhere("horario_16", "=", $idHorario2)
-                    ->orWhere("horario_17", "=", $idHorario2)
-                    ->orWhere("horario_18", "=", $idHorario2)
-                    ->orWhere("horario_19", "=", $idHorario2)
-                    ->orWhere("horario_20", "=", $idHorario2);
+                ->orderBy($request->orden, 'ASC')->get(['id', 'nombre', 'fecha_nac', 'telefono_1']);
+            $idHorario2 = $request->horario2;
+            $alumnosHorario2 = Alumno::where('baja', '<>', '*')
+                ->where(function ($query) use ($idHorario2) {
+                    $query->orWhere("horario_1", "=", $idHorario2)
+                        ->orWhere("horario_2", "=", $idHorario2)
+                        ->orWhere("horario_3", "=", $idHorario2)
+                        ->orWhere("horario_4", "=", $idHorario2)
+                        ->orWhere("horario_5", "=", $idHorario2)
+                        ->orWhere("horario_6", "=", $idHorario2)
+                        ->orWhere("horario_7", "=", $idHorario2)
+                        ->orWhere("horario_8", "=", $idHorario2)
+                        ->orWhere("horario_9", "=", $idHorario2)
+                        ->orWhere("horario_10", "=", $idHorario2)
+                        ->orWhere("horario_11", "=", $idHorario2)
+                        ->orWhere("horario_12", "=", $idHorario2)
+                        ->orWhere("horario_13", "=", $idHorario2)
+                        ->orWhere("horario_14", "=", $idHorario2)
+                        ->orWhere("horario_15", "=", $idHorario2)
+                        ->orWhere("horario_16", "=", $idHorario2)
+                        ->orWhere("horario_17", "=", $idHorario2)
+                        ->orWhere("horario_18", "=", $idHorario2)
+                        ->orWhere("horario_19", "=", $idHorario2)
+                        ->orWhere("horario_20", "=", $idHorario2);
                 })
-            ->orderBy($request->orden, 'ASC' )->get(['id','nombre','fecha_nac', 'telefono_1']);
-            $rep_dos_sel =ObjectResponse::Rep_Dos_Sel(32);
-            $rep_dos_sel=ObjectResponse::PrepHorario($alumnosHorario1,$rep_dos_sel,1);
-            $rep_dos_sel=ObjectResponse::PrepHorario($alumnosHorario2,$rep_dos_sel,2);
-            $reporte=[
-                "horario"=>$horario,
-                "data"=>$rep_dos_sel,
+                ->orderBy($request->orden, 'ASC')->get(['id', 'nombre', 'fecha_nac', 'telefono_1']);
+            $rep_dos_sel = ObjectResponse::Rep_Dos_Sel(32);
+            $rep_dos_sel = ObjectResponse::PrepHorario($alumnosHorario1, $rep_dos_sel, 1);
+            $rep_dos_sel = ObjectResponse::PrepHorario($alumnosHorario2, $rep_dos_sel, 2);
+            $reporte = [
+                "horario" => $horario,
+                "data" => $rep_dos_sel,
             ];
             $response = ObjectResponse::CorrectResponse();
-            data_set($response,'message','peticion satisfactoria | lista de tipos de cobro');
-            data_set($response,'data',$reporte);
+            data_set($response, 'message', 'peticion satisfactoria | lista de tipos de cobro');
+            data_set($response, 'data', $reporte);
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
-        return response()->json($response,$response["status_code"]);
+        return response()->json($response, $response["status_code"]);
     }
 
-    public function getAlumnosPorMes(Request $request) {
+    public function getAlumnosPorMes(Request $request)
+    {
         $response  = ObjectResponse::DefaultResponse();
         try {
-            $horario= Horario::where('numero','=',$request->horario)->get();
-            $idHorario =$request->horario;
-            $alumnosHorario = Alumno::where('baja','<>','*')
-                ->where(function ($query) use ($idHorario){
-                $query->orWhere("horario_1", "=", $idHorario)
-                    ->orWhere("horario_2", "=", $idHorario)
-                    ->orWhere("horario_3", "=", $idHorario)
-                    ->orWhere("horario_4", "=", $idHorario)
-                    ->orWhere("horario_5", "=", $idHorario)
-                    ->orWhere("horario_6", "=", $idHorario)
-                    ->orWhere("horario_7", "=", $idHorario)
-                    ->orWhere("horario_8", "=", $idHorario)
-                    ->orWhere("horario_9", "=", $idHorario)
-                    ->orWhere("horario_10", "=", $idHorario)
-                    ->orWhere("horario_11", "=", $idHorario)
-                    ->orWhere("horario_12", "=", $idHorario)
-                    ->orWhere("horario_13", "=", $idHorario)
-                    ->orWhere("horario_14", "=", $idHorario)
-                    ->orWhere("horario_15", "=", $idHorario)
-                    ->orWhere("horario_16", "=", $idHorario)
-                    ->orWhere("horario_17", "=", $idHorario)
-                    ->orWhere("horario_18", "=", $idHorario)
-                    ->orWhere("horario_19", "=", $idHorario)
-                    ->orWhere("horario_20", "=", $idHorario);
+            $horario = Horario::where('numero', '=', $request->horario)->get();
+            $idHorario = $request->horario;
+            $alumnosHorario = Alumno::where('baja', '<>', '*')
+                ->where(function ($query) use ($idHorario) {
+                    $query->orWhere("horario_1", "=", $idHorario)
+                        ->orWhere("horario_2", "=", $idHorario)
+                        ->orWhere("horario_3", "=", $idHorario)
+                        ->orWhere("horario_4", "=", $idHorario)
+                        ->orWhere("horario_5", "=", $idHorario)
+                        ->orWhere("horario_6", "=", $idHorario)
+                        ->orWhere("horario_7", "=", $idHorario)
+                        ->orWhere("horario_8", "=", $idHorario)
+                        ->orWhere("horario_9", "=", $idHorario)
+                        ->orWhere("horario_10", "=", $idHorario)
+                        ->orWhere("horario_11", "=", $idHorario)
+                        ->orWhere("horario_12", "=", $idHorario)
+                        ->orWhere("horario_13", "=", $idHorario)
+                        ->orWhere("horario_14", "=", $idHorario)
+                        ->orWhere("horario_15", "=", $idHorario)
+                        ->orWhere("horario_16", "=", $idHorario)
+                        ->orWhere("horario_17", "=", $idHorario)
+                        ->orWhere("horario_18", "=", $idHorario)
+                        ->orWhere("horario_19", "=", $idHorario)
+                        ->orWhere("horario_20", "=", $idHorario);
                 })
-                ->orderBy($request->orden, 'ASC' )->get(['id','nombre','fecha_nac']);
-                $rep_dos_sel =ObjectResponse::Rep_Dos_Sel(32);
-                $rep_dos_sel=ObjectResponse::PrepHorario($alumnosHorario,$rep_dos_sel,1);
-                $reporte=[
-                    "horario"=>$horario,
-                    "data"=>$rep_dos_sel,
-                ];
-                $response = ObjectResponse::CorrectResponse();
-                data_set($response,'message','peticion satisfactoria | lista de tipos de cobro');
-                data_set($response,'data',$reporte);
-            } catch (\Exception $ex) {
-                $response = ObjectResponse::CatchResponse($ex->getMessage());
-            }
-            return response()->json($response,$response["status_code"]);
+                ->orderBy($request->orden, 'ASC')->get(['id', 'nombre', 'fecha_nac']);
+            $rep_dos_sel = ObjectResponse::Rep_Dos_Sel(32);
+            $rep_dos_sel = ObjectResponse::PrepHorario($alumnosHorario, $rep_dos_sel, 1);
+            $reporte = [
+                "horario" => $horario,
+                "data" => $rep_dos_sel,
+            ];
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'peticion satisfactoria | lista de tipos de cobro');
+            data_set($response, 'data', $reporte);
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response["status_code"]);
     }
 
     public function getRelaciondeRecibos(Request $request)
@@ -187,7 +189,7 @@ class ReportesController extends Controller
         $recibo_fin = $request->input('recibo_fin');
         $alumno_ini = $request->input('alumno_ini');
         $alumno_fin = $request->input('alumno_fin');
-        
+
         $query = DB::table('encab_pedidos as ep')
             ->leftJoin('alumnos as al', 'ep.alumno', 'al.id')
             ->leftJoin('cajeros as cj', 'ep.cajero', 'cj.numero')
@@ -249,8 +251,9 @@ class ReportesController extends Controller
         return response()->json($response, $response['status_code']);
     }
 
-    public function getCobranzaAlumno(Request $request) {
-       
+    public function getCobranzaAlumno(Request $request)
+    {
+
         $tomaFecha = $request->input('tomafecha');
         $fecha_cobro_ini = $request->input('fecha_cobro_ini');
         $fecha_cobro_fin = $request->input('fecha_cobro_fin');
@@ -260,38 +263,48 @@ class ReportesController extends Controller
         $cajero_fin = $request->input('cajero_fin');
 
         $query = DB::table('detalle_pedido AS DP')
-            ->select('A.id AS id_al','A.nombre AS nom_al','DP.articulo','PS.descripcion','DC.numero_doc','DP.fecha', 
-            DB::raw('round((DP.cantidad * DP.precio_unitario) - ((DP.cantidad * DP.precio_unitario) * (DP.descuento / 100) ), 2) AS importe'), 
-            'DP.recibo', 'TC1.descripcion AS desc_Tipo_Pago_1', 'TC2.descripcion AS desc_Tipo_Pago_2', 'CS.nombre')
+            ->select(
+                'A.id AS id_al',
+                'A.nombre AS nom_al',
+                'DP.articulo',
+                'PS.descripcion',
+                'DC.numero_doc',
+                'DP.fecha',
+                DB::raw('round((DP.cantidad * DP.precio_unitario) - ((DP.cantidad * DP.precio_unitario) * (DP.descuento / 100) ), 2) AS importe'),
+                'DP.recibo',
+                'TC1.descripcion AS desc_Tipo_Pago_1',
+                'TC2.descripcion AS desc_Tipo_Pago_2',
+                'CS.nombre'
+            )
 
-            ->Join('productos AS PS','DP.articulo','=','PS.id')
-            ->Join('alumnos AS A', 'DP.alumno','=', 'A.id')
-            ->Join('cobranza_diaria AS CD', 'DP.recibo','=','CD.recibo')
-            ->Join('cajeros AS CS', 'CD.cajero', '=','CS.numero')
-            ->Join('documentos_cobranza AS DC','DP.alumno','=','DC.alumno')       
+            ->Join('productos AS PS', 'DP.articulo', '=', 'PS.id')
+            ->Join('alumnos AS A', 'DP.alumno', '=', 'A.id')
+            ->Join('cobranza_diaria AS CD', 'DP.recibo', '=', 'CD.recibo')
+            ->Join('cajeros AS CS', 'CD.cajero', '=', 'CS.numero')
+            ->Join('documentos_cobranza AS DC', 'DP.alumno', '=', 'DC.alumno')
             ->leftJoin(DB::raw('tipo_cobro AS TC1'), 'TC1.id', '=', 'CD.tipo_pago_1')
             ->leftJoin(DB::raw('tipo_cobro AS TC2'), 'TC2.id', '=', 'CD.tipo_pago_2')
-            ->where('importe_cobro','>', 0);
+            ->where('importe_cobro', '>', 0);
 
         if ($tomaFecha === true) {
-            $query->whereBetween('CD.fecha_cobro', [$fecha_cobro_ini, $fecha_cobro_fin]); 
+            $query->whereBetween('CD.fecha_cobro', [$fecha_cobro_ini, $fecha_cobro_fin]);
         }
 
-        if ($alumno_ini > 0 || $alumno_fin > 0){
-            if($alumno_fin == 0){
+        if ($alumno_ini > 0 || $alumno_fin > 0) {
+            if ($alumno_fin == 0) {
                 $query->where('CD.alumno', '=', $alumno_ini);
-            }else{
+            } else {
                 $query->whereBetween('CD.alumno', [$alumno_ini, $alumno_fin]);
             }
         }
 
-        if($cajero_ini > 0 || $cajero_fin > 0){
-            if($cajero_fin == 0){
+        if ($cajero_ini > 0 || $cajero_fin > 0) {
+            if ($cajero_fin == 0) {
                 $query->where('CD.cajero', '=', $cajero_ini);
-            }else{
+            } else {
                 $query->whereBetween('CD.cajero', [$cajero_ini, $cajero_fin]);
             }
-        }    
+        }
 
         $query->orderBy('id_al', 'ASC');
         $respuesta = $query->get();
@@ -299,8 +312,22 @@ class ReportesController extends Controller
 
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'peticion satisfactoria | lista de Cobranza Alumnos');
-        data_set($response,'data',$respuesta);
+        data_set($response, 'data', $respuesta);
         return response()->json($response, $response['status_code']);
     }
 
+    public function getConsultasInscripcion()
+    {
+        $alumnos = DB::table('alumnos')->where('estatus', '=', 'activo')->orderBy('id', 'ASC')->get();
+        $det_ped = DB::table('detalle_pedido')->get();
+        $productos = DB::table('productos')->get();
+        $horarios = DB::table('horarios')->get();
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'peticion satisfactoria | lista de Cobranza Alumnos');
+        data_set($response, 'data_alumnos', $alumnos);
+        data_set($response, 'data_detalle', $det_ped);
+        data_set($response, 'data_productos', $productos);
+        data_set($response, 'data_horarios', $horarios);
+        return response()->json($response, $response['status_code']);
+    }
 }
