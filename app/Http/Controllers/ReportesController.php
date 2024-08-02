@@ -195,7 +195,7 @@ class ReportesController extends Controller
                 'ep.recibo',
                 'ep.fecha',
                 'ep.alumno',
-                DB::raw("CONCAT(al.nombre, ' ', al.a_paterno, ' ', al.a_materno) as nombre_alumno"),
+                DB::raw("CONCAT(al.a_nombre, ' ', al.a_paterno, ' ', al.a_materno) as nombre_alumno"),
                 'ep.cajero',
                 'cj.nombre as nombre_cajero',
                 'ep.importe_total',
