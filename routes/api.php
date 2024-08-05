@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdeudosPendientesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -134,3 +135,5 @@ Route::middleware('auth:sanctum')->controller(Pagos1Controller::class)->group(fu
     Route::post("/pagos1/guarda-EncabYCobrD", "guardaEcabYCobrD");
     Route::post("/pagos1/busca-doc-cobranza", "obtenerDocumentosCobranza");
 });
+
+Route::post('/documentosCobranza',[AdeudosPendientesController::class,'getDetallePedidos'])->middleware('auth:sanctum');
