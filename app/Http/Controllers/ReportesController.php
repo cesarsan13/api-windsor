@@ -6,7 +6,11 @@ use Illuminate\Http\Request;
 use App\Models\ObjectResponse;
 use App\Models\Horario;
 use App\Models\Alumno;
+<<<<<<<<< Temporary merge branch 1
+use App\Models\Cobranza_Diaria;
+=========
 use App\Models\Producto;
+>>>>>>>>> Temporary merge branch 2
 use App\Models\Encab_Pedido;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -250,6 +254,86 @@ class ReportesController extends Controller
         data_set($response, 'data', $resultados);
         return response()->json($response, $response['status_code']);
     }
+<<<<<<<<< Temporary merge branch 1
+
+    public function getCobranzaAlumno(Request $request)
+    {
+
+        $tomaFecha = $request->input('tomafecha');
+        $fecha_cobro_ini = $request->input('fecha_cobro_ini');
+        $fecha_cobro_fin = $request->input('fecha_cobro_fin');
+        $alumno_ini = $request->input('alumno_ini');
+        $alumno_fin = $request->input('alumno_fin');
+        $cajero_ini = $request->input('cajero_ini');
+        $cajero_fin = $request->input('cajero_fin');
+
+        $query = DB::table('detalle_pedido AS DP')
+            ->select(
+                'A.id AS id_al',
+                'A.nombre AS nom_al',
+                'DP.articulo',
+                'PS.descripcion',
+                'DC.numero_doc',
+                'DP.fecha',
+                DB::raw('round((DP.cantidad * DP.precio_unitario) - ((DP.cantidad * DP.precio_unitario) * (DP.descuento / 100) ), 2) AS importe'),
+                'DP.recibo',
+                'TC1.descripcion AS desc_Tipo_Pago_1',
+                'TC2.descripcion AS desc_Tipo_Pago_2',
+                'CS.nombre'
+            )
+
+            ->Join('productos AS PS', 'DP.articulo', '=', 'PS.id')
+            ->Join('alumnos AS A', 'DP.alumno', '=', 'A.id')
+            ->Join('cobranza_diaria AS CD', 'DP.recibo', '=', 'CD.recibo')
+            ->Join('cajeros AS CS', 'CD.cajero', '=', 'CS.numero')
+            ->Join('documentos_cobranza AS DC', 'DP.alumno', '=', 'DC.alumno')
+            ->leftJoin(DB::raw('tipo_cobro AS TC1'), 'TC1.id', '=', 'CD.tipo_pago_1')
+            ->leftJoin(DB::raw('tipo_cobro AS TC2'), 'TC2.id', '=', 'CD.tipo_pago_2')
+            ->where('importe_cobro', '>', 0);
+
+        if ($tomaFecha === true) {
+            $query->whereBetween('CD.fecha_cobro', [$fecha_cobro_ini, $fecha_cobro_fin]);
+        }
+
+        if ($alumno_ini > 0 || $alumno_fin > 0) {
+            if ($alumno_fin == 0) {
+                $query->where('CD.alumno', '=', $alumno_ini);
+            } else {
+                $query->whereBetween('CD.alumno', [$alumno_ini, $alumno_fin]);
+            }
+        }
+
+        if ($cajero_ini > 0 || $cajero_fin > 0) {
+            if ($cajero_fin == 0) {
+                $query->where('CD.cajero', '=', $cajero_ini);
+            } else {
+                $query->whereBetween('CD.cajero', [$cajero_ini, $cajero_fin]);
+            }
+        }
+
+        $query->orderBy('id_al', 'ASC');
+        $respuesta = $query->get();
+        /*dd($query->toSql());*/
+
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'peticion satisfactoria | lista de Cobranza Alumnos');
+        data_set($response, 'data', $respuesta);
+        return response()->json($response, $response['status_code']);
+    }
+
+    public function getConsultasInscripcion()
+    {
+        $alumnos = DB::table('alumnos')->where('estatus', '=', 'activo')->orderBy('id', 'ASC')->get();
+        $det_ped = DB::table('detalle_pedido')->get();
+        $productos = DB::table('productos')->get();
+        $horarios = DB::table('horarios')->get();
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'peticion satisfactoria | lista de Cobranza Alumnos');
+        data_set($response, 'data_alumnos', $alumnos);
+        data_set($response, 'data_detalle', $det_ped);
+        data_set($response, 'data_productos', $productos);
+        data_set($response, 'data_horarios', $horarios);
+=========
     public function getBecas(Request $request) {
         $response = ObjectResponse::DefaultResponse();
         $incBaja = $request->input('incBaja', 0);
@@ -301,7 +385,7 @@ class ReportesController extends Controller
         data_set($response, 'message', 'Peticion satisfactoria');
         data_set($response, 'data', $resultados); 
     
+>>>>>>>>> Temporary merge branch 2
         return response()->json($response, $response['status_code']);
     }
 }
-    
