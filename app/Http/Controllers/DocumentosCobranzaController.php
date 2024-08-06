@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ObjectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Cobranza_Diaria;
 
 class DocumentosCobranzaController extends Controller
 {
@@ -80,4 +81,5 @@ class DocumentosCobranzaController extends Controller
         }
         return response()->json($response, $response['status_code']);
     }
+    
 }

@@ -375,13 +375,9 @@ class AlumnoController extends Controller
             }
         }
 
-        if ($tipoOrden == 'Nombre') {
-            $query->orderBy('al.nombre', 'ASC');
-        } else {
-            $query->orderBy('al.id', 'ASC');
-        }
-
+        $query->orderBy($tipoOrden, 'ASC');
         $resultados = $query->get();
+
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Peticion satisfactoria');
         data_set($response, 'data', $resultados);
@@ -396,7 +392,7 @@ class AlumnoController extends Controller
                 ->leftJoin('horarios as hr1', 'al.horario_1', '=', 'hr1.numero')
                 ->select(
                     'al.id',
-                    DB::raw("CONCAT(al.nombre, ' ', al.a_paterno, ' ', al.a_materno) as nombre_completo"),
+                    DB::raw("CONCAT(al.a_nombre, ' ', al.a_paterno, ' ', al.a_materno) as nombre_completo"),
                     'al.nombre',
                     'al.a_paterno',
                     'al.a_materno',
