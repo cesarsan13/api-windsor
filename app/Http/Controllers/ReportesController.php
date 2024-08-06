@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\ObjectResponse;
 use App\Models\Horario;
 use App\Models\Alumno;
+use App\Models\Producto;
 use App\Models\Cobranza_Diaria;
 use App\Models\Encab_Pedido;
 use Illuminate\Support\Facades\DB;
@@ -250,6 +251,61 @@ class ReportesController extends Controller
         data_set($response, 'data', $resultados);
         return response()->json($response, $response['status_code']);
     }
+    public function getBecas(Request $request) {
+        $response = ObjectResponse::DefaultResponse();
+        $incBaja = $request->input('incBaja', 0);
+        $socio = $request->input('socio', [0, 0]);
+        $horarioFiltro = $request->input('horario', null);
+    
+        $query = Alumno::where('id', '<>', '')
+            ->where('estatus', 'Activo')
+            ->where('descuento', '>', 0);
+    
+        if ($incBaja == 1) {
+            $query->where('baja', '<>', '*');
+        }
+    
+        if ((int)$socio[0] > 0 || (int)$socio[1] > 0) {
+            if ((int)$socio[1] === 0) {
+                $query->where('id', (int)$socio[0]);
+            } else {
+                $query->whereBetween('id', [(int)$socio[0], (int)$socio[1]]);
+            }
+        }
+    
+        if ($horarioFiltro !== null) {
+            $query->where('horario_1', $horarioFiltro);
+        }
+    
+        $alumnos = $query->orderBy('descuento', 'DESC')->get();
+    
+        $resultados = []; 
+        foreach ($alumnos as $alumno) {
+            $horario = Horario::where('numero', $alumno->horario_1)->first();
+            $producto = Producto::where('id', $alumno->cond_1)->first();
+            $costoProd = $producto ? $producto->costo : 0;
+    
+            $twDescuento = $costoProd * ($alumno->descuento / 100);
+            $costoFinal = $costoProd - $twDescuento;
+            
+            $resultados[] = [
+                'numero' => $alumno->id,
+                'alumno' => $alumno->nombre,
+                'grado' => $horario ? $horario->horario : null,
+                'colegiatura' => $costoProd,
+                'descuento' => $twDescuento,
+                'costo_final' => $costoFinal,
+            ];
+        }
+    
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'Peticion satisfactoria');
+        data_set($response, 'data', $resultados); 
+    
+        return response()->json($response, $response['status_code']);
+    }
+}
+    
 
     public function getCobranzaAlumno(Request $request)
     {

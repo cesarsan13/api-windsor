@@ -121,6 +121,7 @@ Route::middleware('auth:sanctum')->controller(ReportesController::class)->group(
     Route::post("/reportes/rep_femac_8_anexo_1", "getRelaciondeRecibos");
     Route::post("/reportes/rep_femac_2", "getAlumnosPorClase");
     Route::post("/reportes/rep_femac_3", "getAlumnosPorMes");
+    Route::post("/reportes/rep_becas", "getBecas");
     Route::post("/reportes/rep_femac_11_anexo_3", "getCobranzaAlumno");
     Route::get("/reportes/rep_inscritos", "getConsultasInscripcion");
 });
