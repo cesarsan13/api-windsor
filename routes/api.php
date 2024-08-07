@@ -122,6 +122,7 @@ Route::middleware('auth:sanctum')->controller(ReportesController::class)->group(
     Route::post("/reportes/rep_femac_2", "getAlumnosPorClase");
     Route::post("/reportes/rep_femac_3", "getAlumnosPorMes");
     Route::post("/reportes/rep_femac_11_anexo_3", "getCobranzaAlumno");
+    Route::post("/reportes/rep_femac_9_anexo_4", "getRelaciondeFacturas");
 });
 
 Route::middleware('auth:sanctum')->controller(Pagos1Controller::class)->group(function () {
