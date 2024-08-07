@@ -304,8 +304,7 @@ class ReportesController extends Controller
     
         return response()->json($response, $response['status_code']);
     }
-}
-    
+
 
     public function getCobranzaAlumno(Request $request)
     {
