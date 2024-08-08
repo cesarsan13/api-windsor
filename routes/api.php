@@ -85,9 +85,6 @@ Route::middleware('auth:sanctum')->controller(FacturasFormatoController::class)-
     Route::get("/facturasformato/{id}", "index");
     Route::post("/facturasformato/update", "updateFormato");
 });
-
-
-
 Route::middleware('auth:sanctum')->controller(HorarioController::class)->group(function () {
     Route::get('/horarios', 'getHorarios');
     Route::get('/horarios/baja', 'getHorariosBaja');
@@ -123,6 +120,7 @@ Route::middleware('auth:sanctum')->controller(ReportesController::class)->group(
     Route::post("/reportes/rep_femac_3", "getAlumnosPorMes");
     Route::post("/reportes/rep_becas", "getBecas");
     Route::post("/reportes/rep_femac_11_anexo_3", "getCobranzaAlumno");
+    Route::post("/reportes/rep_femac_9_anexo_4", "getRelaciondeFacturas");
     Route::get("/reportes/rep_inscritos", "getConsultasInscripcion");
 });
 
