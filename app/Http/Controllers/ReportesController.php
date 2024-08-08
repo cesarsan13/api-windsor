@@ -304,10 +304,7 @@ class ReportesController extends Controller
     
         return response()->json($response, $response['status_code']);
     }
-}
-    
-
-    public function getCobranzaAlumno(Request $request)
+      public function getCobranzaAlumno(Request $request)
     {
 
         $tomaFecha = $request->input('tomafecha');
@@ -387,3 +384,7 @@ class ReportesController extends Controller
         return response()->json($response, $response['status_code']);
     }
 }
+    
+
+  
+
