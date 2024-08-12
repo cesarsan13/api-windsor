@@ -386,7 +386,6 @@ class ReportesController extends Controller
     }
 
     public function getRelaciondeFacturas (Request $request){
-
         $tomaFecha = $request->input('tomaFecha');
         $tomaCanceladas = $request->input('tomaCanceladas');
         $fecha_cobro_ini = $request->input('fecha_cobro_ini');
