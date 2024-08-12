@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\ObjectResponse;
 use App\Models\Horario;
 use App\Models\Alumno;
-use App\Models\Producto;
 use App\Models\Cobranza_Diaria;
+use App\Models\Producto;
 use App\Models\Encab_Pedido;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -304,7 +304,6 @@ class ReportesController extends Controller
     
         return response()->json($response, $response['status_code']);
     }
-
     public function getCobranzaAlumno(Request $request)
     {
 
@@ -382,7 +381,6 @@ class ReportesController extends Controller
         data_set($response, 'data_detalle', $det_ped);
         data_set($response, 'data_productos', $productos);
         data_set($response, 'data_horarios', $horarios);
-        return response()->json($response, $response['status_code']);
     }
 
     public function getRelaciondeFacturas (Request $request){
@@ -427,8 +425,9 @@ class ReportesController extends Controller
         //$data = [$respuesta, $tomaFecha, $fecha_cobro_ini, $fecha_cobro_fin, $factura_ini, $factura_fin];
 
         $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'Peticion satisfactoria | Lista de Relacion de facturas');
-        data_set($response, 'data', $respuesta);
+        data_set($response, 'message', 'Peticion satisfactoria');
+        data_set($response, 'data', $resultados); 
+    
         return response()->json($response, $response['status_code']);
     }
 }
