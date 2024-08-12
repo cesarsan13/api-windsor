@@ -6,11 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\ObjectResponse;
 use App\Models\Horario;
 use App\Models\Alumno;
-<<<<<<<<< Temporary merge branch 1
 use App\Models\Cobranza_Diaria;
-=========
 use App\Models\Producto;
->>>>>>>>> Temporary merge branch 2
 use App\Models\Encab_Pedido;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -254,7 +251,6 @@ class ReportesController extends Controller
         data_set($response, 'data', $resultados);
         return response()->json($response, $response['status_code']);
     }
-<<<<<<<<< Temporary merge branch 1
 
     public function getCobranzaAlumno(Request $request)
     {
@@ -333,7 +329,7 @@ class ReportesController extends Controller
         data_set($response, 'data_detalle', $det_ped);
         data_set($response, 'data_productos', $productos);
         data_set($response, 'data_horarios', $horarios);
-=========
+    }
     public function getBecas(Request $request) {
         $response = ObjectResponse::DefaultResponse();
         $incBaja = $request->input('incBaja', 0);
@@ -385,7 +381,6 @@ class ReportesController extends Controller
         data_set($response, 'message', 'Peticion satisfactoria');
         data_set($response, 'data', $resultados); 
     
->>>>>>>>> Temporary merge branch 2
         return response()->json($response, $response['status_code']);
     }
 }
