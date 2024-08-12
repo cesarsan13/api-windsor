@@ -330,6 +330,53 @@ class ReportesController extends Controller
         data_set($response, 'data_productos', $productos);
         data_set($response, 'data_horarios', $horarios);
     }
+
+    public function getRelaciondeFacturas (Request $request){
+        $tomaFecha = $request->input('tomaFecha');
+        $tomaCanceladas = $request->input('tomaCanceladas');
+        $fecha_cobro_ini = $request->input('fecha_cobro_ini');
+        $fecha_cobro_fin = $request->input('fecha_cobro_fin');
+        $factura_ini = $request->input('factura_ini');
+        $factura_fin = $request->input('factura_fin');
+
+        $query = DB::table('detalle_pedido as DP')
+        ->select('DP.numero_factura', 'DP.alumno', 'DP.recibo', 'DP.fecha', 'Al.razon_social', 'DP.iva', 'DP.descuento', 'DP.cantidad', 'DP.precio_unitario' )
+        ->leftJoin('alumnos as Al', 'Al.id', '=', 'DP.alumno');
+        
+        if ($tomaCanceladas === true){
+            
+            if ($tomaFecha === true) {
+                $query->whereBetween('DP.fecha', [$fecha_cobro_ini, $fecha_cobro_fin]); 
+            }
+
+            $query->where('DP.numero_factura','=', 0);
+
+        } else {
+            if ($tomaFecha === true) {
+                $query->whereBetween('DP.fecha', [$fecha_cobro_ini, $fecha_cobro_fin])
+                    ->where('DP.numero_factura','>', 0);
+            }
+
+            if ($factura_ini > 0 || $factura_fin > 0){
+                if($factura_fin == 0){
+                    $query->where('DP.numero_factura', '=', $factura_ini)
+                    ->where('DP.numero_factura','>', 0);
+                }else{
+                    $query->whereBetween('DP.numero_factura', [$factura_ini, $factura_fin])
+                    ->where('DP.numero_factura','>', 0);
+                }
+            }
+        } 
+        $query->orderBy('DP.numero_factura', 'ASC');
+        $respuesta = $query->get();
+
+        //$data = [$respuesta, $tomaFecha, $fecha_cobro_ini, $fecha_cobro_fin, $factura_ini, $factura_fin];
+
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'Peticion satisfactoria | Lista de Relacion de facturas');
+        data_set($response, 'data', $respuesta);
+        return response()->json($response, $response['status_code']);
+    }
     public function getBecas(Request $request) {
         $response = ObjectResponse::DefaultResponse();
         $incBaja = $request->input('incBaja', 0);
