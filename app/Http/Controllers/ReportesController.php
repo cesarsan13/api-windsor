@@ -422,7 +422,6 @@ class ReportesController extends Controller
                 }
             }
         } 
-        
         $query->orderBy('DP.numero_factura', 'ASC');
         $respuesta = $query->get();
 
