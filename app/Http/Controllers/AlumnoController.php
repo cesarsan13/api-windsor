@@ -131,8 +131,7 @@ class AlumnoController extends Controller
             ->leftJoin('horarios as hr1', 'al.horario_1', '=', 'hr1.numero')
             ->select(
                 'al.id',
-                DB::raw("CONCAT(al.nombre, ' ', al.a_paterno, ' ', al.a_materno) as nombre_completo"),
-                'al.nombre',
+                DB::raw("CONCAT(al.a_nombre, ' ', al.a_paterno, ' ', al.a_materno) as nombre_completo"),
                 'al.a_paterno',
                 'al.a_materno',
                 'al.a_nombre',

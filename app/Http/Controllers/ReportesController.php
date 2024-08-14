@@ -426,7 +426,7 @@ class ReportesController extends Controller
 
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Peticion satisfactoria');
-        data_set($response, 'data', $resultados); 
+        data_set($response, 'data', $respuesta); 
     
         return response()->json($response, $response['status_code']);
     }
