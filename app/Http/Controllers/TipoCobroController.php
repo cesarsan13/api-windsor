@@ -69,33 +69,41 @@ class TipoCobroController extends Controller
     public function store(Request $request){
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         $response = ObjectResponse::DefaultResponse();
+        
         if ($validator->fails()) {
             $response = ObjectResponse::CatchResponse($validator->errors()->all());
-            return response()->json($response,$response['status_code']);
+            return response()->json($response, $response['status_code']);
         }
+        
         try {
-                $datosFiltrados = $request->only([
-                    'id',
-                    'descripcion',
-                    'comision',
-                    'aplicacion',
-                    'cue_banco',
-                ]);
+            $datosFiltrados = $request->only([
+                'id',
+                'descripcion',
+                'comision',
+                'aplicacion',
+                'cue_banco',
+            ]);
+            
+            $datosFiltrados['comision'] = str_replace(',', '', (string)$datosFiltrados['comision']);
+    
             $nuevoCobro = TipoCobro::create([
-                "id"=>$datosFiltrados['id'],
-                    "descripcion"=>$datosFiltrados['descripcion'],
-                        "comision"=>$datosFiltrados['comision'],
-                        "aplicacion"=>$datosFiltrados['aplicacion'] ?? '',
-                        "cue_banco"=>$datosFiltrados['cue_banco'] ?? '',
-                        "baja"=>$datosFiltrados['baja'] ?? '',
-                        ]);
+                "id" => $datosFiltrados['id'],
+                "descripcion" => $datosFiltrados['descripcion'],
+                "comision" => $datosFiltrados['comision'] ?? '',
+                "aplicacion" => $datosFiltrados['aplicacion'] ?? '',
+                "cue_banco" => $datosFiltrados['cue_banco'] ?? '',
+                "baja" => $datosFiltrados['baja'] ?? '',
+            ]);
+            
             $response = ObjectResponse::CorrectResponse();
-            data_set($response,'message','peticion satisfactoria | Tipo de Cobro registrado.');
+            data_set($response, 'message', 'Petición satisfactoria | Tipo de Cobro registrado.');
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
-        return response()->json($response,$response['status_code']);
+        
+        return response()->json($response, $response['status_code']);
     }
+    
     public function update(Request $request, TipoCobro $tipo_cobro){
         $response = ObjectResponse::DefaultResponse();
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
