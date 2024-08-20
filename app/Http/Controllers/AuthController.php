@@ -13,23 +13,23 @@ class AuthController extends Controller
 {
     public function login(Request $request){
           $validator = Validator::make($request->all(), [
-            'name' => 'required',
+            'email' => 'required',
             'password' => 'required',
         ], [
-            'name.required' => 'El campo "Nombre" es obligatorio',
+            'email.required' => 'El campo "Nombre" es obligatorio',
             'password.required' => 'El campo "Contraseña" es obligatorio',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()->all()], 422);
         }
-        $user =  User::where('name', $request->name)
+        $user =  User::where('email', $request->email)
             ->first();
         if (!$user || !Hash::check($request->password, $user->password)) {
             $response = ObjectResponse::CatchResponse("Credenciales incorrectas");
             return response()->json($response, 404);
         }
-        $token = $user->createToken($request->name, ['user'])->plainTextToken;
+        $token = $user->createToken($request->email, ['user'])->plainTextToken;
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'peticion satisfactoria | usuario logueado');
         data_set($response, 'token', $token);

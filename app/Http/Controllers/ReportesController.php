@@ -383,7 +383,8 @@ class ReportesController extends Controller
         data_set($response, 'data_horarios', $horarios);
     }
 
-    public function getRelaciondeFacturas (Request $request){
+ 
+     public function getRelaciondeFacturas (Request $request){
         $tomaFecha = $request->input('tomaFecha');
         $tomaCanceladas = $request->input('tomaCanceladas');
         $fecha_cobro_ini = $request->input('fecha_cobro_ini');
@@ -425,9 +426,8 @@ class ReportesController extends Controller
         //$data = [$respuesta, $tomaFecha, $fecha_cobro_ini, $fecha_cobro_fin, $factura_ini, $factura_fin];
 
         $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'Peticion satisfactoria');
-        data_set($response, 'data', $respuesta); 
-    
+        data_set($response, 'message', 'Peticion satisfactoria | Lista de Relacion de facturas');
+        data_set($response, 'data', $respuesta);
         return response()->json($response, $response['status_code']);
     }
 }
