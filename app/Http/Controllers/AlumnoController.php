@@ -34,7 +34,7 @@ class AlumnoController extends Controller
         'telefono_1' => 'required|string|max:15',
         'telefono_2' => 'nullable|string|max:15',
         'celular' => 'required|string|max:15',
-        'codigo_barras' => 'required|string',
+        'codigo_barras' => 'nullable|string|max:50',
         'direccion' => 'required|string',
         'colonia' => 'required|string|max:100',
         'ciudad' => 'required|string|max:100',
