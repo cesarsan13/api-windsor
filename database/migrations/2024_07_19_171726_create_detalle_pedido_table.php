@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('detalle_pedido', function (Blueprint $table) {
-            $table->integer('recibo')->primary()->default(0);
-            $table->integer('alumno')->primary()->default(0);
-            $table->integer('articulo')->primary()->default(0);
-            $table->integer('documento')->primary()->default(0);
+            $table->integer('recibo')->primary()->default(0); //(11)
+            $table->integer('alumno')->primary()->default(0); //(11)
+            $table->integer('articulo')->primary()->default(0); //(20)
+            $table->integer('documento')->primary()->default(0); //(11)
             $table->string('fecha',11);
-            $table->integer('cantidad');
+            $table->integer('cantidad'); //(11)
             $table->float('precio_unitario');
             $table->float('descuento');
             $table->float('iva');

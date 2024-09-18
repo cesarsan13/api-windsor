@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('facturas_formas', function (Blueprint $table) {
-            $table->bigInteger('numero')-> primary()->default(0);
-            $table->string('nombre',50) -> default('');
+            $table->bigInteger('numero')-> primary()->default(0); //(11)
+            $table->string('nombre',50) -> default(''); //(30)
             $table->double('longitud')->nullable(false)->default(0);
             $table->string('baja',1) -> default('');
             $table->timestamps();
