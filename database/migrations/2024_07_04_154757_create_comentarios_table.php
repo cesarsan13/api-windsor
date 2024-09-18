@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('comentarios', function (Blueprint $table) {
-            $table->unsignedBigInteger('id')->primary();
+        Schema::create('comentarios', function (Blueprint $table) { //comentario
+            $table->unsignedBigInteger('id')->primary(); //(11)
             $table->string('comentario_1',50)->default('')->nullable(false);
             $table->string('comentario_2',50)->default('')->nullable(false);
             $table->string('comentario_3',50)->default('')->nullable(false);
-            $table->string('generales',1)->default('')->nullable(false);
+            $table->string('generales',1)->default('')->nullable(false); //tinyint
             $table->string('baja',1)->default('')->nullable(false);
         });
     }

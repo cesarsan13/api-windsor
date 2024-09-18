@@ -12,17 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('productos', function (Blueprint $table) {
-            $table->bigInteger('id')->primary()->default(0);
-            $table->string('descripcion')->nullable(false)->default('');
+            $table->bigInteger('id')->primary()->default(0);   //numero (6)
+            $table->string('descripcion')->nullable(false)->default('');  //(30)
             $table->double('costo')->nullable(false)->default(0);
-            $table->string('frecuencia', 20)->nullable(false)->default('');
-            $table->double('pro_recargo')->nullable(false)->default(0);
+            $table->string('frecuencia', 20)->nullable(false)->default(''); //(6)
+            $table->double('pro_recargo')->nullable(false)->default(0);  //(34)
             $table->string('aplicacion', 25)->nullable(false)->default('');
             $table->double('iva')->nullable(false)->default(0);
-            $table->integer('cond_1')->nullable(false)->default(0);
-            $table->integer('cam_precio')->nullable(false)->default(0);
-            $table->string('ref', 20)->nullable(false)->default(0);
-            $table->string('baja', 1)->nullable(false)->default('');
+            $table->integer('cond_1')->nullable(false)->default(0); //(11)
+            $table->integer('cam_precio')->nullable(false)->default(0);  //(1)
+            $table->string('ref', 20)->nullable(false)->default(0);  //(3)
+            $table->string('baja', 1)->nullable(false)->default('');  //(no hay, pero hay un trial987)
             $table->timestamps();
         });
     }

@@ -12,17 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('documentos_cobranza', function (Blueprint $table) {
-            $table->integer("alumno");
-            $table->integer('producto');
-            $table->integer('numero_doc');
+            $table->integer("alumno"); //(11)
+            $table->integer('producto'); //(6)
+            $table->integer('numero_doc'); //(11)
             $table->string('fecha',11);
             $table->double('descuento');
             $table->double('importe');
-            $table->string('fecha_cobro');
+            $table->string('fecha_cobro'); //(11)
             $table->double('importe_pago');
             $table->string('ref',3);
-            $table->string('grupo');
-            $table->integer('orden');
+            $table->string('grupo'); //no esta en mysql
+            $table->integer('orden'); //no esta en mysql
             $table->string('baja',1);
 
             $table->primary(['alumno', 'producto', 'numero_doc','fecha']);
