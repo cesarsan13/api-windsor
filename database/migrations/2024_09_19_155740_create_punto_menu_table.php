@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('punto_menu', function (Blueprint $table) {
-            $table->id();
+            $table->string('clave_punto', 15);   
+            $table->string('descripcion_punto', 35)->nullable();  
+            $table->primary('clave_punto');
             $table->timestamps();
         });
     }
