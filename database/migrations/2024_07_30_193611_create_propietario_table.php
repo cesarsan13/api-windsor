@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('propietario', function (Blueprint $table) {            
-            $table->bigInteger('numero')->primary()->default(0);
+            $table->bigInteger('numero')->primary()->default(0); //(11)
             $table->string('nombre', 50);
             $table->string('clave_seguridad', 10);
-            $table->integer('busqueda_max')->unsigned();
+            $table->integer('busqueda_max')->unsigned(); //(11)
             $table->double('inscripcion', 8, 2);
-            $table->integer('con_recibos')->unsigned();
-            $table->integer('con_facturas')->unsigned();
+            $table->integer('con_recibos')->unsigned(); //(11)
+            $table->integer('con_facturas')->unsigned(); //(11)
             $table->string('clave_bonificacion', 10);
             $table->timestamps();
         });

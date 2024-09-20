@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('trab_rep_cobr', function (Blueprint $table) {
             $table->integer('recibo');
             $table->string('fecha',11);
-            $table->integer('articulo');
-            $table->integer('documento');
+            $table->integer('articulo'); //(20)
+            $table->integer('documento');//(10)
             $table->integer('alumno');
-            $table->string('nombre');
+            $table->string('nombre'); //(50)
             $table->double('importe');
             $table->primary(['recibo', 'fecha', 'articulo','documento','alumno']);
             $table->timestamps();
