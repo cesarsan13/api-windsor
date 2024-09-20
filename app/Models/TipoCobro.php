@@ -12,16 +12,16 @@ class TipoCobro extends Model
 
      protected $table = 'tipo_cobro';
     protected $fillable = [
-        'id',
+        'numero',
         'descripcion',
         'comision',
         'aplicacion',
         'baja',
         'cue_banco',
     ];
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'numero';
     protected $attributes = [
-        'id' => '0',
+        'numero' => '0',
         'descripcion' => '',
         'comision' => '0',
         'aplicacion' => '',
