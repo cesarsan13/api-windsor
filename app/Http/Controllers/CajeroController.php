@@ -34,7 +34,7 @@ class CajeroController extends Controller
             data_set($response,'alert_text','Siguiente Cajero');
             data_set($response,'data',$siguiente);
 
-        } catch (\Excepction $ex) {
+        } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response,$response["status_code"]);
@@ -134,7 +134,7 @@ class CajeroController extends Controller
             data_set($response,'message','peticion satisfactoria | lista de Cajeros inactivos');
             data_set($response,'data',$cajeros);
 
-        } catch (\Excepction $ex) {
+        } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response,$response["status_code"]);
