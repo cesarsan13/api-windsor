@@ -23,6 +23,7 @@ class AlumnoController extends Controller
         'boolean' => 'El campo :attribute debe ser un valor booleano.',
     ];
     protected $rules = [
+        'numero' => 'required|numeric',
         'nombre' => 'required|string|max:50',
         'a_paterno' => 'required|string|max:50',
         'a_materno' => 'required|string|max:50',
@@ -31,8 +32,8 @@ class AlumnoController extends Controller
         'fecha_inscripcion' => 'required',
         'fecha_baja' => 'nullable',
         'sexo' => 'required|string|max:15',
-        'telefono_1' => 'required|string|max:15',
-        'telefono_2' => 'nullable|string|max:15',
+        'telefono1' => 'required|string|max:15',
+        'telefono2' => 'nullable|string|max:15',
         'celular' => 'required|string|max:15',
         'codigo_barras' => 'nullable|string|max:50',
         'direccion' => 'required|string',
@@ -41,7 +42,7 @@ class AlumnoController extends Controller
         'estado' => 'required|string|max:100',
         'cp' => 'required|string|max:10',
         'email' => 'required|string|email',
-        'imagen' => 'nullable',
+        'ruta_foto' => 'nullable',
         'dia_1' => 'nullable|string|max:20',
         'dia_2' => 'nullable|string|max:20',
         'dia_3' => 'nullable|string|max:20',
@@ -96,15 +97,15 @@ class AlumnoController extends Controller
         'nom_padre' => 'nullable|string|max:50',
         'tel_pad_1' => 'nullable|string|max:15',
         'tel_pad_2' => 'nullable|string|max:15',
-        'cel_pad_1' => 'nullable|string|max:15',
+        'cel_pad' => 'nullable|string|max:15',
         'nom_madre' => 'nullable|string|max:50',
         'tel_mad_1' => 'nullable|string|max:15',
         'tel_mad_2' => 'nullable|string|max:15',
-        'cel_mad_1' => 'nullable|string|max:15',
+        'cel_mad' => 'nullable|string|max:15',
         'nom_avi' => 'nullable|string|max:50',
         'tel_avi_1' => 'nullable|string|max:15',
         'tel_avi_2' => 'nullable|string|max:15',
-        'cel_avi_1' => 'nullable|string|max:15',
+        'cel_avi' => 'nullable|string|max:15',
         'ciclo_escolar' => 'nullable|string|max:50',
         'descuento' => 'nullable|numeric',
         'rfc_factura' => 'nullable|string|max:50',
@@ -130,7 +131,7 @@ class AlumnoController extends Controller
         $query = DB::table('alumnos as al')
             ->leftJoin('horarios as hr1', 'al.horario_1', '=', 'hr1.numero')
             ->select(
-                'al.id',
+                'al.numero',
                 DB::raw("CONCAT(al.a_nombre, ' ', al.a_paterno, ' ', al.a_materno) as nombre_completo"),
                 'al.a_paterno',
                 'al.a_materno',
@@ -139,8 +140,8 @@ class AlumnoController extends Controller
                 'al.fecha_inscripcion',
                 'al.fecha_baja',
                 'al.sexo',
-                'al.telefono_1',
-                'al.telefono_2',
+                'al.telefono1',
+                'al.telefono2',
                 'al.celular',
                 'al.codigo_barras',
                 'al.direccion',
@@ -149,7 +150,7 @@ class AlumnoController extends Controller
                 'al.estado',
                 'al.cp',
                 'al.email',
-                'al.imagen',
+                'al.ruta_foto',
                 'al.dia_1',
                 'al.dia_2',
                 'al.dia_3',
@@ -205,15 +206,15 @@ class AlumnoController extends Controller
                 'al.nom_padre',
                 'al.tel_pad_1',
                 'al.tel_pad_2',
-                'al.cel_pad_1',
+                'al.cel_pad',
                 'al.nom_madre',
                 'al.tel_mad_1',
                 'al.tel_mad_2',
-                'al.cel_mad_1',
+                'al.cel_mad',
                 'al.nom_avi',
                 'al.tel_avi_1',
                 'al.tel_avi_2',
-                'al.cel_avi_1',
+                'al.cel_avi',
                 'al.ciclo_escolar',
                 'al.descuento',
                 'al.rfc_factura',
@@ -243,7 +244,7 @@ class AlumnoController extends Controller
         if ($tipoOrden == 'Nombre') {
             $query->orderBy('al.nombre', 'ASC');
         } else if ($tipoOrden == 'Numero') {
-            $query->orderBy('al.id', 'ASC');
+            $query->orderBy('al.numero', 'ASC');
         } else if ($tipoOrden == 'Fecha_nac') {
             $query->orderBy('al.fecha_nac', 'ASC');
         }
@@ -265,7 +266,7 @@ class AlumnoController extends Controller
         $query = DB::table('alumnos as al')
             ->leftJoin('horarios as hr1', 'al.horario_1', '=', 'hr1.numero')
             ->select(
-                'al.id',
+                'al.numero',
                 DB::raw("CONCAT(al.a_nombre, ' ', al.a_paterno, ' ', al.a_materno) as nombre_completo"),
                 'al.a_paterno',
                 'al.a_materno',
@@ -274,8 +275,8 @@ class AlumnoController extends Controller
                 'al.fecha_inscripcion',
                 'al.fecha_baja',
                 'al.sexo',
-                'al.telefono_1',
-                'al.telefono_2',
+                'al.telefono1',
+                'al.telefono2',
                 'al.celular',
                 'al.codigo_barras',
                 'al.direccion',
@@ -284,7 +285,7 @@ class AlumnoController extends Controller
                 'al.estado',
                 'al.cp',
                 'al.email',
-                'al.imagen',
+                'al.ruta_foto',
                 'al.dia_1',
                 'al.dia_2',
                 'al.dia_3',
@@ -340,15 +341,15 @@ class AlumnoController extends Controller
                 'al.nom_padre',
                 'al.tel_pad_1',
                 'al.tel_pad_2',
-                'al.cel_pad_1',
+                'al.cel_pad',
                 'al.nom_madre',
                 'al.tel_mad_1',
                 'al.tel_mad_2',
-                'al.cel_mad_1',
+                'al.cel_mad',
                 'al.nom_avi',
                 'al.tel_avi_1',
                 'al.tel_avi_2',
-                'al.cel_avi_1',
+                'al.cel_avi',
                 'al.ciclo_escolar',
                 'al.descuento',
                 'al.rfc_factura',
@@ -365,10 +366,10 @@ class AlumnoController extends Controller
 
         if ($alumnos1 > 0 || $alumnos2 > 0) {
             if ($alumnos2 == 0) {
-                $query->where('al.id', '=', $alumnos1);
+                $query->where('al.numero', '=', $alumnos1);
             } else {
                 if ($baja === false) {
-                    $query->whereBetween('al.id', [$alumnos1, $alumnos2]);
+                    $query->whereBetween('al.numero', [$alumnos1, $alumnos2]);
                 }
             }
         }
@@ -389,7 +390,7 @@ class AlumnoController extends Controller
             $alumnos = DB::table('alumnos as al')
                 ->leftJoin('horarios as hr1', 'al.horario_1', '=', 'hr1.numero')
                 ->select(
-                    'al.id',
+                    'al.numero',
                     DB::raw("CONCAT(al.a_nombre, ' ', al.a_paterno, ' ', al.a_materno) as nombre_completo"),
                     'al.nombre',
                     'al.a_paterno',
@@ -399,8 +400,8 @@ class AlumnoController extends Controller
                     'al.fecha_inscripcion',
                     'al.fecha_baja',
                     'al.sexo',
-                    'al.telefono_1',
-                    'al.telefono_2',
+                    'al.telefono1',
+                    'al.telefono2',
                     'al.celular',
                     'al.codigo_barras',
                     'al.direccion',
@@ -409,7 +410,7 @@ class AlumnoController extends Controller
                     'al.estado',
                     'al.cp',
                     'al.email',
-                    'al.imagen',
+                    'al.ruta_foto',
                     'al.dia_1',
                     'al.dia_2',
                     'al.dia_3',
@@ -465,15 +466,15 @@ class AlumnoController extends Controller
                     'al.nom_padre',
                     'al.tel_pad_1',
                     'al.tel_pad_2',
-                    'al.cel_pad_1',
+                    'al.cel_pad',
                     'al.nom_madre',
                     'al.tel_mad_1',
                     'al.tel_mad_2',
-                    'al.cel_mad_1',
+                    'al.cel_mad',
                     'al.nom_avi',
                     'al.tel_avi_1',
                     'al.tel_avi_2',
-                    'al.cel_avi_1',
+                    'al.cel_avi',
                     'al.ciclo_escolar',
                     'al.descuento',
                     'al.rfc_factura',
@@ -482,7 +483,7 @@ class AlumnoController extends Controller
                     'al.baja'
                 )
                 ->where('al.baja', '<>', '*')
-                ->orderBy('al.id', 'ASC')
+                ->orderBy('al.numero', 'ASC')
                 ->get();
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'Peticion satisfactoria');
@@ -495,7 +496,7 @@ class AlumnoController extends Controller
     }
     public function lastAlumn()
     {
-        $maxId = DB::table('alumnos')->max('id');
+        $maxId = DB::table('alumnos')->max('numero');
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Peticion satisfactoria');
         data_set($response, 'data', $maxId);
@@ -508,7 +509,7 @@ class AlumnoController extends Controller
             $alumnos = DB::table('alumnos as al')
                 ->leftJoin('horarios as hr1', 'al.horario_1', '=', 'hr1.numero')
                 ->select(
-                    'al.id',
+                    'al.numero',
                     DB::raw("CONCAT(al.nombre, ' ', al.a_paterno, ' ', al.a_materno) as nombre_completo"),
                     'al.nombre',
                     'al.a_paterno',
@@ -518,8 +519,8 @@ class AlumnoController extends Controller
                     'al.fecha_inscripcion',
                     'al.fecha_baja',
                     'al.sexo',
-                    'al.telefono_1',
-                    'al.telefono_2',
+                    'al.telefono1',
+                    'al.telefono2',
                     'al.celular',
                     'al.codigo_barras',
                     'al.direccion',
@@ -528,7 +529,7 @@ class AlumnoController extends Controller
                     'al.estado',
                     'al.cp',
                     'al.email',
-                    'al.imagen',
+                    'al.ruta_foto',
                     'al.dia_1',
                     'al.dia_2',
                     'al.dia_3',
@@ -584,15 +585,15 @@ class AlumnoController extends Controller
                     'al.nom_padre',
                     'al.tel_pad_1',
                     'al.tel_pad_2',
-                    'al.cel_pad_1',
+                    'al.cel_pad',
                     'al.nom_madre',
                     'al.tel_mad_1',
                     'al.tel_mad_2',
-                    'al.cel_mad_1',
+                    'al.cel_mad',
                     'al.nom_avi',
                     'al.tel_avi_1',
                     'al.tel_avi_2',
-                    'al.cel_avi_1',
+                    'al.cel_avi',
                     'al.ciclo_escolar',
                     'al.descuento',
                     'al.rfc_factura',
@@ -601,7 +602,7 @@ class AlumnoController extends Controller
                     'al.baja'
                 )
                 ->where('al.baja', '=', '*')
-                ->orderBy('al.id', 'ASC')
+                ->orderBy('al.numero', 'ASC')
                 ->get();
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'Peticion satisfactoria');
@@ -624,12 +625,12 @@ class AlumnoController extends Controller
         $alumno = Alumno::find($request->id);
         if ($alumno) {
             $response = ObjectResponse::BadResponse('El alumno ya existe');
-            data_set($response, 'errors', ['id' => ['Alumno ya existe']]);
+            data_set($response, 'errors', ['numero' => ['Alumno ya existe']]);
             return response()->json($response, $response['status_code']);
         }
 
         $alumno = new Alumno();
-        $alumno->id = $request->id ?? 0;
+        $alumno->numero = $request->id ?? 0;
         $alumno->nombre = $request->nombre ?? '';
         $alumno->a_paterno = $request->a_paterno ?? '';
         $alumno->a_materno = $request->a_materno ?? '';
@@ -638,8 +639,8 @@ class AlumnoController extends Controller
         $alumno->fecha_inscripcion = $request->fecha_inscripcion ?? '';
         $alumno->fecha_baja = $request->fecha_baja ?? '';
         $alumno->sexo = $request->sexo ?? '';
-        $alumno->telefono_1 = $request->telefono_1 ?? '';
-        $alumno->telefono_2 = $request->telefono_2 ?? '';
+        $alumno->telefono1 = $request->telefono1 ?? '';
+        $alumno->telefono2 = $request->telefono2 ?? '';
         $alumno->celular = $request->celular ?? '';
         $alumno->codigo_barras = $request->codigo_barras ?? '';
         $alumno->direccion = $request->direccion ?? '';
@@ -698,19 +699,19 @@ class AlumnoController extends Controller
         $alumno->raz_colonia = $request->raz_colonia ?? '';
         $alumno->raz_ciudad = $request->raz_ciudad ?? '';
         $alumno->raz_estado = $request->raz_estado ?? '';
-        $alumno->raz_cp = $request->raz_cp ?? '';
+        $alumno->raz_cp = $request->raz_cp ?? 0;
         $alumno->nom_padre = $request->nom_padre ?? '';
         $alumno->tel_pad_1 = $request->tel_pad_1 ?? '';
         $alumno->tel_pad_2 = $request->tel_pad_2 ?? '';
-        $alumno->cel_pad_1 = $request->cel_pad_1 ?? '';
+        $alumno->cel_pad = $request->cel_pad_1 ?? '';
         $alumno->nom_madre = $request->nom_madre ?? '';
         $alumno->tel_mad_1 = $request->tel_mad_1 ?? '';
         $alumno->tel_mad_2 = $request->tel_mad_2 ?? '';
-        $alumno->cel_mad_1 = $request->cel_mad_1 ?? '';
+        $alumno->cel_mad = $request->cel_mad_1 ?? '';
         $alumno->nom_avi = $request->nom_avi ?? '';
         $alumno->tel_avi_1 = $request->tel_avi_1 ?? '';
         $alumno->tel_avi_2 = $request->tel_avi_2 ?? '';
-        $alumno->cel_avi_1 = $request->cel_avi_1 ?? '';
+        $alumno->cel_avi = $request->cel_avi_1 ?? '';
         $alumno->ciclo_escolar = $request->ciclo_escolar ?? '';
         $alumno->descuento = $request->descuento ?? 0;
         $alumno->rfc_factura = $request->rfc_factura ?? '';
@@ -724,10 +725,10 @@ class AlumnoController extends Controller
             // $fullPath = $destinationPath . '/' . $imageName;
             $fullPath = $imageName;
             if (file_exists($fullPath)) {
-                $alumno->imagen = $fullPath;
+                $alumno->ruta_foto = $fullPath;
             } else {
                 $uploadSuccess = $image->move($destinationPath, $imageName);
-                $alumno->imagen = $fullPath;
+                $alumno->ruta_foto = $fullPath;
             }
             $alumno->save();
             $response = ObjectResponse::CorrectResponse();
@@ -743,17 +744,19 @@ class AlumnoController extends Controller
         }
     }
 
-    public function updateAlumn(Request $request, $id)
+    public function updateAlumn(Request $request, $numero)
     {
         $rules = $this->rules;
-        $rules['id'] = 'required|integer|unique:alumnos,id,' . $id;
+        $rules['numero'] = "required|integer|unique:alumnos,numero," . $numero . ",numero";
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
+            // dd(vars: $validator);
             $response = ObjectResponse::BadResponse('Error de validacion');
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
-        $alumno = Alumno::find($id);
+        $alumno = Alumno::find($numero);
+        // dd($alumno);
         if (!$alumno) {
             $response = ObjectResponse::BadResponse('El alumno no existe');
             data_set($response, 'errors', ['id' => ['Alumno no existe']]);
@@ -768,8 +771,8 @@ class AlumnoController extends Controller
         $alumno->fecha_inscripcion = $request->fecha_inscripcion ?? '';
         $alumno->fecha_baja = $request->fecha_baja ?? '';
         $alumno->sexo = $request->sexo ?? '';
-        $alumno->telefono_1 = $request->telefono_1 ?? '';
-        $alumno->telefono_2 = $request->telefono_2 ?? '';
+        $alumno->telefono1 = $request->telefono1 ?? '';
+        $alumno->telefono2 = $request->telefono2 ?? '';
         $alumno->celular = $request->celular ?? '';
         $alumno->codigo_barras = $request->codigo_barras ?? '';
         $alumno->direccion = $request->direccion ?? '';
@@ -828,19 +831,19 @@ class AlumnoController extends Controller
         $alumno->raz_colonia = $request->raz_colonia ?? '';
         $alumno->raz_ciudad = $request->raz_ciudad ?? '';
         $alumno->raz_estado = $request->raz_estado ?? '';
-        $alumno->raz_cp = $request->raz_cp ?? '';
+        $alumno->raz_cp = $request->raz_cp ?? 0;
         $alumno->nom_padre = $request->nom_padre ?? '';
         $alumno->tel_pad_1 = $request->tel_pad_1 ?? '';
         $alumno->tel_pad_2 = $request->tel_pad_2 ?? '';
-        $alumno->cel_pad_1 = $request->cel_pad_1 ?? '';
+        $alumno->cel_pad = $request->cel_pad_1 ?? '';
         $alumno->nom_madre = $request->nom_madre ?? '';
         $alumno->tel_mad_1 = $request->tel_mad_1 ?? '';
         $alumno->tel_mad_2 = $request->tel_mad_2 ?? '';
-        $alumno->cel_mad_1 = $request->cel_mad_1 ?? '';
+        $alumno->cel_mad = $request->cel_mad_1 ?? '';
         $alumno->nom_avi = $request->nom_avi ?? '';
         $alumno->tel_avi_1 = $request->tel_avi_1 ?? '';
         $alumno->tel_avi_2 = $request->tel_avi_2 ?? '';
-        $alumno->cel_avi_1 = $request->cel_avi_1 ?? '';
+        $alumno->cel_avi = $request->cel_avi_1 ?? '';
         $alumno->ciclo_escolar = $request->ciclo_escolar ?? '';
         $alumno->descuento = $request->descuento ?? 0;
         $alumno->rfc_factura = $request->rfc_factura ?? '';
@@ -854,10 +857,10 @@ class AlumnoController extends Controller
             // $fullPath = $destinationPath . '/' . $imageName;
             $fullPath = $imageName;
             if (file_exists($fullPath)) {
-                $alumno->imagen = $fullPath;
+                $alumno->ruta_foto = $fullPath;
             } else {
                 $uploadSuccess = $image->move($destinationPath, $imageName);
-                $alumno->imagen = $fullPath;
+                $alumno->ruta_foto = $fullPath;
             }
             $alumno->save();
             $response = ObjectResponse::CorrectResponse();
