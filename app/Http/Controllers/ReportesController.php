@@ -163,7 +163,7 @@ class ReportesController extends Controller
                         ->orWhere("horario_19", "=", $idHorario)
                         ->orWhere("horario_20", "=", $idHorario);
                 })
-                ->orderBy($request->orden, 'ASC')->get(['id', 'nombre', 'fecha_nac']);
+                ->orderBy($request->orden, 'ASC')->get(['numero', 'nombre', 'fecha_nac']);
             $rep_dos_sel = ObjectResponse::Rep_Dos_Sel(32);
             $rep_dos_sel = ObjectResponse::PrepHorario($alumnosHorario, $rep_dos_sel, 1);
             $reporte = [

@@ -35,13 +35,13 @@ class ObjectResponse extends Model
                 $objeto = $rep_dos_sel[$i];
                 $alumno = $lista[$i];
                 if($num_horario==1){
-                        $objeto->Numero_1 = $alumno['id'];
+                        $objeto->Numero_1 = $alumno['numero'];
                         $objeto->Nombre_1 = $alumno['nombre'];
                         $objeto->Año_Nac_1 = $alumno['fecha_nac'];
                         $objeto->Mes_Nac_1 = $alumno['fecha_nac'];
                         $objeto->Telefono_1 = $alumno['telefono_1'];
                 }else{
-                        $objeto->Numero_2 = $alumno['id'];
+                        $objeto->Numero_2 = $alumno['numero'];
                         $objeto->Nombre_2 = $alumno['nombre'];
                         $objeto->Año_Nac_2 = $alumno['fecha_nac'];
                         $objeto->Mes_Nac_2 = $alumno['fecha_nac'];
