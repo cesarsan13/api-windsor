@@ -45,30 +45,17 @@ class FacturasFormatoController extends Controller
         $response  = ObjectResponse::DefaultResponse();
         try {
             $formatos = FacturasFormato::where("Numero_Forma",'=',$id)->get();
-            
             $response = ObjectResponse::CorrectResponse();
             data_set($response,'message','peticion satisfactoria | lista de tipos de cobro');
             data_set($response,'data',$formatos);
-            // dd($response['data']);
-
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
-        // dd($response);
         return response()->json($response,$response["status_code"]);
     }
     public function updateFormato(Request $request,FacturasFormato $factuas_formato){
-        // $response = ObjectResponse::DefaultResponse();
-        // $validator = Validator::make($request->all(), $this->rules, $this->messages);
-        // echo($request);
-        // if($validator->fails()){
-        //     $response = ObjectResponse::CatchResponse($validator->errors()->all());
-        //     return response()->json($response,$response['status_code']);
-        // }
         $datos= $request->input('datos');
-                // dd($request->request);
         try {
-    //  dd($datos);
             foreach ($datos as $value ) {
                 FacturasFormato::updateOrCreate(['numero_forma' => $value["numero_forma"], 'numero_dato' => $value["numero_dato"]],[
                 'forma_renglon'=> $value["forma_renglon"],
@@ -98,15 +85,12 @@ class FacturasFormatoController extends Controller
                 ]);
                 
              }
-            // $formatos = FacturasFormato::where("Numero_Forma",'=',$id)->get();
-            // dd($result);
             $response = ObjectResponse::CorrectResponse();
             data_set($response,'message','peticion satisfactoria | formato actualizado');
 
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
-        // dd($response);
         return response()->json($response,$response["status_code"]);
     }
 }
