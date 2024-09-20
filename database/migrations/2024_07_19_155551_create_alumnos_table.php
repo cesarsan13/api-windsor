@@ -4,15 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('alumnos', function (Blueprint $table) {
-            $table->bigInteger('id')->primary()->default(0); //(11)
+            $table->bigInteger('numero')->primary()->default(0); //(11)
             $table->string('nombre', 50)->nullable(false)->default('');
             $table->string('a_paterno', 50)->nullable(false)->default(''); //(20)
             $table->string('a_materno', 50)->nullable(false)->default(''); //(20)
@@ -21,8 +20,8 @@ return new class extends Migration
             $table->string('fecha_inscripcion', 15)->nullable(false)->default(''); //(11)
             $table->string('fecha_baja', 15)->nullable(true)->default(''); //(11)
             $table->string('sexo', 15)->nullable(false)->default(''); //(2)
-            $table->string('telefono_1', 15)->nullable(false)->default(''); //(20)
-            $table->string('telefono_2', 15)->nullable(true)->default(''); //(20)
+            $table->string('telefono1', 15)->nullable(false)->default(''); //(20)
+            $table->string('telefono2', 15)->nullable(true)->default(''); //(20)
             $table->string('celular', 15)->nullable(false)->default(''); //(20)
             $table->string('codigo_barras')->nullable(true)->default(''); //(20)
             $table->string('direccion')->nullable(false)->default(''); //(50)
@@ -32,7 +31,7 @@ return new class extends Migration
             $table->string('cp', 10)->nullable(false)->default(''); //(6)
             $table->string('email')->nullable(false)->default(''); //(40)
             $table->string('imagen')->nullable(true)->default(''); //(100)
-            $table->string('dia_1', 20)->nullable(true)->default(''); 
+            $table->string('dia_1', 20)->nullable(true)->default('');
             $table->string('dia_2', 20)->nullable(true)->default('');
             $table->string('dia_3', 20)->nullable(true)->default('');
             $table->string('dia_4', 20)->nullable(true)->default('');
@@ -75,7 +74,7 @@ return new class extends Migration
             $table->string('alergia', 50)->nullable(true)->default(''); //(60)
             $table->string('aseguradora', 100)->nullable(true)->default(''); //(60)
             $table->string('poliza', 30)->nullable(true)->default(''); //(60)
-            $table->string('tel_ase_1', 15)->nullable(true)->default(''); 
+            $table->string('tel_ase_1', 15)->nullable(true)->default('');
             $table->string('tel_ase_2', 15)->nullable(true)->default('');
             $table->string('razon_social', 30)->nullable(true)->default(''); //(70)
             $table->string('raz_direccion')->nullable(true)->default(''); //(50)
