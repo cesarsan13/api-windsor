@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\ObjectResponse;
 use App\Models\Comentarios;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 class ComentariosController extends Controller
 {
         protected $messages=[
@@ -14,11 +15,11 @@ class ComentariosController extends Controller
         'unique' => 'El campo :attribute ya ha sido registrado',
         ];
         protected $rules = [
-            'id' => 'required|integer',
+            'numero' => 'required|integer',
             'comentario_1' => 'required|string|max:50',
             'comentario_2' => 'required|string|max:50',
             'comentario_3' => 'required|string|max:50',
-            'generales' => 'nullable|string|max:1', 
+            'generales' => 'nullable|int|max:1', 
             'baja' => 'nullable|string|max:1',
             
         ];
@@ -56,7 +57,7 @@ class ComentariosController extends Controller
         public function siguiente(){
             $response  = ObjectResponse::DefaultResponse();
             try {
-                $siguiente = Comentarios::max('id');
+                $siguiente = Comentarios::max('numero');
                 $response = ObjectResponse::CorrectResponse();
                 data_set($response,'message','peticion satisfactoria | Siguiente Comentario');
                 data_set($response,'alert_text','Siguiente Comentario');
@@ -77,14 +78,14 @@ class ComentariosController extends Controller
             }
             try {
                     $datosFiltrados = $request->only([
-                        'id',
+                        'numero',
                         'comentario_1',
                         'comentario_2',
                         'comentario_3',
                         'generales',
                     ]);
                 $nuevoCobro = Comentarios::create([
-                    "id"=>$datosFiltrados['id'],
+                    "numero"=>$datosFiltrados['numero'],
                     "comentario_1"=>$datosFiltrados['comentario_1'],
                     "comentario_2"=>$datosFiltrados['comentario_2'],
                     "comentario_3"=>$datosFiltrados['comentario_3'],
@@ -108,7 +109,7 @@ class ComentariosController extends Controller
                 return response()->json($response,$response['status_code']);
             }
             try {
-                $tipo_cobro = Comentarios::where('id',$request->id)
+                $tipo_cobro = Comentarios::where('numero',$request->numero)
                     ->update(["comentario_1"=>$request->comentario_1,
                             "comentario_2"=>$request->comentario_2,
                             "comentario_3"=>$request->comentario_3,
