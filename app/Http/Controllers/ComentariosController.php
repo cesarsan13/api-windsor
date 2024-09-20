@@ -19,7 +19,7 @@ class ComentariosController extends Controller
             'comentario_1' => 'required|string|max:50',
             'comentario_2' => 'required|string|max:50',
             'comentario_3' => 'required|string|max:50',
-            'generales' => 'nullable|string|max:1', 
+            'generales' => 'nullable|int|max:1', 
             'baja' => 'nullable|string|max:1',
             
         ];
@@ -28,14 +28,6 @@ class ComentariosController extends Controller
             $response = ObjectResponse::DefaultResponse();
             try{
                  $comentarios = Comentarios::where("baja",'<>','*')
-                  ->select([
-                    'numero',
-                    'comentario_1',
-                    'comentario_2',
-                    'comentario_3',
-                    DB::raw("CAST(generales AS CHAR) as generales"),
-                    'baja'
-                  ])
                  ->get();
                  $response = ObjectResponse::CorrectResponse();
                 data_set($response, 'message','Peticion Satisfactoria | lista de Comentarios');
@@ -51,14 +43,6 @@ class ComentariosController extends Controller
             $response  = ObjectResponse::DefaultResponse();
             try {
                 $comentarios = Comentarios::where("baja",'=','*')
-                ->select([
-                    'numero',
-                    'comentario_1',
-                    'comentario_2',
-                    'comentario_3',
-                    DB::raw("CAST(generales AS CHAR) as generales"),
-                    'baja'
-                  ])
                 ->get();
                 $response = ObjectResponse::CorrectResponse();
                 data_set($response,'message','peticion satisfactoria | lista de comentarios inactivos');
