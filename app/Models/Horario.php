@@ -21,4 +21,5 @@ class Horario extends Model
     ];
     protected $table = 'horarios';
     protected $primaryKey='numero';
+    public $timestamps = false;
 }
