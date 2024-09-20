@@ -9,7 +9,7 @@ class Producto extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'id',
+        'numero',
         'descripcion',
         'costo',
         'frecuencia',
@@ -34,5 +34,5 @@ class Producto extends Model
         'baja' => '',
     ];
     protected $table = 'productos';
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'numero';
 }
