@@ -26,7 +26,7 @@ class ProductoController extends Controller
         'descripcion' => 'required|string',
         'costo' => 'required|numeric',
         'frecuencia' => 'required|string',
-        'pro_recargo' => 'required|numeric',
+        'por_recargo' => 'required|numeric',
         'aplicacion' => 'required|string',
         'iva' => 'required|numeric',
         'cond_1' => 'required|integer',
@@ -66,8 +66,8 @@ class ProductoController extends Controller
                 data_set($response, 'data', $productos);
                 return response()->json($response, $response['status_code']);
                 break;
-            case 'pro_recargo':
-                $productos = DB::table('productos')->where('pro_recargo', 'like', "%{$value}%")->where('baja', '<>', '*')->orderBy('pro_recargo', 'ASC')->get();
+            case 'por_recargo':
+                $productos = DB::table('productos')->where('por_recargo', 'like', "%{$value}%")->where('baja', '<>', '*')->orderBy('por_recargo', 'ASC')->get();
                 $response = ObjectResponse::CorrectResponse();
                 data_set($response, 'message', 'Peticion satisfactoria');
                 data_set($response, 'data', $productos);
@@ -158,7 +158,7 @@ class ProductoController extends Controller
     {
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         if ($validator->fails()) {
-            $response = ObjectResponse::BadResponse('Error de validacion');
+            $response = ObjectResponse::BadResponse('Error de validacion' . $validator->errors());
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
@@ -173,7 +173,7 @@ class ProductoController extends Controller
         $producto->descripcion = $request->descripcion;
         $producto->costo = $request->costo;
         $producto->frecuencia = $request->frecuencia;
-        $producto->pro_recargo = $request->pro_recargo;
+        $producto->por_recargo = $request->por_recargo;
         $producto->aplicacion = $request->aplicacion;
         $producto->iva = $request->iva;
         $producto->cond_1 = $request->cond_1;
@@ -204,7 +204,7 @@ class ProductoController extends Controller
         $producto->descripcion = $request->descripcion;
         $producto->costo = $request->costo;
         $producto->frecuencia = $request->frecuencia;
-        $producto->pro_recargo = $request->pro_recargo;
+        $producto->por_recargo = $request->por_recargo;
         $producto->aplicacion = $request->aplicacion;
         $producto->iva = $request->iva;
         $producto->cond_1 = $request->cond_1;

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('descripcion')->nullable(false)->default('');
             $table->double('costo')->nullable(false)->default(0);
             $table->string('frecuencia', 20)->nullable(false)->default(''); //(6)
-            $table->double('pro_recargo')->nullable(false)->default(0);  //(34)
+            $table->double('por_recargo')->nullable(false)->default(0);  //(34)
             $table->string('aplicacion', 25)->nullable(false)->default('');
             $table->double('iva')->nullable(false)->default(0);
             $table->integer('cond_1')->nullable(false)->default(0); //(11)

@@ -60,7 +60,7 @@ Route::middleware('auth:sanctum')->controller(ProductoController::class)->group(
     Route::get('/product/last', 'lastProduct');
     Route::get('/product/bajas', 'bajaProduct');
     Route::post('/product/save', 'storeProduct');
-    Route::put('/product/update/{id}', 'updateProduct');
+    Route::put('/product/update/{numero}', 'updateProduct');
 });
 
 Route::middleware('auth:sanctum')->controller(AlumnoController::class)->group(function () {
