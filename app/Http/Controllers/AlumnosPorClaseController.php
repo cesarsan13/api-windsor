@@ -36,7 +36,7 @@ class AlumnosPorClaseController extends Controller
 
     public function getListaHorariosAPC($idHorario1, $idHorario2, $orden){
         $AlumnosPC1 = DB::table ('alumnos')
-        ->select('nombre','id', DB::raw('SUBSTRING(fecha_nac, 1, 4) AS año_nac'),DB::raw('SUBSTRING(fecha_nac, 6, 2) AS mes_nac'),'telefono_1')
+        ->select('nombre','numero', DB::raw('SUBSTRING(fecha_nac, 1, 4) AS año_nac'),DB::raw('SUBSTRING(fecha_nac, 6, 2) AS mes_nac'),'telefono1')
         ->where("baja",'<>','*')
         ->where(function ($query) use ($idHorario1){
         $query->orWhere("horario_1", "=", $idHorario1)
@@ -63,7 +63,7 @@ class AlumnosPorClaseController extends Controller
         ->orderBy($orden, 'ASC' )->get();
 
         $AlumnosPC2 = DB::table ('alumnos')
-        ->select('nombre','id',DB::raw('SUBSTRING(fecha_nac, 1, 4) AS año_nac'),DB::raw('SUBSTRING(fecha_nac, 6, 2) AS mes_nac'),'telefono_1')
+        ->select('nombre','numero',DB::raw('SUBSTRING(fecha_nac, 1, 4) AS año_nac'),DB::raw('SUBSTRING(fecha_nac, 6, 2) AS mes_nac'),'telefono1')
         ->where("baja",'<>','*')
         ->where(function ($query) use ($idHorario2){
         $query->orWhere("horario_1", "=", $idHorario2)

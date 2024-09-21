@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\ObjectResponse;
 use App\Models\Horario;
 use App\Models\Alumno;
-use App\Models\Cobranza_Diaria;
 use App\Models\Producto;
+use App\Models\Cobranza_Diaria;
 use App\Models\Encab_Pedido;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -92,7 +92,7 @@ class ReportesController extends Controller
                         ->orWhere("horario_19", "=", $idHorario)
                         ->orWhere("horario_20", "=", $idHorario);
                 })
-                ->orderBy($request->orden, 'ASC')->get(['id', 'nombre', 'fecha_nac', 'telefono_1']);
+                ->orderBy($request->orden, 'ASC')->get(['numero', 'nombre', 'fecha_nac', 'telefono1']);
             $idHorario2 = $request->horario2;
             $alumnosHorario2 = Alumno::where('baja', '<>', '*')
                 ->where(function ($query) use ($idHorario2) {
@@ -117,13 +117,14 @@ class ReportesController extends Controller
                         ->orWhere("horario_19", "=", $idHorario2)
                         ->orWhere("horario_20", "=", $idHorario2);
                 })
-                ->orderBy($request->orden, 'ASC')->get(['id', 'nombre', 'fecha_nac', 'telefono_1']);
+                ->orderBy($request->orden, 'ASC')->get(['numero', 'nombre', 'fecha_nac', 'telefono1']);
             $rep_dos_sel = ObjectResponse::Rep_Dos_Sel(32);
             $rep_dos_sel = ObjectResponse::PrepHorario($alumnosHorario1, $rep_dos_sel, 1);
             $rep_dos_sel = ObjectResponse::PrepHorario($alumnosHorario2, $rep_dos_sel, 2);
             $reporte = [
                 "horario" => $horario,
                 "data" => $rep_dos_sel,
+                "entra" => "entraaaa"
             ];
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'peticion satisfactoria | lista de tipos de cobro');
@@ -304,6 +305,7 @@ class ReportesController extends Controller
     
         return response()->json($response, $response['status_code']);
     }
+
     public function getCobranzaAlumno(Request $request)
     {
 
@@ -381,10 +383,10 @@ class ReportesController extends Controller
         data_set($response, 'data_detalle', $det_ped);
         data_set($response, 'data_productos', $productos);
         data_set($response, 'data_horarios', $horarios);
+        return response()->json($response, $response['status_code']);
     }
 
- 
-     public function getRelaciondeFacturas (Request $request){
+    public function getRelaciondeFacturas (Request $request){
         $tomaFecha = $request->input('tomaFecha');
         $tomaCanceladas = $request->input('tomaCanceladas');
         $fecha_cobro_ini = $request->input('fecha_cobro_ini');
