@@ -13,7 +13,7 @@ class Producto extends Model
         'descripcion',
         'costo',
         'frecuencia',
-        'pro_recargo',
+        'por_recargo',
         'aplicacion',
         'iva',
         'cond_1',
@@ -25,7 +25,7 @@ class Producto extends Model
         'descripcion' => '',
         'costo' => 0,
         'frecuencia' => '',
-        'pro_recargo' => 0,
+        'por_recargo' => 0,
         'aplicacion' => '',
         'iva' => 0,
         'cond_1' => '',
@@ -34,5 +34,6 @@ class Producto extends Model
         'baja' => '',
     ];
     protected $table = 'productos';
+    public $timestamps = false;
     protected $primaryKey = 'numero';
 }
