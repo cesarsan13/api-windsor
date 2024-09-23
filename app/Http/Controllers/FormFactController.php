@@ -30,7 +30,7 @@ class FormFactController extends Controller
     {
         $response  = ObjectResponse::DefaultResponse();
         try {
-            $siguiente = FormFact::max('numero');
+            $siguiente = FormFact::max('numero_forma');
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'peticion satisfactoria | Siguiente Forma Factura');
             data_set($response, 'alert_text', 'Siguiente Forma Factura');
@@ -49,9 +49,9 @@ class FormFactController extends Controller
             return response()->json($response, $response['status_code']);
         }
         try {
-            $formFact = FormFact::where('numero', $request->numero)
+            $formFact = FormFact::where('numero_forma', $request->numero_forma)
                 ->update([
-                    "nombre" => $request->nombre,
+                    "nombre_forma" => $request->nombre_forma,
                     "longitud" => $request->longitud,
                     "baja" => $request->baja ?? '',
                 ]);
@@ -66,8 +66,8 @@ class FormFactController extends Controller
         return response()->json($response, $response['status_code']);
     }
     protected $rules = [
-        'numero' => 'required|integer',
-        'nombre' => 'required|string|max:50',
+        'numero_forma' => 'required|integer',
+        'nombre_forma' => 'required|string|max:50',
         'baja' => 'nullable|string|max:1',
     ];
     protected $messages = [
@@ -87,14 +87,14 @@ class FormFactController extends Controller
         }
         try {
             $datosFiltrados = $request->only([
-                'numero',
-                'nombre',
+                'numero_forma',
+                'nombre_forma',
                 'longitud',
                 'baja',
             ]);
             $nuevoFormFact = FormFact::create([
-                "numero" => $datosFiltrados['numero'],
-                "nombre" => $datosFiltrados['nombre'],
+                "numero_forma" => $datosFiltrados['numero_forma'],
+                "nombre_forma" => $datosFiltrados['nombre_forma'],
                 "longitud" => $datosFiltrados['longitud'],
                 "baja" => $datosFiltrados['baja'] ?? '',
             ]);
