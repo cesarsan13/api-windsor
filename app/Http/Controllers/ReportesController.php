@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
 
+
 class ReportesController extends Controller
 {
     public function getAlumnosPorClaseSemanal(Request $request)
@@ -319,7 +320,7 @@ class ReportesController extends Controller
 
         $query = DB::table('detalle_pedido AS DP')
             ->select(
-                'A.id AS id_al',
+                'A.numero AS id_al',
                 'A.nombre AS nom_al',
                 'DP.articulo',
                 'PS.descripcion',
@@ -332,13 +333,13 @@ class ReportesController extends Controller
                 'CS.nombre'
             )
 
-            ->Join('productos AS PS', 'DP.articulo', '=', 'PS.id')
-            ->Join('alumnos AS A', 'DP.alumno', '=', 'A.id')
+            ->Join('productos AS PS', 'DP.articulo', '=', 'PS.numero')
+            ->Join('alumnos AS A', 'DP.alumno', '=', 'A.numero')
             ->Join('cobranza_diaria AS CD', 'DP.recibo', '=', 'CD.recibo')
             ->Join('cajeros AS CS', 'CD.cajero', '=', 'CS.numero')
             ->Join('documentos_cobranza AS DC', 'DP.alumno', '=', 'DC.alumno')
-            ->leftJoin(DB::raw('tipo_cobro AS TC1'), 'TC1.id', '=', 'CD.tipo_pago_1')
-            ->leftJoin(DB::raw('tipo_cobro AS TC2'), 'TC2.id', '=', 'CD.tipo_pago_2')
+            ->leftJoin(DB::raw('tipo_cobro AS TC1'), 'TC1.numero', '=', 'CD.tipo_pago_1')
+            ->leftJoin(DB::raw('tipo_cobro AS TC2'), 'TC2.numero', '=', 'CD.tipo_pago_2')
             ->where('importe_cobro', '>', 0);
 
         if ($tomaFecha === true) {
@@ -396,7 +397,7 @@ class ReportesController extends Controller
 
         $query = DB::table('detalle_pedido as DP')
         ->select('DP.numero_factura', 'DP.alumno', 'DP.recibo', 'DP.fecha', 'Al.razon_social', 'DP.iva', 'DP.descuento', 'DP.cantidad', 'DP.precio_unitario' )
-        ->leftJoin('alumnos as Al', 'Al.id', '=', 'DP.alumno');
+        ->leftJoin('alumnos as Al', 'Al.numero', '=', 'DP.alumno');
         
         if ($tomaCanceladas === true){
             
@@ -422,9 +423,8 @@ class ReportesController extends Controller
                 }
             }
         } 
-        $query->orderBy('DP.numero_factura', 'ASC');
+        $query->orderBy('DP.numero_factura', 'ASC');        
         $respuesta = $query->get();
-
         //$data = [$respuesta, $tomaFecha, $fecha_cobro_ini, $fecha_cobro_fin, $factura_ini, $factura_fin];
 
         $response = ObjectResponse::CorrectResponse();
