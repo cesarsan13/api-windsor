@@ -102,7 +102,7 @@ Route::middleware('auth:sanctum')->controller(AlumnosPorClaseController::class)-
     Route::get('/AlumnosPC/Lista/{idHorario}/{orden}', 'getListaHorariosAPC');
 });
 
-Route::get('/cobranza/{Fecha_Inicial}/{Fecha_Final}/{cajero?}', [CobranzaController::class, 'PDF'])->middleware('auth:sanctum');
+Route::post('/cobranza', [CobranzaController::class, 'PDF'])->middleware('auth:sanctum');
 
 Route::controller(DocumentosCobranzaController::class)->group(function () {
     Route::get('/documentoscobranza/{fecha}/{grupo?}', 'imprimir')->middleware('auth:sanctum');
