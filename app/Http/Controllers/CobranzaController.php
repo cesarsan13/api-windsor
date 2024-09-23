@@ -8,8 +8,11 @@ use Illuminate\Support\Facades\DB;
 
 class CobranzaController extends Controller
 {
-    public function PDF($Fecha_Inicial, $Fecha_Final, $cajero = null)
+    public function PDF(Request $request)
     {
+        $Fecha_Inicial=$request->input('Fecha_Inicial');
+        $Fecha_Final=$request->input('Fecha_Final');
+        $cajero=$request->input('cajero');
         $response = ObjectResponse::DefaultResponse();
 
         $queryCajero = DB::table('cobranza_diaria')
@@ -22,19 +25,19 @@ class CobranzaController extends Controller
         $resultCajero = $queryCajero->orderBy('cajero')->get();
 
         $queryProducto = DB::table('detalle_pedido')
-            ->join('productos', 'detalle_pedido.articulo', '=', 'productos.id')
+            ->join('productos', 'detalle_pedido.articulo', '=', 'productos.numero')
             ->whereBetween('detalle_pedido.fecha', [$Fecha_Inicial, $Fecha_Final])
             ->orderBy('detalle_pedido.articulo')
-            ->select('detalle_pedido.*', 'productos.descripcion')  // Selecciona las columnas necesarias
-            ->get();
+            ->select('detalle_pedido.*', 'productos.descripcion');  // Selecciona las columnas necesarias
+            
 
-        $resultProducto = $queryProducto;
+        $resultProducto = $queryProducto->get();
 
 
 
         $queryTipoPago = DB::table('cobranza_diaria')
-            ->join('tipo_cobro AS tipo_pago_1', 'cobranza_diaria.tipo_pago_1', '=', 'tipo_pago_1.id')
-            ->leftJoin('tipo_cobro AS tipo_pago_2', 'cobranza_diaria.tipo_pago_2', '=', 'tipo_pago_2.id') // Usa leftJoin si tipo_pago_2 puede ser nulo
+            ->join('tipo_cobro AS tipo_pago_1', 'cobranza_diaria.tipo_pago_1', '=', 'tipo_pago_1.numero')
+            ->leftJoin('tipo_cobro AS tipo_pago_2', 'cobranza_diaria.tipo_pago_2', '=', 'tipo_pago_2.numero') // Usa leftJoin si tipo_pago_2 puede ser nulo
             ->whereBetween('cobranza_diaria.fecha_cobro', [$Fecha_Inicial, $Fecha_Final])
             ->select('cobranza_diaria.*', 'tipo_pago_1.descripcion AS descripcion1', 'tipo_pago_2.descripcion AS descripcion2');
 
@@ -49,7 +52,7 @@ class CobranzaController extends Controller
             "cajeros" => $resultCajero,
             "producto" => $resultProducto,
             "tipo_pago" => $resultTipoPago,
-        ];
+        ];        
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'peticion satisfactoria | lista de Horarios');
         data_set($response, 'data', $data);
