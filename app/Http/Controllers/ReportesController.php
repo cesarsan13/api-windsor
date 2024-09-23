@@ -191,8 +191,8 @@ class ReportesController extends Controller
         $alumno_ini = $request->input('alumno_ini');
         $alumno_fin = $request->input('alumno_fin');
 
-        $query = DB::table('encab_pedidos as ep')
-            ->leftJoin('alumnos as al', 'ep.alumno', 'al.id')
+        $query = DB::table('encab_pedido as ep')
+            ->leftJoin('alumnos as al', 'ep.alumno', 'al.numero')
             ->leftJoin('cajeros as cj', 'ep.cajero', 'cj.numero')
             ->select(
                 'ep.recibo',

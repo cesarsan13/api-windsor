@@ -13,7 +13,7 @@ class DocumentosCobranzaController extends Controller
     {
         $response = ObjectResponse::DefaultResponse();
         $documentosgrupos = DB::table('documentos_cobranza')
-            ->join('productos', 'documentos_cobranza.producto', '=', 'productos.id')
+            ->join('productos', 'documentos_cobranza.producto', '=', 'productos.numero')
             ->where('fecha', '<=', $fecha)
             ->where('importe_pago', '=', 0)
             ->where('descuento', '<', 100)
@@ -34,7 +34,7 @@ class DocumentosCobranzaController extends Controller
             ->groupBy('Alumno')
             ->get();
         $alumnos = DB::table('alumnos')
-            ->select('id', 'nombre', 'telefono_1', 'estatus')->get();
+            ->select('numero', 'nombre', 'telefono1', 'estatus')->get();
         $data = [
             "documentos" => $documentos,
             "indeces" => $documentosAlumnosIncides,
@@ -49,7 +49,7 @@ class DocumentosCobranzaController extends Controller
     {
         $alumnos = DB::table('alumnos')
             ->join('horarios', 'alumnos.horario_1', '=', 'horarios.numero')
-            ->select('alumnos.horario_1', 'alumnos.nombre', 'alumnos.baja', 'alumnos.id', 'horarios.horario')
+            ->select('alumnos.horario_1', 'alumnos.nombre', 'alumnos.baja', 'alumnos.numero', 'horarios.horario')
             ->orderBy('horario_1')
             ->orderBy('nombre')
             ->get();
