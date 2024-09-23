@@ -49,10 +49,10 @@ Route::middleware('auth:sanctum')->controller(FormFactController::class)->group(
 });
 
 
-Route::middleware('auth:sanctum')->controller(RepDosSelController::class)->group(function () {
-    Route::post('/RepDosSel/UpdateRepDosSel', 'UpdateRepDosSel');
-    Route::get("/RepDosSel/siguiente", "siguiente");
-});
+// Route::middleware('auth:sanctum')->controller(RepDosSelController::class)->group(function () {
+//     Route::post('/RepDosSel/UpdateRepDosSel', 'UpdateRepDosSel');
+//     Route::get("/RepDosSel/siguiente", "siguiente");
+// });
 
 Route::middleware('auth:sanctum')->controller(ProductoController::class)->group(function () {
     Route::get('/product', 'showProduct');
