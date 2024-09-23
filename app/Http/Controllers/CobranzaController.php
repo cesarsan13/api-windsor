@@ -10,15 +10,15 @@ class CobranzaController extends Controller
 {
     public function PDF(Request $request)
     {
-        $Fecha_Inicial=$request->input('Fecha_Inicial');
-        $Fecha_Final=$request->input('Fecha_Final');
-        $cajero=$request->input('cajero');
+        $Fecha_Inicial = $request->input('Fecha_Inicial');
+        $Fecha_Final = $request->input('Fecha_Final');
+        $cajero = $request->input('cajero');
         $response = ObjectResponse::DefaultResponse();
 
         $queryCajero = DB::table('cobranza_diaria')
-        ->join('cajeros', 'cobranza_diaria.cajero', '=', 'cajeros.numero')
+            ->join('cajeros', 'cobranza_diaria.cajero', '=', 'cajeros.numero')
             ->whereBetween('fecha_cobro', [$Fecha_Inicial, $Fecha_Final])
-            ->select('cobranza_diaria.*','cajeros.nombre');
+            ->select('cobranza_diaria.*', 'cajeros.nombre');
         if ($cajero !== null && $cajero > 0) {
             $queryCajero->where('cajero', $cajero);
         }
@@ -29,7 +29,6 @@ class CobranzaController extends Controller
             ->whereBetween('detalle_pedido.fecha', [$Fecha_Inicial, $Fecha_Final])
             ->orderBy('detalle_pedido.articulo')
             ->select('detalle_pedido.*', 'productos.descripcion');  // Selecciona las columnas necesarias
-            
 
         $resultProducto = $queryProducto->get();
 
@@ -52,7 +51,7 @@ class CobranzaController extends Controller
             "cajeros" => $resultCajero,
             "producto" => $resultProducto,
             "tipo_pago" => $resultTipoPago,
-        ];        
+        ];
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'peticion satisfactoria | lista de Horarios');
         data_set($response, 'data', $data);
