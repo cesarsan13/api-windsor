@@ -223,7 +223,7 @@ class AlumnoController extends Controller
                 'al.baja'
             );
 
-        if ($baja === 'Alta') {
+        if ($baja === 'alta') {
             if ($fecha_ini > 0 || $fecha_fin > 0) {
                 if ($fecha_fin == 0) {
                     $query->where('al.fecha_inscripcion', '=', $fecha_ini);
@@ -241,11 +241,11 @@ class AlumnoController extends Controller
             }
         }
 
-        if ($tipoOrden == 'Nombre') {
+        if ($tipoOrden == 'nombre') {
             $query->orderBy('al.nombre', 'ASC');
-        } else if ($tipoOrden == 'Numero') {
+        } else if ($tipoOrden == 'numero') {
             $query->orderBy('al.numero', 'ASC');
-        } else if ($tipoOrden == 'Fecha_nac') {
+        } else if ($tipoOrden == 'fecha_nac') {
             $query->orderBy('al.fecha_nac', 'ASC');
         }
 
@@ -253,6 +253,7 @@ class AlumnoController extends Controller
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Peticion satisfactoria');
         data_set($response, 'data', $resultados);
+        data_set($response, 'envio', $baja.$tipoOrden);
         return response()->json($response, $response['status_code']);
     }
 
