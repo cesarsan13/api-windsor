@@ -36,8 +36,8 @@ class ProductoController extends Controller
     public function productFilter($type, $value)
     {
         switch ($type) {
-            case 'id':
-                $productos = DB::table('productos')->where('id', 'like', "%{$value}%")->where('baja', '<>', '*')->orderBy('id', 'ASC')->get();
+            case 'numero':
+                $productos = DB::table('productos')->where('numero', 'like', "%{$value}%")->where('baja', '<>', '*')->orderBy('numero', 'ASC')->get();
                 $response = ObjectResponse::CorrectResponse();
                 data_set($response, 'message', 'Peticion satisfactoria');
                 data_set($response, 'data', $productos);
@@ -132,7 +132,7 @@ class ProductoController extends Controller
     }
     public function lastProduct()
     {
-        $maxId = DB::table('productos')->max('id');
+        $maxId = DB::table('productos')->max('numero');
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Peticion satisfactoria');
         data_set($response, 'data', $maxId);
@@ -160,14 +160,14 @@ class ProductoController extends Controller
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
-        $producto = Producto::find($request->id);
+        $producto = Producto::find($request->numero);
         if ($producto) {
             $response = ObjectResponse::BadResponse('El producto ya existe');
-            data_set($response, 'errors', ['id' => ['Producto ya existe']]);
+            data_set($response, 'errors', ['numero' => ['Producto ya existe']]);
             return response()->json($response, $response['status_code']);
         }
         $producto = new Producto();
-        $producto->id = $request->id;
+        $producto->numero = $request->numero;
         $producto->descripcion = $request->descripcion;
         $producto->costo = $request->costo;
         $producto->frecuencia = $request->frecuencia;
@@ -185,7 +185,7 @@ class ProductoController extends Controller
         return response()->json($response, $response['status_code']);
     }
 
-    public function updateProduct(Request $request, $id)
+    public function updateProduct(Request $request, $numero)
     {
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         if ($validator->fails()) {
@@ -193,10 +193,10 @@ class ProductoController extends Controller
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
-        $producto = Producto::find($id);
+        $producto = Producto::find($numero);
         if (!$producto) {
             $response = ObjectResponse::BadResponse($validator->errors());
-            data_set($response, 'errors', ['id' => ['Producto no encontrado']]);
+            data_set($response, 'errors', ['numero' => ['Producto no encontrado']]);
             return response()->json($response, $response['status_code']);
         }
         $producto->descripcion = $request->descripcion;
