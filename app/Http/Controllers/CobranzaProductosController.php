@@ -7,6 +7,7 @@ use App\Models\TrabRepCobr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class CobranzaProductosController extends Controller
 {
@@ -24,11 +25,30 @@ class CobranzaProductosController extends Controller
         'nombre' => 'required|max:50',
         'importe' => 'required|integer'
     ];
+
+    public static function formatFechaString($date)
+    {
+        if ($date === "" || $date === null || !trim($date)) {
+            return "";
+        }
+        $dateWithoutTime = explode(' ', $date)[0];
+        $fechaObj = \DateTime::createFromFormat('Y-m-d', $dateWithoutTime);
+        if (!$fechaObj) {
+            return "";
+        }
+        return $fechaObj->format('Y/m/d');
+    }
+
+
     public function infoDetallePedido($fecha1, $fecha2, $articulo = '', $artFin = '')
     {
         DB::table('trab_rep_cobr')->delete();
+        $fecha1 = $this->formatFechaString($fecha1);
+        $fecha2 = $this->formatFechaString($fecha2);
+        Log::info($fecha1);
+        Log::info($fecha2);
         $Tsql = DB::table('detalle_pedido')
-            ->join('alumnos', 'detalle_pedido.articulo', '=', 'alumnos.id')
+            ->join('alumnos', 'detalle_pedido.articulo', '=', 'alumnos.numero')
             ->whereBetween('fecha', [$fecha1, $fecha2]);
         if (trim($articulo) !== '' || trim($artFin) !== '') {
             $Tsql->whereBetween('articulo', [$articulo, $artFin]);
@@ -36,7 +56,7 @@ class CobranzaProductosController extends Controller
         $Tsql->select('detalle_pedido.*', 'alumnos.nombre')->get();
         $result = $Tsql->get();
         $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'peticion satisfactoria | lista de xdjji');
+        data_set($response, 'message', 'peticion satisfactoria | lista');
         data_set($response, 'data', $result);
         return response()->json($response, $response['status_code']);
     }
@@ -77,13 +97,13 @@ class CobranzaProductosController extends Controller
         } else {
             $query->orderBy('articulo')->orderBy('alumno');
         }
-        $query->join('productos','trab_rep_cobr.articulo','=','productos.id');
-        $query->select('trab_rep_cobr.*','productos.descripcion');
-        $results= $query->get();
+        $query->join('productos', 'trab_rep_cobr.articulo', '=', 'productos.numero');
+        $query->select('trab_rep_cobr.*', 'productos.descripcion');
+        $results = $query->get();
         // dd($query);
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'peticion satisfactoria | lista de TrabRepCobr');
-        data_set($response, 'data', $results);        
+        data_set($response, 'data', $results);
         return response()->json($response, $response['status_code']);
     }
 }

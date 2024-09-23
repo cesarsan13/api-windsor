@@ -49,10 +49,10 @@ Route::middleware('auth:sanctum')->controller(FormFactController::class)->group(
 });
 
 
-Route::middleware('auth:sanctum')->controller(RepDosSelController::class)->group(function () {
-    Route::post('/RepDosSel/UpdateRepDosSel', 'UpdateRepDosSel');
-    Route::get("/RepDosSel/siguiente", "siguiente");
-});
+// Route::middleware('auth:sanctum')->controller(RepDosSelController::class)->group(function () {
+//     Route::post('/RepDosSel/UpdateRepDosSel', 'UpdateRepDosSel');
+//     Route::get("/RepDosSel/siguiente", "siguiente");
+// });
 
 Route::middleware('auth:sanctum')->controller(ProductoController::class)->group(function () {
     Route::get('/product', 'showProduct');
@@ -137,4 +137,4 @@ Route::middleware('auth:sanctum')->controller(Pagos1Controller::class)->group(fu
     Route::post("/pagos1/busca-doc-cobranza", "obtenerDocumentosCobranza");
 });
 
-Route::post('/documentosCobranza',[AdeudosPendientesController::class,'getDetallePedidos'])->middleware('auth:sanctum');
+Route::post('/documentosCobranza', [AdeudosPendientesController::class, 'getDetallePedidos'])->middleware('auth:sanctum');

@@ -19,6 +19,7 @@ class TrabRepCobr extends Model
     ];
     protected $table = 'trab_rep_cobr'; 
     public $incrementing = false;
+    public $timestamps = false;
     protected $primaryKey = ['recibo', 'fecha', 'articulo', 'documento', 'alumno'];
 
     
