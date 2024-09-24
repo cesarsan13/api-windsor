@@ -399,7 +399,7 @@ class ReportesController extends Controller
 
         $query = DB::table('detalle_pedido as DP')
             ->select('DP.numero_factura', 'DP.alumno', 'DP.recibo', 'DP.fecha', 'Al.razon_social', 'DP.iva', 'DP.descuento', 'DP.cantidad', 'DP.precio_unitario')
-            ->leftJoin('alumnos as Al', 'Al.id', '=', 'DP.alumno');
+            ->leftJoin('alumnos as Al', 'Al.numero', '=', 'DP.alumno');
 
         if ($tomaCanceladas === true) {
 
