@@ -101,5 +101,6 @@ class Alumno extends Model
         'baja',
     ];
     protected $table = 'alumnos';
+    public $timestamps = false;
     protected $primaryKey = 'numero';
 }

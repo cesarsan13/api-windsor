@@ -9,6 +9,7 @@ class Encab_Pedido extends Model
 {
     use HasFactory;
     protected $table = 'encab_pedido';
+    public $timestamps = false;
     protected $primaryKey = 'recibo';
     protected $fillable = [
         'recibo',

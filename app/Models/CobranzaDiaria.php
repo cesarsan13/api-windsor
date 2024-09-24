@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class CobranzaDiaria extends Model
 {
     use HasFactory;
-
+    public $timestamps = false;
     protected $fillable = [
         'recibo',
         'fecha_cobro',

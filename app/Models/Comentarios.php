@@ -21,7 +21,7 @@ class Comentarios extends Model
         'generales',
     ];
 
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'numero';
     protected $attributes = [
         'numero' => '0',
         'comentario_1' => '',

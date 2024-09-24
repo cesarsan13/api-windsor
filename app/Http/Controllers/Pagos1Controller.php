@@ -54,7 +54,7 @@ class Pagos1Controller extends Controller
         }
         $articulo = $request->articulo;
         $producto = DB::table('productos')
-            ->where('id',  $articulo)
+            ->where('numero',  $articulo)
             ->first();
         if (!$producto) {
             $response = ObjectResponse::BadResponse('Clave incorrecta');
@@ -158,7 +158,7 @@ class Pagos1Controller extends Controller
         // }
 
         $producto = DB::table('productos')
-            ->where('id', '=', $request->articulo)
+            ->where('numero', '=', $request->articulo)
             ->first();
 
         $iva = $producto->iva;
