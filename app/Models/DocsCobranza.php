@@ -22,5 +22,6 @@ class DocsCobranza extends Model
         'baja',
     ];
     protected $table = 'documentos_cobranza';
+    public $timestamps = false;
     // protected $primaryKey = ['alumno'];
 }

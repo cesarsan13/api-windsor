@@ -11,7 +11,7 @@ class Cobranza_Diaria extends Model
 
     protected $table ='cobranza_diaria';
     protected $primaryKey = 'recibo';
-
+    public $timestamps = false;
     protected $fillable = [
         'recibo', 
         'fecha_cobro',

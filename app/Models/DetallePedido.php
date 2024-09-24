@@ -22,5 +22,6 @@ class DetallePedido extends Model
         'numero_factura',
     ];
     protected $table = 'detalle_pedido';
+    public $timestamps = false;
     // protected $primaryKey = ['alumno'];
 }

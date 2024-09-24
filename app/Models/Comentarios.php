@@ -10,10 +10,10 @@ class Comentarios extends Model
     use HasFactory;
     public $timestamps = false;
 
-    protected $table = 'comentarios';
+    protected $table = 'comentario';
 
     protected $fillable = [
-        'id',
+        'numero',
         'comentario_1',
         'comentario_2',
         'comentario_3',
@@ -21,9 +21,9 @@ class Comentarios extends Model
         'generales',
     ];
 
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'numero';
     protected $attributes = [
-        'id' => '0',
+        'numero' => '0',
         'comentario_1' => '',
         'comentario_2' => '',
         'comentario_3' => '',
