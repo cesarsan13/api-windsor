@@ -243,9 +243,9 @@ class AlumnoController extends Controller
 
         if ($tipoOrden == 'nombre') {
             $query->orderBy('al.nombre', 'ASC');
-        } else if ($tipoOrden == 'numero') {
+        } else if ($tipoOrden == 'Numero') {
             $query->orderBy('al.numero', 'ASC');
-        } else if ($tipoOrden == 'fecha_nac') {
+        } else if ($tipoOrden == 'Fecha_nac') {
             $query->orderBy('al.fecha_nac', 'ASC');
         }
 
@@ -705,15 +705,15 @@ class AlumnoController extends Controller
         $alumno->nom_padre = $request->nom_padre ?? '';
         $alumno->tel_pad_1 = $request->tel_pad_1 ?? '';
         $alumno->tel_pad_2 = $request->tel_pad_2 ?? '';
-        $alumno->cel_pad = $request->cel_pad_1 ?? '';
+        $alumno->cel_pad = $request->cel_pad ?? '';
         $alumno->nom_madre = $request->nom_madre ?? '';
         $alumno->tel_mad_1 = $request->tel_mad_1 ?? '';
         $alumno->tel_mad_2 = $request->tel_mad_2 ?? '';
-        $alumno->cel_mad = $request->cel_mad_1 ?? '';
+        $alumno->cel_mad = $request->cel_mad ?? '';
         $alumno->nom_avi = $request->nom_avi ?? '';
         $alumno->tel_avi_1 = $request->tel_avi_1 ?? '';
         $alumno->tel_avi_2 = $request->tel_avi_2 ?? '';
-        $alumno->cel_avi = $request->cel_avi_1 ?? '';
+        $alumno->cel_avi = $request->cel_avi ?? '';
         $alumno->ciclo_escolar = $request->ciclo_escolar ?? '';
         $alumno->descuento = $request->descuento ?? 0;
         $alumno->rfc_factura = $request->rfc_factura ?? '';
@@ -749,7 +749,7 @@ class AlumnoController extends Controller
     public function updateAlumn(Request $request, $numero)
     {
         $rules = $this->rules;
-        $rules['numero'] = "required|integer|unique:alumnos,numero," . $numero . ",numero";
+        $rules['numero'] = 'required|integer|unique:alumnos,numero,' . $id;
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             // dd(vars: $validator);
@@ -761,7 +761,7 @@ class AlumnoController extends Controller
         // dd($alumno);
         if (!$alumno) {
             $response = ObjectResponse::BadResponse('El alumno no existe');
-            data_set($response, 'errors', ['id' => ['Alumno no existe']]);
+            data_set($response, 'errors', ['numero' => ['Alumno no existe']]);
             return response()->json($response, $response['status_code']);
         }
 
@@ -837,15 +837,15 @@ class AlumnoController extends Controller
         $alumno->nom_padre = $request->nom_padre ?? '';
         $alumno->tel_pad_1 = $request->tel_pad_1 ?? '';
         $alumno->tel_pad_2 = $request->tel_pad_2 ?? '';
-        $alumno->cel_pad = $request->cel_pad_1 ?? '';
+        $alumno->cel_pad = $request->cel_pad ?? '';
         $alumno->nom_madre = $request->nom_madre ?? '';
         $alumno->tel_mad_1 = $request->tel_mad_1 ?? '';
         $alumno->tel_mad_2 = $request->tel_mad_2 ?? '';
-        $alumno->cel_mad = $request->cel_mad_1 ?? '';
+        $alumno->cel_mad = $request->cel_mad ?? '';
         $alumno->nom_avi = $request->nom_avi ?? '';
         $alumno->tel_avi_1 = $request->tel_avi_1 ?? '';
         $alumno->tel_avi_2 = $request->tel_avi_2 ?? '';
-        $alumno->cel_avi = $request->cel_avi_1 ?? '';
+        $alumno->cel_avi = $request->cel_avi ?? '';
         $alumno->ciclo_escolar = $request->ciclo_escolar ?? '';
         $alumno->descuento = $request->descuento ?? 0;
         $alumno->rfc_factura = $request->rfc_factura ?? '';
