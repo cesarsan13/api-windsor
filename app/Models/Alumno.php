@@ -10,7 +10,7 @@ class Alumno extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id',
+        'numero',
         'nombre',
         'a_paterno',
         'a_materno',
@@ -19,8 +19,8 @@ class Alumno extends Model
         'fecha_inscripcion',
         'fecha_baja',
         'sexo',
-        'telefono_1',
-        'telefono_2',
+        'telefono1',
+        'telefono2',
         'celular',
         'codigo_barras',
         'direccion',
@@ -84,11 +84,11 @@ class Alumno extends Model
         'nom_padre',
         'tel_pad_1',
         'tel_pad_2',
-        'cel_pad_1',
+        'cel_pad',
         'nom_madre',
         'tel_mad_1',
         'tel_mad_2',
-        'cel_mad_1',
+        'cel_mad',
         'nom_avi',
         'tel_avi_1',
         'tel_avi_2',
@@ -101,5 +101,5 @@ class Alumno extends Model
         'baja',
     ];
     protected $table = 'alumnos';
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'numero';
 }

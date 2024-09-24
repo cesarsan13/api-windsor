@@ -45,7 +45,7 @@ class ReportesController extends Controller
                         ->orWhere("horario_19", "=", $idHorario)
                         ->orWhere("horario_20", "=", $idHorario);
                 })
-                ->orderBy($request->orden, 'ASC')->get(['id', 'nombre', 'fecha_nac', 'telefono_1']);
+                ->orderBy($request->orden, 'ASC')->get(['numero', 'nombre', 'fecha_nac', 'telefono1']);
 
             $rep_dos_sel = ObjectResponse::Rep_Dos_Sel(32);
             $rep_dos_sel = ObjectResponse::PrepHorario($alumnosHorario1, $rep_dos_sel, 1);
@@ -92,7 +92,7 @@ class ReportesController extends Controller
                         ->orWhere("horario_19", "=", $idHorario)
                         ->orWhere("horario_20", "=", $idHorario);
                 })
-                ->orderBy($request->orden, 'ASC')->get(['id', 'nombre', 'fecha_nac', 'telefono_1']);
+                ->orderBy($request->orden, 'ASC')->get(['numero', 'nombre', 'fecha_nac', 'telefono1']);
             $idHorario2 = $request->horario2;
             $alumnosHorario2 = Alumno::where('baja', '<>', '*')
                 ->where(function ($query) use ($idHorario2) {
@@ -117,7 +117,7 @@ class ReportesController extends Controller
                         ->orWhere("horario_19", "=", $idHorario2)
                         ->orWhere("horario_20", "=", $idHorario2);
                 })
-                ->orderBy($request->orden, 'ASC')->get(['id', 'nombre', 'fecha_nac', 'telefono_1']);
+                ->orderBy($request->orden, 'ASC')->get(['numero', 'nombre', 'fecha_nac', 'telefono1']);
             $rep_dos_sel = ObjectResponse::Rep_Dos_Sel(32);
             $rep_dos_sel = ObjectResponse::PrepHorario($alumnosHorario1, $rep_dos_sel, 1);
             $rep_dos_sel = ObjectResponse::PrepHorario($alumnosHorario2, $rep_dos_sel, 2);
@@ -191,8 +191,8 @@ class ReportesController extends Controller
         $alumno_ini = $request->input('alumno_ini');
         $alumno_fin = $request->input('alumno_fin');
 
-        $query = DB::table('encab_pedidos as ep')
-            ->leftJoin('alumnos as al', 'ep.alumno', 'al.id')
+        $query = DB::table('encab_pedido as ep')
+            ->leftJoin('alumnos as al', 'ep.alumno', 'al.numero')
             ->leftJoin('cajeros as cj', 'ep.cajero', 'cj.numero')
             ->select(
                 'ep.recibo',

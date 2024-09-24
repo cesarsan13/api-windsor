@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Encab_Pedido extends Model
 {
     use HasFactory;
-    protected $table = 'encab_pedidos';
+    protected $table = 'encab_pedido';
     protected $primaryKey = 'recibo';
     protected $fillable = [
         'recibo',
@@ -34,7 +34,7 @@ class Encab_Pedido extends Model
      */
     public function alumno()
     {
-        return $this->belongsTo(Alumno::class, 'alumnos', 'id');
+        return $this->belongsTo(Alumno::class, 'alumnos', 'numero');
     }
     /**
      * Get the cajero associated with the EncabPedido
