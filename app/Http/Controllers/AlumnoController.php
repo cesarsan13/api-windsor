@@ -253,7 +253,7 @@ class AlumnoController extends Controller
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Peticion satisfactoria');
         data_set($response, 'data', $resultados);
-        data_set($response, 'envio', $baja.$tipoOrden);
+        data_set($response, 'envio', $baja . $tipoOrden);
         return response()->json($response, $response['status_code']);
     }
 
@@ -749,7 +749,7 @@ class AlumnoController extends Controller
     public function updateAlumn(Request $request, $numero)
     {
         $rules = $this->rules;
-        $rules['numero'] = 'required|integer|unique:alumnos,numero,' . $id;
+        $rules['numero'] = 'required|integer|unique:alumnos,numero,' . $numero;
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             // dd(vars: $validator);
