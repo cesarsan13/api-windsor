@@ -324,20 +324,20 @@ class ReportesController extends Controller
                 'A.nombre AS nom_al',
                 'DP.articulo',
                 'PS.descripcion',
-                'DC.numero_doc',
+                DB::raw("COALESCE(DC.numero_doc, '') AS numero_doc"),
                 'DP.fecha',
                 DB::raw('round((DP.cantidad * DP.precio_unitario) - ((DP.cantidad * DP.precio_unitario) * (DP.descuento / 100) ), 2) AS importe'),
                 'DP.recibo',
-                'TC1.descripcion AS desc_Tipo_Pago_1',
-                'TC2.descripcion AS desc_Tipo_Pago_2',
+                DB::raw("COALESCE(TC1.descripcion , '') AS desc_Tipo_Pago_1"),
+                DB::raw("COALESCE(TC2.descripcion, '') AS desc_Tipo_Pago_2"),
                 'CS.nombre'
             )
 
-            ->Join('productos AS PS', 'DP.articulo', '=', 'PS.numero')
-            ->Join('alumnos AS A', 'DP.alumno', '=', 'A.numero')
-            ->Join('cobranza_diaria AS CD', 'DP.recibo', '=', 'CD.recibo')
-            ->Join('cajeros AS CS', 'CD.cajero', '=', 'CS.numero')
-            ->Join('documentos_cobranza AS DC', 'DP.alumno', '=', 'DC.alumno')
+            ->leftJoin('productos AS PS', 'DP.articulo', '=', 'PS.numero')
+            ->leftJoin('alumnos AS A', 'DP.alumno', '=', 'A.numero')
+            ->leftJoin('cobranza_diaria AS CD', 'DP.recibo', '=', 'CD.recibo')
+            ->leftJoin('cajeros AS CS', 'CD.cajero', '=', 'CS.numero')
+            ->leftJoin('documentos_cobranza AS DC', 'DP.alumno', '=', 'DC.alumno')
             ->leftJoin(DB::raw('tipo_cobro AS TC1'), 'TC1.numero', '=', 'CD.tipo_pago_1')
             ->leftJoin(DB::raw('tipo_cobro AS TC2'), 'TC2.numero', '=', 'CD.tipo_pago_2')
             ->where('importe_cobro', '>', 0);
@@ -368,6 +368,58 @@ class ReportesController extends Controller
 
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'peticion satisfactoria | lista de Cobranza Alumnos');
+        data_set($response, 'data', $respuesta);
+        return response()->json($response, $response['status_code']);
+    }
+
+    public function getEstadodeCuenta(Request $request)
+    {
+
+        $tomaFecha = $request->input('tomafecha');
+        $fecha_cobro_ini = $request->input('fecha_cobro_ini');
+        $fecha_cobro_fin = $request->input('fecha_cobro_fin');
+        $alumno_ini = $request->input('alumno_ini');
+        $alumno_fin = $request->input('alumno_fin');
+
+        $query = DB::table('detalle_pedido AS DP')
+            ->select(
+                'A.numero AS id_al',
+                'A.nombre AS nom_al',
+                'A.fecha_nac AS fecha_nac_al',
+                'A.fecha_inscripcion AS fecha_ins_al',
+                DB::raw("COALESCE(H.horario, '') AS horario_nom"),
+                'DP.articulo',
+                'PS.descripcion',
+                DB::raw("COALESCE(DC.numero_doc, '') AS numero_doc"),
+                'DP.fecha',
+                DB::raw('round((DP.cantidad * DP.precio_unitario) - ((DP.cantidad * DP.precio_unitario) * (DP.descuento / 100) ), 2) AS importe'),
+                'DP.recibo'
+            )
+            ->leftJoin('productos AS PS', 'DP.articulo', '=', 'PS.numero')
+            ->leftJoin('alumnos AS A', 'DP.alumno', '=', 'A.numero')
+            ->leftJoin('horarios AS H', 'A.horario_1', '=', 'H.numero' )
+            ->leftJoin('cobranza_diaria AS CD', 'DP.recibo', '=', 'CD.recibo')
+            ->leftJoin('documentos_cobranza AS DC', 'DP.alumno', '=', 'DC.alumno')
+            ->where('importe_cobro', '>', 0);
+
+        if ($tomaFecha === true) {
+            $query->whereBetween('CD.fecha_cobro', [$fecha_cobro_ini, $fecha_cobro_fin]);
+        }
+
+        if ($alumno_ini > 0 || $alumno_fin > 0) {
+            if ($alumno_fin == 0) {
+                $query->where('CD.alumno', '=', $alumno_ini);
+            } else {
+                $query->whereBetween('CD.alumno', [$alumno_ini, $alumno_fin]);
+            }
+        }
+
+        $query->orderBy('id_al', 'ASC');
+        $respuesta = $query->get();
+
+
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'peticion satisfactoria | lista de Estado de cuenta');
         data_set($response, 'data', $respuesta);
         return response()->json($response, $response['status_code']);
     }
