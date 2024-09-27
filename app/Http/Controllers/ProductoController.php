@@ -158,13 +158,13 @@ class ProductoController extends Controller
     {
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         if ($validator->fails()) {
-            $response = ObjectResponse::BadResponse('Error de validacion' . $validator->errors());
+            $response = ObjectResponse::BadResponse('Error de validacion' . $validator->errors(),'Error de validacion');
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
         $producto = Producto::find($request->numero);
         if ($producto) {
-            $response = ObjectResponse::BadResponse('El producto ya existe');
+            $response = ObjectResponse::BadResponse('El producto ya existe','Registro ya existente');
             data_set($response, 'errors', ['numero' => ['Producto ya existe']]);
             return response()->json($response, $response['status_code']);
         }

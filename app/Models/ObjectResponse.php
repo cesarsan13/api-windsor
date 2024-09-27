@@ -65,13 +65,13 @@ class ObjectResponse extends Model
         return $response;
     }
 
-    public static function BadResponse($alert_text) {
+    public static function BadResponse($alert_text,$alert_title=null) {
         $response = [
             "status_code" => 400,
             "status" => false,
             "message" => "Informacion Invalida",
             "alert_icon" => "info",
-            "alert_title" => "Bad Request.",
+            "alert_title" => $alert_title ?? "Error",
             "alert_text" => $alert_text,
             "data" => [],
         ];
