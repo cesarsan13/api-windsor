@@ -6,13 +6,14 @@ use Illuminate\Http\Request;
 use App\Models\ObjectResponse;
 use App\Models\Horario;
 use App\Models\Alumno;
-use App\Models\Cobranza_Diaria;
 use App\Models\Producto;
+use App\Models\Cobranza_Diaria;
 use App\Models\Encab_Pedido;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
+
 
 class ReportesController extends Controller
 {
@@ -45,7 +46,7 @@ class ReportesController extends Controller
                         ->orWhere("horario_19", "=", $idHorario)
                         ->orWhere("horario_20", "=", $idHorario);
                 })
-                ->orderBy($request->orden, 'ASC')->get(['id', 'nombre', 'fecha_nac', 'telefono_1']);
+                ->orderBy($request->orden, 'ASC')->get(['numero', 'nombre', 'fecha_nac', 'telefono1']);
 
             $rep_dos_sel = ObjectResponse::Rep_Dos_Sel(32);
             $rep_dos_sel = ObjectResponse::PrepHorario($alumnosHorario1, $rep_dos_sel, 1);
@@ -92,7 +93,7 @@ class ReportesController extends Controller
                         ->orWhere("horario_19", "=", $idHorario)
                         ->orWhere("horario_20", "=", $idHorario);
                 })
-                ->orderBy($request->orden, 'ASC')->get(['id', 'nombre', 'fecha_nac', 'telefono_1']);
+                ->orderBy($request->orden, 'ASC')->get(['numero', 'nombre', 'fecha_nac', 'telefono1']);
             $idHorario2 = $request->horario2;
             $alumnosHorario2 = Alumno::where('baja', '<>', '*')
                 ->where(function ($query) use ($idHorario2) {
@@ -117,7 +118,7 @@ class ReportesController extends Controller
                         ->orWhere("horario_19", "=", $idHorario2)
                         ->orWhere("horario_20", "=", $idHorario2);
                 })
-                ->orderBy($request->orden, 'ASC')->get(['id', 'nombre', 'fecha_nac', 'telefono_1']);
+                ->orderBy($request->orden, 'ASC')->get(['numero', 'nombre', 'fecha_nac', 'telefono1']);
             $rep_dos_sel = ObjectResponse::Rep_Dos_Sel(32);
             $rep_dos_sel = ObjectResponse::PrepHorario($alumnosHorario1, $rep_dos_sel, 1);
             $rep_dos_sel = ObjectResponse::PrepHorario($alumnosHorario2, $rep_dos_sel, 2);
@@ -251,20 +252,21 @@ class ReportesController extends Controller
         data_set($response, 'data', $resultados);
         return response()->json($response, $response['status_code']);
     }
-    public function getBecas(Request $request) {
+    public function getBecas(Request $request)
+    {
         $response = ObjectResponse::DefaultResponse();
         $incBaja = $request->input('incBaja', 0);
         $socio = $request->input('socio', [0, 0]);
         $horarioFiltro = $request->input('horario', null);
-    
+
         $query = Alumno::where('id', '<>', '')
             ->where('estatus', 'Activo')
             ->where('descuento', '>', 0);
-    
+
         if ($incBaja == 1) {
             $query->where('baja', '<>', '*');
         }
-    
+
         if ((int)$socio[0] > 0 || (int)$socio[1] > 0) {
             if ((int)$socio[1] === 0) {
                 $query->where('id', (int)$socio[0]);
@@ -272,22 +274,22 @@ class ReportesController extends Controller
                 $query->whereBetween('id', [(int)$socio[0], (int)$socio[1]]);
             }
         }
-    
+
         if ($horarioFiltro !== null) {
             $query->where('horario_1', $horarioFiltro);
         }
-    
+
         $alumnos = $query->orderBy('descuento', 'DESC')->get();
-    
-        $resultados = []; 
+
+        $resultados = [];
         foreach ($alumnos as $alumno) {
             $horario = Horario::where('numero', $alumno->horario_1)->first();
             $producto = Producto::where('id', $alumno->cond_1)->first();
             $costoProd = $producto ? $producto->costo : 0;
-    
+
             $twDescuento = $costoProd * ($alumno->descuento / 100);
             $costoFinal = $costoProd - $twDescuento;
-            
+
             $resultados[] = [
                 'numero' => $alumno->id,
                 'alumno' => $alumno->nombre,
@@ -297,13 +299,14 @@ class ReportesController extends Controller
                 'costo_final' => $costoFinal,
             ];
         }
-    
+
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Peticion satisfactoria');
-        data_set($response, 'data', $resultados); 
-    
+        data_set($response, 'data', $resultados);
+
         return response()->json($response, $response['status_code']);
     }
+
     public function getCobranzaAlumno(Request $request)
     {
 
@@ -321,20 +324,20 @@ class ReportesController extends Controller
                 'A.nombre AS nom_al',
                 'DP.articulo',
                 'PS.descripcion',
-                'DC.numero_doc',
+                DB::raw("COALESCE(DC.numero_doc, '') AS numero_doc"),
                 'DP.fecha',
                 DB::raw('round((DP.cantidad * DP.precio_unitario) - ((DP.cantidad * DP.precio_unitario) * (DP.descuento / 100) ), 2) AS importe'),
                 'DP.recibo',
-                'TC1.descripcion AS desc_Tipo_Pago_1',
-                'TC2.descripcion AS desc_Tipo_Pago_2',
+                DB::raw("COALESCE(TC1.descripcion , '') AS desc_Tipo_Pago_1"),
+                DB::raw("COALESCE(TC2.descripcion, '') AS desc_Tipo_Pago_2"),
                 'CS.nombre'
             )
 
-            ->Join('productos AS PS', 'DP.articulo', '=', 'PS.numero')
-            ->Join('alumnos AS A', 'DP.alumno', '=', 'A.numero')
-            ->Join('cobranza_diaria AS CD', 'DP.recibo', '=', 'CD.recibo')
-            ->Join('cajeros AS CS', 'CD.cajero', '=', 'CS.numero')
-            ->Join('documentos_cobranza AS DC', 'DP.alumno', '=', 'DC.alumno')
+            ->leftJoin('productos AS PS', 'DP.articulo', '=', 'PS.numero')
+            ->leftJoin('alumnos AS A', 'DP.alumno', '=', 'A.numero')
+            ->leftJoin('cobranza_diaria AS CD', 'DP.recibo', '=', 'CD.recibo')
+            ->leftJoin('cajeros AS CS', 'CD.cajero', '=', 'CS.numero')
+            ->leftJoin('documentos_cobranza AS DC', 'DP.alumno', '=', 'DC.alumno')
             ->leftJoin(DB::raw('tipo_cobro AS TC1'), 'TC1.numero', '=', 'CD.tipo_pago_1')
             ->leftJoin(DB::raw('tipo_cobro AS TC2'), 'TC2.numero', '=', 'CD.tipo_pago_2')
             ->where('importe_cobro', '>', 0);
@@ -369,22 +372,76 @@ class ReportesController extends Controller
         return response()->json($response, $response['status_code']);
     }
 
+    public function getEstadodeCuenta(Request $request)
+    {
+
+        $tomaFecha = $request->input('tomafecha');
+        $fecha_cobro_ini = $request->input('fecha_cobro_ini');
+        $fecha_cobro_fin = $request->input('fecha_cobro_fin');
+        $alumno_ini = $request->input('alumno_ini');
+        $alumno_fin = $request->input('alumno_fin');
+
+        $query = DB::table('detalle_pedido AS DP')
+            ->select(
+                'A.numero AS id_al',
+                'A.nombre AS nom_al',
+                'A.fecha_nac AS fecha_nac_al',
+                'A.fecha_inscripcion AS fecha_ins_al',
+                DB::raw("COALESCE(H.horario, '') AS horario_nom"),
+                'DP.articulo',
+                'PS.descripcion',
+                DB::raw("COALESCE(DC.numero_doc, '') AS numero_doc"),
+                'DP.fecha',
+                DB::raw('round((DP.cantidad * DP.precio_unitario) - ((DP.cantidad * DP.precio_unitario) * (DP.descuento / 100) ), 2) AS importe'),
+                'DP.recibo'
+            )
+            ->leftJoin('productos AS PS', 'DP.articulo', '=', 'PS.numero')
+            ->leftJoin('alumnos AS A', 'DP.alumno', '=', 'A.numero')
+            ->leftJoin('horarios AS H', 'A.horario_1', '=', 'H.numero' )
+            ->leftJoin('cobranza_diaria AS CD', 'DP.recibo', '=', 'CD.recibo')
+            ->leftJoin('documentos_cobranza AS DC', 'DP.alumno', '=', 'DC.alumno')
+            ->where('importe_cobro', '>', 0);
+
+        if ($tomaFecha === true) {
+            $query->whereBetween('CD.fecha_cobro', [$fecha_cobro_ini, $fecha_cobro_fin]);
+        }
+
+        if ($alumno_ini > 0 || $alumno_fin > 0) {
+            if ($alumno_fin == 0) {
+                $query->where('CD.alumno', '=', $alumno_ini);
+            } else {
+                $query->whereBetween('CD.alumno', [$alumno_ini, $alumno_fin]);
+            }
+        }
+
+        $query->orderBy('id_al', 'ASC');
+        $respuesta = $query->get();
+
+
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'peticion satisfactoria | lista de Estado de cuenta');
+        data_set($response, 'data', $respuesta);
+        return response()->json($response, $response['status_code']);
+    }
+
     public function getConsultasInscripcion()
     {
-        $alumnos = DB::table('alumnos')->where('estatus', '=', 'activo')->orderBy('id', 'ASC')->get();
-        $det_ped = DB::table('detalle_pedido')->get();
-        $productos = DB::table('productos')->get();
-        $horarios = DB::table('horarios')->get();
+        $alumnos = DB::table('alumnos')->where('estatus', '=', 'activo')->orderBy('numero', 'ASC')->get()->toArray();
+        $det_ped = DB::table('detalle_pedido')->get()->toArray();
+        $productos = DB::table('productos')->get()->toArray();
+        $horarios = DB::table('horarios')->get()->toArray();
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'peticion satisfactoria | lista de Cobranza Alumnos');
         data_set($response, 'data_alumnos', $alumnos);
         data_set($response, 'data_detalle', $det_ped);
         data_set($response, 'data_productos', $productos);
         data_set($response, 'data_horarios', $horarios);
+        return response()->json($response, $response['status_code']);
     }
 
- 
-     public function getRelaciondeFacturas (Request $request){
+
+    public function getRelaciondeFacturas(Request $request)
+    {
         $tomaFecha = $request->input('tomaFecha');
         $tomaCanceladas = $request->input('tomaCanceladas');
         $fecha_cobro_ini = $request->input('fecha_cobro_ini');
@@ -393,36 +450,34 @@ class ReportesController extends Controller
         $factura_fin = $request->input('factura_fin');
 
         $query = DB::table('detalle_pedido as DP')
-        ->select('DP.numero_factura', 'DP.alumno', 'DP.recibo', 'DP.fecha', 'Al.razon_social', 'DP.iva', 'DP.descuento', 'DP.cantidad', 'DP.precio_unitario' )
-        ->leftJoin('alumnos as Al', 'Al.id', '=', 'DP.alumno');
-        
-        if ($tomaCanceladas === true){
-            
+            ->select('DP.numero_factura', 'DP.alumno', 'DP.recibo', 'DP.fecha', 'Al.razon_social', 'DP.iva', 'DP.descuento', 'DP.cantidad', 'DP.precio_unitario')
+            ->leftJoin('alumnos as Al', 'Al.numero', '=', 'DP.alumno');
+
+        if ($tomaCanceladas === true) {
+
             if ($tomaFecha === true) {
-                $query->whereBetween('DP.fecha', [$fecha_cobro_ini, $fecha_cobro_fin]); 
+                $query->whereBetween('DP.fecha', [$fecha_cobro_ini, $fecha_cobro_fin]);
             }
 
-            $query->where('DP.numero_factura','=', 0);
-
+            $query->where('DP.numero_factura', '=', 0);
         } else {
             if ($tomaFecha === true) {
                 $query->whereBetween('DP.fecha', [$fecha_cobro_ini, $fecha_cobro_fin])
-                    ->where('DP.numero_factura','>', 0);
+                    ->where('DP.numero_factura', '>', 0);
             }
 
-            if ($factura_ini > 0 || $factura_fin > 0){
-                if($factura_fin == 0){
+            if ($factura_ini > 0 || $factura_fin > 0) {
+                if ($factura_fin == 0) {
                     $query->where('DP.numero_factura', '=', $factura_ini)
-                    ->where('DP.numero_factura','>', 0);
-                }else{
+                        ->where('DP.numero_factura', '>', 0);
+                } else {
                     $query->whereBetween('DP.numero_factura', [$factura_ini, $factura_fin])
-                    ->where('DP.numero_factura','>', 0);
+                        ->where('DP.numero_factura', '>', 0);
                 }
             }
-        } 
+        }
         $query->orderBy('DP.numero_factura', 'ASC');
         $respuesta = $query->get();
-
         //$data = [$respuesta, $tomaFecha, $fecha_cobro_ini, $fecha_cobro_fin, $factura_ini, $factura_fin];
 
         $response = ObjectResponse::CorrectResponse();
@@ -431,4 +486,3 @@ class ReportesController extends Controller
         return response()->json($response, $response['status_code']);
     }
 }
-

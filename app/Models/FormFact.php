@@ -10,18 +10,19 @@ class FormFact extends Model
     use HasFactory;
 
     protected $fillable = [
-        'numero',
-        'nombre',
+        'numero_forma',
+        'nombre_forma',
         'longitud',
         'baja',
     ];
 
     protected $attributes = [
-        'numero' => '0',
-        'nombre' => '',
+        'numero_forma' => '0',
+        'nombre_forma' => '',
         'longitud' => 0,
         'baja'=>'',
     ];
+    public $timestamps = false;
     protected $table = 'facturas_formas';
-    protected $primaryKey = 'numero';
+    protected $primaryKey = 'numero_forma';
 }

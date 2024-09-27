@@ -49,10 +49,10 @@ Route::middleware('auth:sanctum')->controller(FormFactController::class)->group(
 });
 
 
-Route::middleware('auth:sanctum')->controller(RepDosSelController::class)->group(function () {
-    Route::post('/RepDosSel/UpdateRepDosSel', 'UpdateRepDosSel');
-    Route::get("/RepDosSel/siguiente", "siguiente");
-});
+// Route::middleware('auth:sanctum')->controller(RepDosSelController::class)->group(function () {
+//     Route::post('/RepDosSel/UpdateRepDosSel', 'UpdateRepDosSel');
+//     Route::get("/RepDosSel/siguiente", "siguiente");
+// });
 
 Route::middleware('auth:sanctum')->controller(ProductoController::class)->group(function () {
     Route::get('/product', 'showProduct');
@@ -60,7 +60,7 @@ Route::middleware('auth:sanctum')->controller(ProductoController::class)->group(
     Route::get('/product/last', 'lastProduct');
     Route::get('/product/bajas', 'bajaProduct');
     Route::post('/product/save', 'storeProduct');
-    Route::put('/product/update/{id}', 'updateProduct');
+    Route::put('/product/update/{numero}', 'updateProduct');
 });
 
 Route::middleware('auth:sanctum')->controller(AlumnoController::class)->group(function () {
@@ -102,7 +102,7 @@ Route::middleware('auth:sanctum')->controller(AlumnosPorClaseController::class)-
     Route::get('/AlumnosPC/Lista/{idHorario}/{orden}', 'getListaHorariosAPC');
 });
 
-Route::get('/cobranza/{Fecha_Inicial}/{Fecha_Final}/{cajero?}', [CobranzaController::class, 'PDF'])->middleware('auth:sanctum');
+Route::post('/cobranza', [CobranzaController::class, 'PDF'])->middleware('auth:sanctum');
 
 Route::controller(DocumentosCobranzaController::class)->group(function () {
     Route::get('/documentoscobranza/{fecha}/{grupo?}', 'imprimir')->middleware('auth:sanctum');
@@ -123,6 +123,8 @@ Route::middleware('auth:sanctum')->controller(ReportesController::class)->group(
     Route::post("/reportes/rep_femac_3", "getAlumnosPorMes");
     Route::post("/reportes/rep_becas", "getBecas");
     Route::post("/reportes/rep_femac_11_anexo_3", "getCobranzaAlumno");
+    Route::post("/reportes/rep_femac_10_anexo_2", "getEstadodeCuenta");
+    Route::post("/reportes/rep_femac_9_anexo_4", "getRelaciondeFacturas");
     Route::get("/reportes/rep_inscritos", "getConsultasInscripcion");
 });
 
@@ -137,4 +139,4 @@ Route::middleware('auth:sanctum')->controller(Pagos1Controller::class)->group(fu
     Route::post("/pagos1/busca-doc-cobranza", "obtenerDocumentosCobranza");
 });
 
-Route::post('/documentosCobranza',[AdeudosPendientesController::class,'getDetallePedidos'])->middleware('auth:sanctum');
+Route::post('/documentosCobranza', [AdeudosPendientesController::class, 'getDetallePedidos'])->middleware('auth:sanctum');

@@ -14,9 +14,9 @@ class TipoCobroController extends Controller
         'unique' => 'El campo :attribute ya ha sido registrado',
         ];
         protected $rules = [
-            'id'=> 'required|integer',
+            'numero'=> 'required|integer',
             'descripcion'=>'required|string|max:50',
-            'comision'=>'nullable|string',
+            'comision'=>'nullable|numeric',
             'aplicacion'=>'nullable|string|max:30',
             'cue_banco'=>'nullable|string|max:34',
             'baja'=>'nullable|string|max:1',
@@ -54,7 +54,7 @@ class TipoCobroController extends Controller
         public function siguiente(){
         $response  = ObjectResponse::DefaultResponse();
         try {
-            $siguiente = TipoCobro::max('id');
+            $siguiente = TipoCobro::max('numero');
             $response = ObjectResponse::CorrectResponse();
             data_set($response,'message','peticion satisfactoria | Siguiente tipo de cobro');
             data_set($response,'alert_text','Siguiente tipo de cobro');
@@ -77,7 +77,7 @@ class TipoCobroController extends Controller
         
         try {
             $datosFiltrados = $request->only([
-                'id',
+                'numero',
                 'descripcion',
                 'comision',
                 'aplicacion',
@@ -87,7 +87,7 @@ class TipoCobroController extends Controller
             $datosFiltrados['comision'] = str_replace(',', '', (string)$datosFiltrados['comision']);
     
             $nuevoCobro = TipoCobro::create([
-                "id" => $datosFiltrados['id'],
+                "numero" => $datosFiltrados['numero'],
                 "descripcion" => $datosFiltrados['descripcion'],
                 "comision" => $datosFiltrados['comision'] ?? '',
                 "aplicacion" => $datosFiltrados['aplicacion'] ?? '',
@@ -119,7 +119,7 @@ class TipoCobroController extends Controller
             $cue_banco = $request->cue_banco ? str_replace(',', '', $request->cue_banco) : '';
             $baja = $request->baja ? str_replace(',', '', $request->baja) : '';
     
-            $tipo_cobro = TipoCobro::where('id', $request->id)
+            $tipo_cobro = TipoCobro::where('numero', $request->numero)
                 ->update([
                     "descripcion" => $descripcion,
                     "comision" => $comision,

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Propietario extends Model
 {
     use HasFactory;
+    public $timestamps = false;
 
     protected $fillable = [
         'numero',
