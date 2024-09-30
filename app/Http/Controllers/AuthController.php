@@ -11,8 +11,9 @@ use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
-    public function login(Request $request){
-          $validator = Validator::make($request->all(), [
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
             'email' => 'required',
             'password' => 'required',
         ], [
@@ -20,10 +21,11 @@ class AuthController extends Controller
             'password.required' => 'El campo "Contraseña" es obligatorio',
         ]);
 
+
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()->all()], 422);
         }
-        $user =  User::where('email', $request->email)
+        $user = User::where('email', $request->email)
             ->first();
         if (!$user || !Hash::check($request->password, $user->password)) {
             $response = ObjectResponse::CatchResponse("Credenciales incorrectas");

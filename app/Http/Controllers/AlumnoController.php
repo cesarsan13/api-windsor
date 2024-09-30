@@ -23,6 +23,7 @@ class AlumnoController extends Controller
         'boolean' => 'El campo :attribute debe ser un valor booleano.',
     ];
     protected $rules = [
+        'numero' => 'required|numeric',
         'nombre' => 'required|string|max:50',
         'a_paterno' => 'required|string|max:50',
         'a_materno' => 'required|string|max:50',
@@ -41,7 +42,7 @@ class AlumnoController extends Controller
         'estado' => 'required|string|max:100',
         'cp' => 'required|string|max:10',
         'email' => 'required|string|email',
-        'imagen' => 'nullable',
+        'ruta_foto' => 'nullable',
         'dia_1' => 'nullable|string|max:20',
         'dia_2' => 'nullable|string|max:20',
         'dia_3' => 'nullable|string|max:20',
@@ -149,7 +150,7 @@ class AlumnoController extends Controller
                 'al.estado',
                 'al.cp',
                 'al.email',
-                'al.imagen',
+                'al.ruta_foto',
                 'al.dia_1',
                 'al.dia_2',
                 'al.dia_3',
@@ -222,7 +223,7 @@ class AlumnoController extends Controller
                 'al.baja'
             );
 
-        if ($baja === 'Alta') {
+        if ($baja === 'alta') {
             if ($fecha_ini > 0 || $fecha_fin > 0) {
                 if ($fecha_fin == 0) {
                     $query->where('al.fecha_inscripcion', '=', $fecha_ini);
@@ -240,7 +241,7 @@ class AlumnoController extends Controller
             }
         }
 
-        if ($tipoOrden == 'Nombre') {
+        if ($tipoOrden == 'nombre') {
             $query->orderBy('al.nombre', 'ASC');
         } else if ($tipoOrden == 'Numero') {
             $query->orderBy('al.numero', 'ASC');
@@ -252,6 +253,7 @@ class AlumnoController extends Controller
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Peticion satisfactoria');
         data_set($response, 'data', $resultados);
+        data_set($response, 'envio', $baja . $tipoOrden);
         return response()->json($response, $response['status_code']);
     }
 
@@ -284,7 +286,7 @@ class AlumnoController extends Controller
                 'al.estado',
                 'al.cp',
                 'al.email',
-                'al.imagen',
+                'al.ruta_foto',
                 'al.dia_1',
                 'al.dia_2',
                 'al.dia_3',
@@ -411,7 +413,7 @@ class AlumnoController extends Controller
                     'al.estado',
                     'al.cp',
                     'al.email',
-                    'al.imagen',
+                    'al.ruta_foto',
                     'al.dia_1',
                     'al.dia_2',
                     'al.dia_3',
@@ -532,7 +534,7 @@ class AlumnoController extends Controller
                     'al.estado',
                     'al.cp',
                     'al.email',
-                    'al.imagen',
+                    'al.ruta_foto',
                     'al.dia_1',
                     'al.dia_2',
                     'al.dia_3',
@@ -618,6 +620,7 @@ class AlumnoController extends Controller
     }
     public function storeAlumn(Request $request)
     {
+        // dd($request);
         $validator = Validator::make($request->all(), $this->rules);
         if ($validator->fails()) {
             $response = ObjectResponse::BadResponse('Error de validacion');
@@ -702,7 +705,7 @@ class AlumnoController extends Controller
         $alumno->raz_colonia = $request->raz_colonia ?? '';
         $alumno->raz_ciudad = $request->raz_ciudad ?? '';
         $alumno->raz_estado = $request->raz_estado ?? '';
-        $alumno->raz_cp = $request->raz_cp ?? '';
+        $alumno->raz_cp = $request->raz_cp ?? 0;
         $alumno->nom_padre = $request->nom_padre ?? '';
         $alumno->tel_pad_1 = $request->tel_pad_1 ?? '';
         $alumno->tel_pad_2 = $request->tel_pad_2 ?? '';
@@ -728,10 +731,10 @@ class AlumnoController extends Controller
             // $fullPath = $destinationPath . '/' . $imageName;
             $fullPath = $imageName;
             if (file_exists($fullPath)) {
-                $alumno->imagen = $fullPath;
+                $alumno->ruta_foto = $fullPath;
             } else {
                 $uploadSuccess = $image->move($destinationPath, $imageName);
-                $alumno->imagen = $fullPath;
+                $alumno->ruta_foto = $fullPath;
             }
             $alumno->save();
             $response = ObjectResponse::CorrectResponse();
@@ -750,15 +753,15 @@ class AlumnoController extends Controller
     public function updateAlumn(Request $request, $numero)
     {
         $rules = $this->rules;
-        $rules['numero'] = 'required|integer|unique:alumnos,numero,' . $numero . ',numero';
+        $rules['numero'] = 'required|integer|unique:alumnos,numero,' . $numero;
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
+            // dd(vars: $validator);
             $response = ObjectResponse::BadResponse('Error de validacion');
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
-        // $alumno = Alumno::find($numero);
-        $alumno = Alumno::where('numero', $numero)->first();
+        $alumno = Alumno::find($numero);
         if (!$alumno) {
             $response = ObjectResponse::BadResponse('El alumno no existe');
             data_set($response, 'errors', ['numero' => ['Alumno no existe']]);
@@ -833,7 +836,7 @@ class AlumnoController extends Controller
         $alumno->raz_colonia = $request->raz_colonia ?? '';
         $alumno->raz_ciudad = $request->raz_ciudad ?? '';
         $alumno->raz_estado = $request->raz_estado ?? '';
-        $alumno->raz_cp = $request->raz_cp ?? '';
+        $alumno->raz_cp = $request->raz_cp ?? 0;
         $alumno->nom_padre = $request->nom_padre ?? '';
         $alumno->tel_pad_1 = $request->tel_pad_1 ?? '';
         $alumno->tel_pad_2 = $request->tel_pad_2 ?? '';
@@ -859,10 +862,10 @@ class AlumnoController extends Controller
             // $fullPath = $destinationPath . '/' . $imageName;
             $fullPath = $imageName;
             if (file_exists($fullPath)) {
-                $alumno->imagen = $fullPath;
+                $alumno->ruta_foto = $fullPath;
             } else {
                 $uploadSuccess = $image->move($destinationPath, $imageName);
-                $alumno->imagen = $fullPath;
+                $alumno->ruta_foto = $fullPath;
             }
             $alumno->save();
             $response = ObjectResponse::CorrectResponse();

@@ -35,6 +35,7 @@ class Cajeros extends Model
         'fec_cambio'=>'',
         'clave_cajero'=>'0',
     ];
+    public $timestamps = false;
     protected $table ='cajeros';
     protected $primaryKey = 'numero';
 }

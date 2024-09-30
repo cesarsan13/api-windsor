@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Alumno extends Model
 {
     use HasFactory;
-
+    public $timestamps = false;
     protected $fillable = [
         'numero',
         'nombre',
@@ -29,7 +29,7 @@ class Alumno extends Model
         'estado',
         'cp',
         'email',
-        'imagen',
+        'ruta_foto',
         'dia_1',
         'dia_2',
         'dia_3',
@@ -93,7 +93,7 @@ class Alumno extends Model
         'tel_avi_1',
         'tel_avi_2',
         'cel_avi_1',
-        'ciclo_escolar', 
+        'ciclo_escolar',
         'descuento',
         'rfc_factura',
         'estatus',
@@ -101,6 +101,5 @@ class Alumno extends Model
         'baja',
     ];
     protected $table = 'alumnos';
-    public $timestamps = false;
     protected $primaryKey = 'numero';
 }

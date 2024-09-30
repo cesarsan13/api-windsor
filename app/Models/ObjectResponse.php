@@ -35,17 +35,17 @@ class ObjectResponse extends Model
                 $objeto = $rep_dos_sel[$i];
                 $alumno = $lista[$i];
                 if($num_horario==1){
-                        $objeto->Numero_1 = $alumno['id'];
+                        $objeto->Numero_1 = $alumno['numero'];
                         $objeto->Nombre_1 = $alumno['nombre'];
                         $objeto->Año_Nac_1 = $alumno['fecha_nac'];
                         $objeto->Mes_Nac_1 = $alumno['fecha_nac'];
-                        $objeto->Telefono_1 = $alumno['telefono_1'];
+                        $objeto->Telefono_1 = $alumno['telefono1'];
                 }else{
-                        $objeto->Numero_2 = $alumno['id'];
+                        $objeto->Numero_2 = $alumno['numero'];
                         $objeto->Nombre_2 = $alumno['nombre'];
                         $objeto->Año_Nac_2 = $alumno['fecha_nac'];
                         $objeto->Mes_Nac_2 = $alumno['fecha_nac'];
-                        $objeto->Telefono_2 = $alumno['telefono_1'];
+                        $objeto->Telefono_2 = $alumno['telefono1'];
                 }
              }
             $rep_dos_sel[$i] = $objeto;
@@ -65,13 +65,13 @@ class ObjectResponse extends Model
         return $response;
     }
 
-    public static function BadResponse($alert_text) {
+    public static function BadResponse($alert_text,$alert_title=null) {
         $response = [
             "status_code" => 400,
             "status" => false,
             "message" => "Informacion Invalida",
             "alert_icon" => "info",
-            "alert_title" => "Bad Request.",
+            "alert_title" => $alert_title ?? "Error",
             "alert_text" => $alert_text,
             "data" => [],
         ];

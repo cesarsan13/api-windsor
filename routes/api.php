@@ -102,7 +102,7 @@ Route::middleware('auth:sanctum')->controller(AlumnosPorClaseController::class)-
     Route::get('/AlumnosPC/Lista/{idHorario}/{orden}', 'getListaHorariosAPC');
 });
 
-Route::get('/cobranza/{Fecha_Inicial}/{Fecha_Final}/{cajero?}', [CobranzaController::class, 'PDF'])->middleware('auth:sanctum');
+Route::post('/cobranza', [CobranzaController::class, 'PDF'])->middleware('auth:sanctum');
 
 Route::controller(DocumentosCobranzaController::class)->group(function () {
     Route::get('/documentoscobranza/{fecha}/{grupo?}', 'imprimir')->middleware('auth:sanctum');
@@ -123,6 +123,8 @@ Route::middleware('auth:sanctum')->controller(ReportesController::class)->group(
     Route::post("/reportes/rep_femac_3", "getAlumnosPorMes");
     Route::post("/reportes/rep_becas", "getBecas");
     Route::post("/reportes/rep_femac_11_anexo_3", "getCobranzaAlumno");
+    Route::post("/reportes/rep_femac_10_anexo_2", "getEstadodeCuenta");
+    Route::post("/reportes/rep_femac_9_anexo_4", "getRelaciondeFacturas");
     Route::get("/reportes/rep_inscritos", "getConsultasInscripcion");
 });
 
