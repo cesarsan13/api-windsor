@@ -388,6 +388,8 @@ class AlumnoController extends Controller
         try {
             $alumnos = DB::table('alumnos as al')
                 ->leftJoin('horarios as hr1', 'al.horario_1', '=', 'hr1.numero')
+                ->leftJoin('tipo_cobro as tp1', 'al.cond_1', '=', 'tp1.numero')
+                ->leftJoin('tipo_cobro as tp2', 'al.cond_2', '=', 'tp2.numero')
                 ->select(
                     'al.numero',
                     DB::raw("CONCAT(al.a_nombre, ' ', al.a_paterno, ' ', al.a_materno) as nombre_completo"),
@@ -444,7 +446,9 @@ class AlumnoController extends Controller
                     'al.horario_19',
                     'al.horario_20',
                     'al.cond_1',
+                    'tp1.descripcion as cond_1_nombre',
                     'al.cond_2',
+                    'tp2.descripcion as cond_2_nombre',
                     'al.cond_3',
                     'al.nom_pediatra',
                     'al.tel_p_1',
@@ -621,7 +625,7 @@ class AlumnoController extends Controller
             return response()->json($response, $response['status_code']);
         }
 
-        $alumno = Alumno::find($request->id);
+        $alumno = Alumno::find($request->numero);
         if ($alumno) {
             $response = ObjectResponse::BadResponse('El alumno ya existe');
             data_set($response, 'errors', ['numero' => ['Alumno ya existe']]);
@@ -743,17 +747,18 @@ class AlumnoController extends Controller
         }
     }
 
-    public function updateAlumn(Request $request, $id)
+    public function updateAlumn(Request $request, $numero)
     {
         $rules = $this->rules;
-        $rules['numero'] = 'required|integer|unique:alumnos,numero,' . $id;
+        $rules['numero'] = 'required|integer|unique:alumnos,numero,' . $numero . ',numero';
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             $response = ObjectResponse::BadResponse('Error de validacion');
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
-        $alumno = Alumno::find($id);
+        // $alumno = Alumno::find($numero);
+        $alumno = Alumno::where('numero', $numero)->first();
         if (!$alumno) {
             $response = ObjectResponse::BadResponse('El alumno no existe');
             data_set($response, 'errors', ['numero' => ['Alumno no existe']]);

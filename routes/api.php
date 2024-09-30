@@ -71,7 +71,7 @@ Route::middleware('auth:sanctum')->controller(AlumnoController::class)->group(fu
     Route::post('/students/report/AltaBaja', 'getReportAltaBajaAlumno');
     Route::get('/students/bajas', 'bajaAlumn');
     Route::post('/students/save', 'storeAlumn');
-    Route::post('/students/update/{id}', 'updateAlumn');
+    Route::post('/students/update/{numero}', 'updateAlumn');
 });
 
 Route::middleware('auth:sanctum')->controller(ComentariosController::class)->group(function () {
