@@ -64,6 +64,7 @@ Route::middleware('auth:sanctum')->controller(ProductoController::class)->group(
 });
 
 Route::middleware('auth:sanctum')->controller(AlumnoController::class)->group(function () {
+    Route::get('/students/datasex/', 'dataAlumSex');
     Route::get('/students/imagen/{imagen}', 'showImageStudents');
     Route::get('/students', 'showAlumn');
     Route::get('/students/last', 'lastAlumn');
