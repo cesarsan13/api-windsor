@@ -15,6 +15,7 @@ use App\Http\Controllers\AlumnosPorClaseController;
 use App\Http\Controllers\CobranzaController;
 use App\Http\Controllers\CobranzaProductosController;
 use App\Http\Controllers\DocumentosCobranzaController;
+use App\Http\Controllers\EstadisticasController;
 use App\Http\Controllers\FacturasFormatoController;
 use App\Http\Controllers\Pagos1Controller;
 use App\Http\Controllers\RepDosSelController;
@@ -96,7 +97,6 @@ Route::middleware('auth:sanctum')->controller(HorarioController::class)->group(f
     Route::post('/horarios/update', 'updateHorario');
     Route::get('/horarios/ultimo', 'ultimoHorario');
     Route::get('/horarios/alumnosxhorario', 'getAlumnosXHorario');
-
 });
 
 Route::middleware('auth:sanctum')->controller(AlumnosPorClaseController::class)->group(function () {
@@ -140,6 +140,10 @@ Route::middleware('auth:sanctum')->controller(Pagos1Controller::class)->group(fu
     Route::post("/pagos1/guardar-detalle-pedido", "guardarDetallePedido");
     Route::post("/pagos1/guarda-EncabYCobrD", "guardaEcabYCobrD");
     Route::post("/pagos1/busca-doc-cobranza", "obtenerDocumentosCobranza");
+});
+
+Route::middleware('auth:sanctum')->controller(EstadisticasController::class)->group(function () {
+    Route::get('/estadisticas-total-home', 'obtenerEstadisticas');
 });
 
 Route::post('/documentosCobranza', [AdeudosPendientesController::class, 'getDetallePedidos'])->middleware('auth:sanctum');
