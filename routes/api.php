@@ -95,6 +95,8 @@ Route::middleware('auth:sanctum')->controller(HorarioController::class)->group(f
     Route::post('/horarios/post', 'postHorario');
     Route::post('/horarios/update', 'updateHorario');
     Route::get('/horarios/ultimo', 'ultimoHorario');
+    Route::get('/horarios/alumnosxhorario', 'getAlumnosXHorario');
+
 });
 
 Route::middleware('auth:sanctum')->controller(AlumnosPorClaseController::class)->group(function () {
