@@ -26,6 +26,30 @@ class HorarioController extends Controller
         'edad_fin' => 'required|integer',
         'baja' => 'nullable|max:1'
     ];
+    public function getAlumnosXHorario()
+    {
+        try {
+            $response = ObjectResponse::DefaultResponse();
+            $tsql = "";
+            $tsql .= " SELECT ";
+            $tsql .= " h.numero,";
+            $tsql .= " h.horario AS horario,  ";
+            $tsql .= " COUNT(a.numero) AS Tot_Alumnos";
+            $tsql .= " FROM ";
+            $tsql .= " horarios h";
+            $tsql .= " LEFT JOIN ";
+            $tsql .= " alumnos a ON a.horario_1 = h.numero  ";
+            $tsql .= " GROUP BY ";
+            $tsql .= " h.numero, h.horario;";
+            $resultados = DB::select($tsql);
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'peticion satisfactoria | lista de Horarios');
+            data_set($response, 'data', $resultados);
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response['status_code']);
+    }
     public function getHorarios()
     {
         $response = ObjectResponse::DefaultResponse();
@@ -68,32 +92,32 @@ class HorarioController extends Controller
         }
         try {
 
-        
-        $datosFiltrados = $request->only([
-            'numero',
-            'cancha',
-            'dia',
-            'horario',
-            'max_niños',
-            'sexo',
-            'edad_ini',
-            'edad_fin',
-            'baja',
-        ]);
-        $nuevoHorario = Horario::create([
-            'numero' => $datosFiltrados['numero'],
-            'cancha' => $datosFiltrados['cancha'],
-            'dia' => $datosFiltrados['dia'],
-            'horario' => $datosFiltrados['horario'],
-            'max_niños' => $datosFiltrados['max_niños'],
-            'sexo' => $datosFiltrados['sexo'],
-            'edad_ini' => $datosFiltrados['edad_ini'],
-            'edad_fin' => $datosFiltrados['edad_fin'],
-            'baja' => $datosFiltrados['baja'] ?? '',
-        ]);
-        $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'Petición satisfactoria : Datos insertados correctamente');
-        } catch(\Exception $ex) {
+
+            $datosFiltrados = $request->only([
+                'numero',
+                'cancha',
+                'dia',
+                'horario',
+                'max_niños',
+                'sexo',
+                'edad_ini',
+                'edad_fin',
+                'baja',
+            ]);
+            $nuevoHorario = Horario::create([
+                'numero' => $datosFiltrados['numero'],
+                'cancha' => $datosFiltrados['cancha'],
+                'dia' => $datosFiltrados['dia'],
+                'horario' => $datosFiltrados['horario'],
+                'max_niños' => $datosFiltrados['max_niños'],
+                'sexo' => $datosFiltrados['sexo'],
+                'edad_ini' => $datosFiltrados['edad_ini'],
+                'edad_fin' => $datosFiltrados['edad_fin'],
+                'baja' => $datosFiltrados['baja'] ?? '',
+            ]);
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Petición satisfactoria : Datos insertados correctamente');
+        } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response, $response['status_code']);

@@ -507,6 +507,33 @@ class AlumnoController extends Controller
         data_set($response, 'data', $maxId);
         return response()->json($response, $response['status_code']);
     }
+    public function dataAlumSex()
+    {
+
+        try {
+            $tsql = "select categoria,count(*) as Cantidad from(";
+            $tsql .= "Select ";
+            $tsql .= " Case ";
+            $tsql .= " When sexo='H' Then 'Hombres' ";
+            $tsql .= " When sexo='M' OR sexo='F' Then 'Mujeres'";
+            $tsql .= " When sexo IS NULL OR  sexo = '' Then 'Vacio/Otros'";
+            $tsql .= " ELSE 'Otros'";
+            $tsql .= " END AS categoria";
+            $tsql .= " FROM alumnos)as dt";
+            $tsql .= " Group By categoria";
+
+            $resultados = DB::select($tsql);
+
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Peticion satisfactoria');
+            data_set($response, 'data', $resultados);
+            return response()->json($response, $response['status_code']);
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+            return response()->json($response, $response['status_code']);
+        }
+    }
+
     public function bajaAlumn()
     {
         $response = ObjectResponse::DefaultResponse();

@@ -64,6 +64,7 @@ Route::middleware('auth:sanctum')->controller(ProductoController::class)->group(
 });
 
 Route::middleware('auth:sanctum')->controller(AlumnoController::class)->group(function () {
+    Route::get('/students/datasex/', 'dataAlumSex');
     Route::get('/students/imagen/{imagen}', 'showImageStudents');
     Route::get('/students', 'showAlumn');
     Route::get('/students/last', 'lastAlumn');
@@ -94,6 +95,8 @@ Route::middleware('auth:sanctum')->controller(HorarioController::class)->group(f
     Route::post('/horarios/post', 'postHorario');
     Route::post('/horarios/update', 'updateHorario');
     Route::get('/horarios/ultimo', 'ultimoHorario');
+    Route::get('/horarios/alumnosxhorario', 'getAlumnosXHorario');
+
 });
 
 Route::middleware('auth:sanctum')->controller(AlumnosPorClaseController::class)->group(function () {
