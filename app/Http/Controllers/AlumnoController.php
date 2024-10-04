@@ -22,6 +22,10 @@ class AlumnoController extends Controller
         'integer' => 'El campo :attribute debe ser un número.',
         'boolean' => 'El campo :attribute debe ser un valor booleano.',
     ];
+    protected $rules2 = [
+        'numero_ant' => 'required|numeric',
+        'numero_nuev' => 'required|numeric',
+    ];
     protected $rules = [
         'numero' => 'required|numeric',
         'nombre' => 'required|string|max:50',
@@ -775,6 +779,37 @@ class AlumnoController extends Controller
             data_set($response, 'alert_text', 'Alumno registrado');
             return response()->json($response, $response['status_code']);
         }
+    }
+
+    public function changeIdAlumno(Request $request)
+    {
+        $rules2 = $this->rules2;
+        $validator = Validator::make($request->all(), $rules2);
+        if ($validator->fails()) {
+
+            $response = ObjectResponse::BadResponse('Error de validacion');
+            data_set($response, 'errors', $validator->errors());
+            return response()->json($response, $response['status_code']);
+        }
+        $alumno3 = Alumno::find($request->numero_ant);
+        if (!$alumno3) {
+            $response = ObjectResponse::BadResponse('El alumno no existe, cambie a otro numero.');
+            data_set($response, 'errors', ['numero' => ['Alumno no existe, cambie a otro numero.']]);
+            return response()->json($response, $response['status_code']);
+        }
+        $alumno = Alumno::find($request->numero_nuev);
+        if ($alumno) {
+            $response = ObjectResponse::BadResponse('El alumno ya existe, cambie a otro numero.');
+            data_set($response, 'errors', ['numero' => ['Alumno ya existe, cambie a otro numero.']]);
+            return response()->json($response, $response['status_code']);
+        }
+        $alumno2 = Alumno::find($request->numero_ant);
+        $alumno2->numero = $request->numero_nuev ?? '';
+        $alumno2->save();
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'Petición satisfactoria | Se actualizo el numero.');
+        data_set($response, 'alert_text', 'Se actualizo el numero del alumno');
+        return response()->json($response, $response['status_code']);
     }
 
     public function updateAlumn(Request $request, $numero)
