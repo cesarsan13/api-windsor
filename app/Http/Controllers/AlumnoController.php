@@ -519,7 +519,7 @@ class AlumnoController extends Controller
             $tsql .= " When sexo IS NULL OR  sexo = '' Then 'Vacio/Otros'";
             $tsql .= " ELSE 'Otros'";
             $tsql .= " END AS categoria";
-            $tsql .= " FROM alumnos)as dt";
+            $tsql .= " FROM alumnos where baja<>'*')as dt";
             $tsql .= " Group By categoria";
 
             $resultados = DB::select($tsql);
