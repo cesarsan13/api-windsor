@@ -302,16 +302,22 @@ class Pagos1Controller extends Controller
 
     public function obtenerDocumentosCobranza(Request $request)
     {
-        $documentosCobranza = DB::table('documentos_cobranza')
-            ->where('alumno', $request->alumno)
-            ->whereRaw('ROUND(importe - importe_pago, 2) > 0')
+        $documentosCobranza = DB::table('documentos_cobranza as dc')
+            ->leftJoin('productos as pr', 'dc.producto', '=', 'pr.numero')
+            ->select(
+                'dc.*',
+                'pr.descripcion as nombre_producto'
+            )
+            ->where('dc.alumno', $request->alumno)
+            ->whereRaw('ROUND(dc.importe - dc.importe_pago, 2) > 0')
             ->get();
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Petición Satisfactoria');
-        data_set($response, 'alert_text', 'Exito!, datos obtenidos');
+        data_set($response, 'alert_text', '¡Éxito! Datos obtenidos.');
         data_set($response, 'data', $documentosCobranza);
         return response()->json($response, $response['status_code']);
     }
+
 
     public function Busca_Inf_Cliente(Request $request)
     {
