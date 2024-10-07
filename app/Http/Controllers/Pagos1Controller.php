@@ -100,6 +100,17 @@ class Pagos1Controller extends Controller
             $response = ObjectResponse::CatchResponse($validator->errors()->all());
             return response()->json($response, $response['status_code']);
         }
+        $docs = DB::table('documentos_cobranza')
+            ->where('alumno', $request->alumno)
+            ->where('producto', $request->producto)
+            ->where('numero_doc', $request->numero_doc)
+            ->where('fecha', $request->fecha)
+            ->first();
+        if ($docs) {
+            $response = ObjectResponse::BadResponse('El documento ya existe');
+            data_set($response, 'errors', 'El documento ya existe');
+            return response()->json($response, $response['status_code']);
+        }
         $Doc = new DocsCobranza();
         $Doc->alumno = $request->alumno;
         $Doc->producto = $request->producto;
