@@ -37,4 +37,38 @@ class EstadisticasController extends Controller
         data_set($response, 'horarios_populares', $horarioMasAlumnos);
         return response()->json($response, $response['status_code']);
     }
+
+    public function mesActualCajeros()
+    {
+        $response = ObjectResponse::DefaultResponse();
+        $queryCajero = DB::table('cobranza_diaria')
+            ->join('cajeros', 'cobranza_diaria.cajero', '=', 'cajeros.numero')
+            ->whereMonth('fecha_cobro', date('m'))
+            ->select('cobranza_diaria.*', 'cajeros.nombre');
+        $resultCajero = $queryCajero->orderBy('cajero')->get();
+
+        $queryProducto = DB::table('detalle_pedido')
+            ->join('productos', 'detalle_pedido.articulo', '=', 'productos.numero')
+            ->whereMonth('detalle_pedido.fecha', date('m'))
+            ->orderBy('detalle_pedido.articulo')
+            ->select('detalle_pedido.*', 'productos.descripcion');
+        $resultProducto = $queryProducto->get();
+
+        $queryTipoPago = DB::table('cobranza_diaria')
+            ->join('tipo_cobro AS tipo_pago_1', 'cobranza_diaria.tipo_pago_1', '=', 'tipo_pago_1.numero')
+            ->leftJoin('tipo_cobro AS tipo_pago_2', 'cobranza_diaria.tipo_pago_2', '=', 'tipo_pago_2.numero')
+            ->whereMonth('cobranza_diaria.fecha_cobro', date('m'))
+            ->select('cobranza_diaria.*', 'tipo_pago_1.descripcion AS descripcion1', 'tipo_pago_2.descripcion AS descripcion2');
+        $resultTipoPago = $queryTipoPago->get();
+
+        $data = [
+            "cajeros" => $resultCajero,
+            "producto" => $resultProducto,
+            "tipo_pago" => $resultTipoPago,
+        ];
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'peticion satisfactoria | lista de mes actual por cajeros');
+        data_set($response, 'data', $data);
+        return response()->json($response, $response['status_code']);
+    }
 }

@@ -75,6 +75,7 @@ Route::middleware('auth:sanctum')->controller(AlumnoController::class)->group(fu
     Route::post('/students/save', 'storeAlumn');
     Route::post('/students/update/{numero}', 'updateAlumn');
     Route::put('/students-cambio-id', 'changeIdAlumno');
+    Route::get('/students/cumpleaños-mes', 'cumpleañerosDelMes');
 });
 
 Route::middleware('auth:sanctum')->controller(ComentariosController::class)->group(function () {
@@ -145,6 +146,7 @@ Route::middleware('auth:sanctum')->controller(Pagos1Controller::class)->group(fu
 
 Route::middleware('auth:sanctum')->controller(EstadisticasController::class)->group(function () {
     Route::get('/estadisticas-total-home', 'obtenerEstadisticas');
+    Route::get('/estadisticas-cajero-mes-home', 'mesActualCajeros');
 });
 
 Route::post('/documentosCobranza', [AdeudosPendientesController::class, 'getDetallePedidos'])->middleware('auth:sanctum');
