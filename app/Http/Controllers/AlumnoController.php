@@ -815,7 +815,7 @@ class AlumnoController extends Controller
     public function updateAlumn(Request $request, $numero)
     {
         $rules = $this->rules;
-        $rules['numero'] = 'required|integer|unique:alumnos,numero,' . $numero;
+        $rules['numero'] = 'required|integer|unique:alumnos,numero,' . $numero . ',numero';
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             // dd(vars: $validator);
