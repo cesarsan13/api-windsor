@@ -812,6 +812,18 @@ class AlumnoController extends Controller
         return response()->json($response, $response['status_code']);
     }
 
+    public function cumpleañerosDelMes()
+    {
+        $cumpleañeros = Alumno::select('nombre', 'fecha_nac')
+            ->whereMonth('fecha_nac', date('m'))
+            ->get();
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'data', $cumpleañeros);
+        data_set($response, 'message', 'Petición satisfactoria | Cumpleañeros del mes.');
+        return response()->json($response, $response['status_code']);
+    }
+
+
     public function updateAlumn(Request $request, $numero)
     {
         $rules = $this->rules;
