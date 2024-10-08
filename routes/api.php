@@ -146,6 +146,7 @@ Route::middleware('auth:sanctum')->controller(Pagos1Controller::class)->group(fu
 
 Route::middleware('auth:sanctum')->controller(EstadisticasController::class)->group(function () {
     Route::get('/estadisticas-total-home', 'obtenerEstadisticas');
+    Route::get('/estadisticas-cajero-mes-home', 'mesActualCajeros');
 });
 
 Route::post('/documentosCobranza', [AdeudosPendientesController::class, 'getDetallePedidos'])->middleware('auth:sanctum');
