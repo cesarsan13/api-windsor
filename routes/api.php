@@ -76,6 +76,7 @@ Route::middleware('auth:sanctum')->controller(AlumnoController::class)->group(fu
     Route::post('/students/update/{numero}', 'updateAlumn');
     Route::put('/students-cambio-id', 'changeIdAlumno');
     Route::get('/students/cumpleaños-mes', 'cumpleañerosDelMes');
+    Route::put('/students/cambio-ciclo', 'cambiarCicloAlumnos');
 });
 
 Route::middleware('auth:sanctum')->controller(ComentariosController::class)->group(function () {

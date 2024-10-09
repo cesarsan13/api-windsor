@@ -811,6 +811,25 @@ class AlumnoController extends Controller
         data_set($response, 'alert_text', 'Se actualizo el numero del alumno');
         return response()->json($response, $response['status_code']);
     }
+    public function cambiarCicloAlumnos(Request $request)
+    {
+        $rules = [
+            'ciclo_escolar' => 'required|string',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $response = ObjectResponse::BadResponse('Error de validacion');
+            data_set($response, 'errors', $validator->errors());
+            return response()->json($response, $response['status_code']);
+        }
+        DB::table('alumnos')->update([
+            'ciclo_escolar' => $request->ciclo_escolar
+        ]);
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'alert_text', 'Se actualizó el ciclo escolar de todos los alumnos');
+        return response()->json($response, $response['status_code']);
+    }
+
 
     public function cumpleañerosDelMes()
     {
