@@ -113,57 +113,65 @@ class EstadisticasController extends Controller
             // $cond_ant = $request->cond_ant;
             $cond_ant = 0;
             $fecha = $request->fecha;
-            $cond_1 = $request->cond_1; 
+            $cond_1 = $request->cond_1;
             $periodo = $request->periodo;
-
             $productos = DB::table('productos')
                 ->where('cond_1', '=', $cond_1)
                 ->where('baja', '<>', '*')
                 ->get();
-
+            // Log::info($productos);
             foreach ($productos as $producto) {
-                if ($cond_ant != $producto->cond_1) {
-                    DB::table('documentos_cobranza')
-                        ->where('producto', '=', $producto->numero)
-                        ->where('ref', '=', '')
-                        ->update([
-                            'ref' => $producto->ref,
-                        ]);
-                }
-
-                $cond_ant === $producto->cond_1;
-                $alumnos = DB::table('alumnos')
-                    ->where('cond_1', '=', $cond_1)
-                    ->where('cond_2', '=', $cond_1)
-                    ->where('baja', '<>', '*')
-                    ->get();
-
-                foreach ($alumnos as $alumno) {
-                    if (strtolower($alumno->estatus) === 'activo') {
-                        $documentoExistente = DB::table('documentos_cobranza')
-                            ->where('alumno', '=', $alumno->numero)
+                try {
+                    if ($cond_ant != $producto->cond_1) {
+                        DB::table('documentos_cobranza')
                             ->where('producto', '=', $producto->numero)
-                            ->where('periodo', '=', $periodo)
-                            ->first();
-
-                        if ($documentoExistente) {
-                            DB::table('documentos_cobranza')->insert([
-                                'alumno' => $alumno->numero,
-                                'producto' => $producto->numero,
-                                'numero_doc' => $periodo,
-                                'fecha' => $fecha,
+                            ->where('ref', '=', '')
+                            ->update([
                                 'ref' => $producto->ref,
-                                'descuento' => $alumno->descuento,
-                                'importe' => $producto->costo,
                             ]);
+                    }
+                    $cond_ant = $producto->cond_1;
+                    $alumnos = DB::table('alumnos')
+                        ->where('cond_1', '=', $cond_1)
+                        ->where('cond_2', '=', $cond_1)
+                        ->where('baja', '<>', '*')
+                        ->get();
+                    // Log::info($alumnos);
+                    foreach ($alumnos as $alumno) {
+                        try {
+                            if (strtolower($alumno->estatus) === 'activo') {
+                                $documentoExistente = DB::table('documentos_cobranza')
+                                    ->where('alumno', '=', $alumno->numero)
+                                    ->where('producto', '=', $producto->numero)
+                                    ->where('numero_doc', '=', $periodo)
+                                    ->first();
+                                // Log::info($documentoExistente);
+                                if (!$documentoExistente) {
+                                    $insertdoc = DB::table('documentos_cobranza')->insert([
+                                        'alumno' => $alumno->numero,
+                                        'producto' => $producto->numero,
+                                        'numero_doc' => $periodo,
+                                        'fecha' => $fecha,
+                                        'ref' => $producto->ref,
+                                        'descuento' => $alumno->descuento,
+                                        'importe' => $producto->costo,
+                                    ]);
+                                    // Log::info($insertdoc);
+                                }
+                            }
+                        } catch (\Exception $e) {
+                            Log::error('Error procesando alumno: ' . $alumno->numero . ' - ' . $e->getMessage());
+                            continue;
                         }
                     }
+                } catch (\Exception $e) {
+                    Log::error('Error procesando producto: ' . $producto->numero . ' - ' . $e->getMessage());
+                    continue;
                 }
             }
-
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'Petición satisfactoria');
-            data_set($response, 'alert_title', 'EXITO!, Cartera procesados');
+            data_set($response, 'alert_title', '¡ÉXITO! Cartera procesada');
             return response()->json($response, $response['status_code']);
         } catch (\Exception $e) {
             $response = ObjectResponse::CatchResponse($e->getMessage());
