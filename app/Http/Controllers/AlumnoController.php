@@ -831,13 +831,14 @@ class AlumnoController extends Controller
     }
 
 
-    public function cumpleañerosDelMes()
+    public function cumpleanerosDelMes()
     {
-        $cumpleañeros = Alumno::select('nombre', 'fecha_nac')
+        $cumpleaneros = Alumno::select('nombre', 'fecha_nac')
             ->whereMonth('fecha_nac', date('m'))
+            ->orderByRaw('DAY(fecha_nac) asc')
             ->get();
         $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'data', $cumpleañeros);
+        data_set($response, 'data', $cumpleaneros);
         data_set($response, 'message', 'Petición satisfactoria | Cumpleañeros del mes.');
         return response()->json($response, $response['status_code']);
     }
