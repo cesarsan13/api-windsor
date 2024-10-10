@@ -20,6 +20,7 @@ use App\Http\Controllers\FacturasFormatoController;
 use App\Http\Controllers\Pagos1Controller;
 use App\Http\Controllers\RepDosSelController;
 use App\Http\Controllers\ReportesController;
+use Database\Seeders\DocumentosCobranzaSeeder;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -150,4 +151,6 @@ Route::middleware('auth:sanctum')->controller(EstadisticasController::class)->gr
     Route::get('/estadisticas-cajero-mes-home', 'mesActualCajeros');
 });
 
+Route::post('/cartera/proceso', [EstadisticasController::class, 'procesoCartera'])->middleware('auth:sanctum');
+Route::get('/cartera/actualizar', [EstadisticasController::class, 'actualizarDocumentoCartera'])->middleware('auth:sanctum');
 Route::post('/documentosCobranza', [AdeudosPendientesController::class, 'getDetallePedidos'])->middleware('auth:sanctum');

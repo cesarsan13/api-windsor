@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\ObjectResponse;
+use Illuminate\Support\Facades\Log;
 
 class EstadisticasController extends Controller
 {
@@ -70,5 +71,103 @@ class EstadisticasController extends Controller
         data_set($response, 'message', 'peticion satisfactoria | lista de mes actual por cajeros');
         data_set($response, 'data', $data);
         return response()->json($response, $response['status_code']);
+    }
+
+
+    public function actualizarDocumentoCartera()
+    {
+        try {
+            $cond_ant = 0;
+            $productos = DB::table('productos')->where('baja', '<>', '*')->get();
+            // Log::info($productos);
+            foreach ($productos as $producto) {
+                $existeDocumento = DB::table('documentos_cobranza')
+                    ->where('ref', $producto->ref)
+                    ->exists();
+                if ($existeDocumento) {
+                    Log::info("Documento con ref: {$producto->ref} ya existe.");
+                    continue;
+                }
+                DB::table('documentos_cobranza')->updateOrInsert(
+                    ['ref' => $producto->ref],
+                    ['producto' => $producto->numero]
+                );
+
+                $cond_ant = $producto->numero;
+            }
+
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'data', $cond_ant);
+            data_set($response, 'message', 'peticion satisfactoria');
+            data_set($response, 'alert_title', 'EXITO!, Productos actualizados en documentos cobranza');
+            return response()->json($response, $response['status_code']);
+        } catch (\Exception $e) {
+            $response = ObjectResponse::CatchResponse($e->getMessage());
+            return response()->json($response, $response['status_code']);
+        }
+    }
+
+    public function procesoCartera(Request $request)
+    {
+        try {
+            // $cond_ant = $request->cond_ant;
+            $cond_ant = 0;
+            $fecha = $request->fecha;
+            $cond_1 = $request->cond_1; 
+            $periodo = $request->periodo;
+
+            $productos = DB::table('productos')
+                ->where('cond_1', '=', $cond_1)
+                ->where('baja', '<>', '*')
+                ->get();
+
+            foreach ($productos as $producto) {
+                if ($cond_ant != $producto->cond_1) {
+                    DB::table('documentos_cobranza')
+                        ->where('producto', '=', $producto->numero)
+                        ->where('ref', '=', '')
+                        ->update([
+                            'ref' => $producto->ref,
+                        ]);
+                }
+
+                $cond_ant === $producto->cond_1;
+                $alumnos = DB::table('alumnos')
+                    ->where('cond_1', '=', $cond_1)
+                    ->where('cond_2', '=', $cond_1)
+                    ->where('baja', '<>', '*')
+                    ->get();
+
+                foreach ($alumnos as $alumno) {
+                    if (strtolower($alumno->estatus) === 'activo') {
+                        $documentoExistente = DB::table('documentos_cobranza')
+                            ->where('alumno', '=', $alumno->numero)
+                            ->where('producto', '=', $producto->numero)
+                            ->where('periodo', '=', $periodo)
+                            ->first();
+
+                        if ($documentoExistente) {
+                            DB::table('documentos_cobranza')->insert([
+                                'alumno' => $alumno->numero,
+                                'producto' => $producto->numero,
+                                'numero_doc' => $periodo,
+                                'fecha' => $fecha,
+                                'ref' => $producto->ref,
+                                'descuento' => $alumno->descuento,
+                                'importe' => $producto->costo,
+                            ]);
+                        }
+                    }
+                }
+            }
+
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Petición satisfactoria');
+            data_set($response, 'alert_title', 'EXITO!, Cartera procesados');
+            return response()->json($response, $response['status_code']);
+        } catch (\Exception $e) {
+            $response = ObjectResponse::CatchResponse($e->getMessage());
+            return response()->json($response, $response['status_code']);
+        }
     }
 }
