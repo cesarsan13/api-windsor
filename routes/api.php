@@ -22,6 +22,7 @@ use App\Http\Controllers\RepDosSelController;
 use App\Http\Controllers\ReportesController;
 use Database\Seeders\DocumentosCobranzaSeeder;
 use App\Http\Controllers\ProcesosController;
+use App\Http\Controllers\ProfesoresController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -157,4 +158,19 @@ Route::middleware('auth:sanctum')->controller(ProcesosController::class)->group(
     Route::get('/cartera/actualizar', 'actualizarDocumentoCartera');
     Route::post('/cancelacion-recibo', 'cancelarRecibo');
 });
+
+Route::middleware('auth:sanctum')->controller(ProcesosController::class)->group(function () {
+    Route::post('/cartera/proceso', 'procesoCartera');
+    Route::get('/cartera/actualizar', 'actualizarDocumentoCartera');
+    Route::post('/cancelacion-recibo', 'cancelarRecibo');
+});
+
+Route::middleware('auth:sanctum')->controller(ProfesoresController::class)->group(function () {
+    Route::get('/profesores/index', 'index');
+    Route::get('/profesores/index-baja', 'indexBaja');
+    Route::get('/profesores/siguiente', 'siguiente');
+    Route::post('/profesores/update', 'update');
+    Route::post('/profesores/save', 'save');
+});
+
 Route::post('/documentosCobranza', [AdeudosPendientesController::class, 'getDetallePedidos'])->middleware('auth:sanctum');
