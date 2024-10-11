@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('sexo',50)->default('')->nullable(false); //(8)
             $table->integer('edad_ini')->default(0)->nullable(false); //(11)
             $table->integer('edad_fin')->default(0)->nullable(false); //(11)
+            $table->string('salon',10)->default('')->nullable(false); //(8)
             $table->char('baja',1)->default('')->nullable(false);
             $table->timestamps();
         });

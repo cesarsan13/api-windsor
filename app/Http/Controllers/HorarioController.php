@@ -24,6 +24,7 @@ class HorarioController extends Controller
         'sexo' => 'required|max:50',
         'edad_ini' => 'required|integer',
         'edad_fin' => 'required|integer',
+        'salon' => 'required|max:10',
         'baja' => 'nullable|max:1'
     ];
     public function getAlumnosXHorario()
@@ -102,6 +103,7 @@ class HorarioController extends Controller
                 'sexo',
                 'edad_ini',
                 'edad_fin',
+                'salon',
                 'baja',
             ]);
             $nuevoHorario = Horario::create([
@@ -113,6 +115,7 @@ class HorarioController extends Controller
                 'sexo' => $datosFiltrados['sexo'],
                 'edad_ini' => $datosFiltrados['edad_ini'],
                 'edad_fin' => $datosFiltrados['edad_fin'],
+                'salon' => $datosFiltrados['salon'],
                 'baja' => $datosFiltrados['baja'] ?? '',
             ]);
             $response = ObjectResponse::CorrectResponse();
@@ -140,6 +143,7 @@ class HorarioController extends Controller
                 'sexo' => $request->sexo,
                 'edad_ini' => $request->edad_ini,
                 'edad_fin' => $request->edad_fin,
+                'salon' => $request->salon,
                 'baja' => $request->baja ?? ''
             ]);
         $response = ObjectResponse::CorrectResponse();
