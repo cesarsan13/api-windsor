@@ -646,7 +646,11 @@ class AlumnoController extends Controller
     }
     public function storeAlumn(Request $request)
     {
-        // dd($request);
+
+        $response = $this->lastAlumn();
+        $nuevo_id = $response->getData()->data;
+        $request->numero = $nuevo_id + 1;
+        // dd($request->numero);
         $validator = Validator::make($request->all(), $this->rules);
         if ($validator->fails()) {
             $response = ObjectResponse::BadResponse('Error de validacion');
