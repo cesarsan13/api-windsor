@@ -117,14 +117,12 @@ class AlumnoController extends Controller
         'escuela' => 'nullable|string|max:50',
         'baja' => 'nullable|string|max:1',
     ];
-
     public function showImageStudents($imagen)
     {
         if (file_exists(public_path('images/alumnos/' . $imagen))) {
             return response()->file(public_path('images/alumnos/' . $imagen));
         }
     }
-
     public function getReportAltaBajaAlumno(Request $request)
     {
         $baja = $request->input('baja');
@@ -260,7 +258,6 @@ class AlumnoController extends Controller
         data_set($response, 'envio', $baja . $tipoOrden);
         return response()->json($response, $response['status_code']);
     }
-
     public function getReportAlumn(Request $request)
     {
         $baja = $request->input('baja');
@@ -387,7 +384,6 @@ class AlumnoController extends Controller
         data_set($response, 'data', $resultados);
         return response()->json($response, $response['status_code']);
     }
-
     public function showAlumn()
     {
         $response = ObjectResponse::DefaultResponse();
@@ -537,7 +533,6 @@ class AlumnoController extends Controller
             return response()->json($response, $response['status_code']);
         }
     }
-
     public function bajaAlumn()
     {
         $response = ObjectResponse::DefaultResponse();
@@ -780,7 +775,6 @@ class AlumnoController extends Controller
             return response()->json($response, $response['status_code']);
         }
     }
-
     public function changeIdAlumno(Request $request)
     {
         $rules2 = $this->rules2;
@@ -829,8 +823,6 @@ class AlumnoController extends Controller
         data_set($response, 'alert_text', 'Se actualizó el ciclo escolar de todos los alumnos');
         return response()->json($response, $response['status_code']);
     }
-
-
     public function cumpleanerosDelMes()
     {
         $cumpleaneros = Alumno::select('nombre', 'fecha_nac')
@@ -842,8 +834,6 @@ class AlumnoController extends Controller
         data_set($response, 'message', 'Petición satisfactoria | Cumpleañeros del mes.');
         return response()->json($response, $response['status_code']);
     }
-
-
     public function updateAlumn(Request $request, $numero)
     {
         $rules = $this->rules;
