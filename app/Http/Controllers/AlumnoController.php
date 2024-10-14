@@ -649,9 +649,9 @@ class AlumnoController extends Controller
 
         $response = $this->lastAlumn();
         $nuevo_id = $response->getData()->data;
-        $request->numero = $nuevo_id + 1;
-        // dd($request->numero);
+        $request->merge(['numero' => $nuevo_id + 1]);
         $validator = Validator::make($request->all(), $this->rules);
+
         if ($validator->fails()) {
             $response = ObjectResponse::BadResponse('Error de validacion');
             data_set($response, 'errors', $validator->errors());
@@ -770,12 +770,14 @@ class AlumnoController extends Controller
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'Petición satisfactoria | Alumno registrado.');
             data_set($response, 'alert_text', 'Alumno registrado');
+            data_set($response, 'data', $request->numero);
             return response()->json($response, $response['status_code']);
         } else {
             $alumno->save();
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'Petición satisfactoria | Alumno registrado.');
             data_set($response, 'alert_text', 'Alumno registrado');
+            data_set($response, 'data', $request->numero);
             return response()->json($response, $response['status_code']);
         }
     }
