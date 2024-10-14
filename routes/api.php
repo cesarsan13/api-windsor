@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\AdeudosPendientesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -174,3 +175,11 @@ Route::middleware('auth:sanctum')->controller(ProfesoresController::class)->grou
 });
 
 Route::post('/documentosCobranza', [AdeudosPendientesController::class, 'getDetallePedidos'])->middleware('auth:sanctum');
+
+Route::middleware('auth:sanctum')->controller(ActividadController::class)->group(function () {
+    Route::get('/actividades/get','getActividades');
+    Route::get('/actividades/baja','getActividadesBaja');
+    Route::post('/actividades/post','postActividad');
+    Route::post('/actividades/update','updateActividad');
+    Route::post('/actividades/ultimaSecuencia','ultimaSecuencia');
+});
