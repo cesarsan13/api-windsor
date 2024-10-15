@@ -79,6 +79,10 @@ class AsignaturasController extends Controller
     public function storeSubject(Request $request)
     {
         try {
+            $response = $this->lastSubject();
+            $nuevo_id = $response->getData()->data;
+            $request->merge(['numero' => $nuevo_id + 1]);
+
             $validator = Validator::make($request->all(), $this->rules, $this->messages);
             if ($validator->fails()) {
                 $response = ObjectResponse::BadResponse('Error de validacion' . $validator->errors(),'Error de validacion');
@@ -119,6 +123,7 @@ class AsignaturasController extends Controller
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'Petición satisfactoria | Asignatura registrada.');
             data_set($response, 'alert_text', 'Asignatura registrada');
+            data_set($response, 'data', $request->numero);
             return response()->json($response, $response['status_code']);
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
