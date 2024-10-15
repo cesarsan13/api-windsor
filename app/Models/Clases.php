@@ -10,8 +10,8 @@ class Clases extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id_grupo',
-        'id_materia',
+        'grupo',
+        'materia',
         'profesor',
         'lunes',
         'martes',
@@ -23,8 +23,8 @@ class Clases extends Model
         'baja',
     ];
     protected $attributes = [
-        'id_grupo' => '0',
-        'id_materia' => '0',
+        'grupo' => '0',
+        'materia' => '0',
         'profesor' => '0',
         'lunes' => '',
         'martes' => '',

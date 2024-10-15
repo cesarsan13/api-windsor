@@ -34,8 +34,8 @@ class ClasesController extends Controller
             return response()->json($response,$response['status_code']);
         }
         try {
-            $clase = Clases::where('id_materia',$request->id_materia)
-                ->where('id_grupo', $request->id_grupo)
+            $clase = Clases::where('materia',$request->materia)
+                ->where('grupo', $request->id_grupo)
                 ->update(["lunes"=>$request->lunes ?? '',
                         "profesor"=>$request->profesor,
                         "martes"=>$request->martes ?? '',
@@ -57,8 +57,8 @@ class ClasesController extends Controller
         return response()->json($response,$response['status_code']);
     }
     protected $rules = [
-        'id_materia'=> 'required|integer',
-        'id_grupo'=> 'required|integer',
+        'materia'=> 'required|integer',
+        'grupo'=> 'required|integer',
         'profesor'=> 'required|integer',
         'lunes'=>'nullable|string|max:10',
         'martes'=>'nullable|string|max:10',
@@ -84,8 +84,8 @@ class ClasesController extends Controller
         }
         try {
                 $datosFiltrados = $request->only([
-                    'id_materia',
-                    'id_grupo',
+                    'materia',
+                    'grupo',
                     'profesor',
                     'lunes',
                     'martes',
@@ -97,8 +97,8 @@ class ClasesController extends Controller
                     'baja',
             ]);
         $nuevaClase = Clases::create([
-                "id_materia"=>$datosFiltrados['id_materia'],
-                "id_grupo"=>$datosFiltrados['id_grupo'],
+                "materia"=>$datosFiltrados['materia'],
+                "grupo"=>$datosFiltrados['grupo'],
                 "profesor"=>$datosFiltrados['profesor'],
                 "lunes"=>$datosFiltrados['lunes'] ?? '',
                 "martes"=>$datosFiltrados['martes'] ?? '',
