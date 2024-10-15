@@ -12,11 +12,13 @@ use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ComentariosController;
 use App\Http\Controllers\AlumnosPorClaseController;
+use App\Http\Controllers\ClasesController;
 use App\Http\Controllers\CobranzaController;
 use App\Http\Controllers\CobranzaProductosController;
 use App\Http\Controllers\DocumentosCobranzaController;
 use App\Http\Controllers\EstadisticasController;
 use App\Http\Controllers\FacturasFormatoController;
+use App\Http\Controllers\GruposController;
 use App\Http\Controllers\Pagos1Controller;
 use App\Http\Controllers\RepDosSelController;
 use App\Http\Controllers\ReportesController;
@@ -157,12 +159,12 @@ Route::middleware('auth:sanctum')->controller(ProcesosController::class)->group(
     Route::post('/cartera/proceso', 'procesoCartera');
     Route::get('/cartera/actualizar', 'actualizarDocumentoCartera');
     Route::post('/cancelacion-recibo', 'cancelarRecibo');
-});
-
-Route::middleware('auth:sanctum')->controller(ProcesosController::class)->group(function () {
-    Route::post('/cartera/proceso', 'procesoCartera');
-    Route::get('/cartera/actualizar', 'actualizarDocumentoCartera');
-    Route::post('/cancelacion-recibo', 'cancelarRecibo');
+    Route::post('/proceso/calificaciones-get', 'buscarCalificaciones');
+    Route::post('/proceso/busca-cat', 'indexBuscaCat');
+    Route::post('/proceso/materia-buscar', 'materiaBuscar');
+    Route::post('/proceso/materia-evaluacion', 'materiaBuscarEvaluacion');
+    Route::post('/proceso/actividad-secuencia', 'actividadesSecuencia');
+    Route::post('/proceso/profesor-contraseña', 'getContraseñaProfe');
 });
 
 Route::middleware('auth:sanctum')->controller(ProfesoresController::class)->group(function () {
@@ -171,6 +173,11 @@ Route::middleware('auth:sanctum')->controller(ProfesoresController::class)->grou
     Route::get('/profesores/siguiente', 'siguiente');
     Route::post('/profesores/update', 'update');
     Route::post('/profesores/save', 'save');
+});
+
+Route::middleware('auth:sanctum')->controller(GruposController::class)->group(function () {
+    Route::get('/grupos/index', 'index');
+    Route::get('/grupos/index-baja', 'indexBaja');
 });
 
 Route::post('/documentosCobranza', [AdeudosPendientesController::class, 'getDetallePedidos'])->middleware('auth:sanctum');

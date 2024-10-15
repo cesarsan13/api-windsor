@@ -98,6 +98,7 @@ class Alumno extends Model
         'rfc_factura',
         'estatus',
         'escuela',
+        'grupo',
         'baja',
     ];
     protected $table = 'alumnos';
