@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActCobranzaController;
 use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\AdeudosPendientesController;
 use Illuminate\Http\Request;
@@ -159,4 +160,11 @@ Route::middleware('auth:sanctum')->controller(ActividadController::class)->group
     Route::post('/actividades/post','postActividad');
     Route::post('/actividades/update','updateActividad');
     Route::post('/actividades/ultimaSecuencia','ultimaSecuencia');
+});
+
+Route::middleware('auth:sanctum')->controller(ActCobranzaController::class)->group(function (){
+    Route::post('/act-cobranza/doc-alumno','getDocumentosAlumno');
+    Route::post('/act-cobranza/post','postActCobranza');
+    Route::post('/act-cobranza/update','updateActCobranza');
+    Route::post('/act-cobranza/delete','deleteActCobranza');
 });
