@@ -1,13 +1,16 @@
 <?php
 
+use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\AdeudosPendientesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AsignaturasController;
 use App\Http\Controllers\TipoCobroController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\CajeroController;
 use App\Http\Controllers\FormFactController;
+use App\Http\Controllers\GruposController;
 use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ComentariosController;
@@ -20,6 +23,9 @@ use App\Http\Controllers\FacturasFormatoController;
 use App\Http\Controllers\Pagos1Controller;
 use App\Http\Controllers\RepDosSelController;
 use App\Http\Controllers\ReportesController;
+use Database\Seeders\DocumentosCobranzaSeeder;
+use App\Http\Controllers\ProcesosController;
+use App\Http\Controllers\ProfesoresController;
 use App\Http\Controllers\ClasesController;
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -50,6 +56,15 @@ Route::middleware('auth:sanctum')->controller(FormFactController::class)->group(
     Route::get("/FormFact/siguiente", "siguiente");
 });
 
+//Asignaturas
+Route::middleware('auth:sanctum')->controller(AsignaturasController::class)->group(function () {
+    Route::get('/subject/filter/{type}/{value}', 'subjectFilter');
+    Route::get('/subject', 'showSubject');
+    Route::get('/subject/last', 'lastSubject');
+    Route::post('/subject/save', 'storeSubject');
+    Route::get('/subject/bajas', 'bajaSubject');
+    Route::put('/subject/update/{numero}', 'updateSubject');
+});
 
 // Route::middleware('auth:sanctum')->controller(RepDosSelController::class)->group(function () {
 //     Route::post('/RepDosSel/UpdateRepDosSel', 'UpdateRepDosSel');
@@ -151,6 +166,20 @@ Route::middleware('auth:sanctum')->controller(EstadisticasController::class)->gr
     Route::get('/estadisticas-cajero-mes-home', 'mesActualCajeros');
 });
 
+Route::middleware('auth:sanctum')->controller(ProcesosController::class)->group(function () {
+    Route::post('/cartera/proceso', 'procesoCartera');
+    Route::get('/cartera/actualizar', 'actualizarDocumentoCartera');
+    Route::post('/cancelacion-recibo', 'cancelarRecibo');
+});
+
+Route::middleware('auth:sanctum')->controller(ProfesoresController::class)->group(function () {
+    Route::get('/profesores/index', 'index');
+    Route::get('/profesores/index-baja', 'indexBaja');
+    Route::get('/profesores/siguiente', 'siguiente');
+    Route::post('/profesores/update', 'update');
+    Route::post('/profesores/save', 'save');
+});
+
 Route::post('/documentosCobranza', [AdeudosPendientesController::class, 'getDetallePedidos'])->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->controller(ClasesController::class)->group(function () {
@@ -158,4 +187,12 @@ Route::middleware('auth:sanctum')->controller(ClasesController::class)->group(fu
     Route::post('/clase/updateClase', 'updateClases');
     Route::get('/clase/baja', 'indexBaja');
     Route::get("/clase", "index");
+});
+
+Route::middleware('auth:sanctum')->controller(ActividadController::class)->group(function () {
+    Route::get('/actividades/get', 'getActividades');
+    Route::get('/actividades/baja', 'getActividadesBaja');
+    Route::post('/actividades/post', 'postActividad');
+    Route::post('/actividades/update', 'updateActividad');
+    Route::post('/actividades/ultimaSecuencia', 'ultimaSecuencia');
 });

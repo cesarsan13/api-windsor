@@ -81,5 +81,4 @@ class DocumentosCobranzaController extends Controller
         }
         return response()->json($response, $response['status_code']);
     }
-    
 }

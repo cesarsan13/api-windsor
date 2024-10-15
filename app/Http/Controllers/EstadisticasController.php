@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\ObjectResponse;
+use Illuminate\Support\Facades\Log;
 
 class EstadisticasController extends Controller
 {
@@ -71,4 +72,6 @@ class EstadisticasController extends Controller
         data_set($response, 'data', $data);
         return response()->json($response, $response['status_code']);
     }
+
+
 }

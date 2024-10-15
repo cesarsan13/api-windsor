@@ -39,7 +39,7 @@ class HorarioController extends Controller
             $tsql .= " FROM ";
             $tsql .= " horarios h";
             $tsql .= " LEFT JOIN ";
-            $tsql .= " alumnos a ON a.horario_1 = h.numero  ";
+            $tsql .= " alumnos a ON a.horario_1 = h.numero  where h.baja<>'*' ";
             $tsql .= " GROUP BY ";
             $tsql .= " h.numero, h.horario;";
             $resultados = DB::select($tsql);
