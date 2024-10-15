@@ -117,8 +117,8 @@ class AsignaturasController extends Controller
             $asignatura->caso_evaluar = $request->caso_evaluar;
             $asignatura->save();
             $response = ObjectResponse::CorrectResponse();
-            data_set($response, 'message', 'Petición satisfactoria | Asignatura registrado.');
-            data_set($response, 'alert_text', 'Asignatura registrado');
+            data_set($response, 'message', 'Petición satisfactoria | Asignatura registrada.');
+            data_set($response, 'alert_text', 'Asignatura registrada');
             return response()->json($response, $response['status_code']);
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
@@ -144,7 +144,7 @@ class AsignaturasController extends Controller
             $asignatura = Asignaturas::find($numero);
             if (!$asignatura) {
                 $response = ObjectResponse::BadResponse($validator->errors());
-                data_set($response, 'errors', ['numero' => ['Asignatura no encontrado']]);
+                data_set($response, 'errors', ['numero' => ['Asignatura no encontrada']]);
                 return response()->json($response, $response['status_code']);
             }
             $asignatura->descripcion = strtoupper($request->descripcion);
@@ -167,8 +167,8 @@ class AsignaturasController extends Controller
             $asignatura->caso_evaluar = $request->caso_evaluar;
             $asignatura->save();
             $response = ObjectResponse::CorrectResponse();
-            data_set($response, 'message', 'Petición satisfactoria | Asignatura registrado.');
-            data_set($response, 'alert_text', 'Asignatura registrado');
+            data_set($response, 'message', 'Petición satisfactoria | Asignatura registrada.');
+            data_set($response, 'alert_text', 'Asignatura registrada');
             return response()->json($response, $response['status_code']);
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
