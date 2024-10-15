@@ -10,8 +10,10 @@ class CobranzaController extends Controller
 {
     public function PDF(Request $request)
     {
+        // dd($request);
         $Fecha_Inicial = $request->input('Fecha_Inicial');
         $Fecha_Final = $request->input('Fecha_Final');
+
         $cajero = $request->input('cajero');
         $response = ObjectResponse::DefaultResponse();
 

@@ -17,6 +17,7 @@ class Horario extends Model
         'sexo',
         'edad_ini',
         'edad_fin',
+        'salon',
         'baja'
     ];
     protected $table = 'horarios';
