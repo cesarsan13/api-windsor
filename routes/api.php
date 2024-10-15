@@ -20,6 +20,7 @@ use App\Http\Controllers\FacturasFormatoController;
 use App\Http\Controllers\Pagos1Controller;
 use App\Http\Controllers\RepDosSelController;
 use App\Http\Controllers\ReportesController;
+use App\Http\Controllers\ClasesController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -151,3 +152,10 @@ Route::middleware('auth:sanctum')->controller(EstadisticasController::class)->gr
 });
 
 Route::post('/documentosCobranza', [AdeudosPendientesController::class, 'getDetallePedidos'])->middleware('auth:sanctum');
+
+Route::middleware('auth:sanctum')->controller(ClasesController::class)->group(function () {
+    Route::post('/clase', 'postClases');
+    Route::post('/clase/updateClase', 'updateClases');
+    Route::get('/clase/baja', 'indexBaja');
+    Route::get("/clase", "index");
+});
