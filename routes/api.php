@@ -26,6 +26,7 @@ use App\Http\Controllers\ReportesController;
 use Database\Seeders\DocumentosCobranzaSeeder;
 use App\Http\Controllers\ProcesosController;
 use App\Http\Controllers\ProfesoresController;
+use App\Http\Controllers\ClasesController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -171,12 +172,6 @@ Route::middleware('auth:sanctum')->controller(ProcesosController::class)->group(
     Route::post('/cancelacion-recibo', 'cancelarRecibo');
 });
 
-Route::middleware('auth:sanctum')->controller(ProcesosController::class)->group(function () {
-    Route::post('/cartera/proceso', 'procesoCartera');
-    Route::get('/cartera/actualizar', 'actualizarDocumentoCartera');
-    Route::post('/cancelacion-recibo', 'cancelarRecibo');
-});
-
 Route::middleware('auth:sanctum')->controller(ProfesoresController::class)->group(function () {
     Route::get('/profesores/index', 'index');
     Route::get('/profesores/index-baja', 'indexBaja');
@@ -187,10 +182,17 @@ Route::middleware('auth:sanctum')->controller(ProfesoresController::class)->grou
 
 Route::post('/documentosCobranza', [AdeudosPendientesController::class, 'getDetallePedidos'])->middleware('auth:sanctum');
 
+Route::middleware('auth:sanctum')->controller(ClasesController::class)->group(function () {
+    Route::post('/clase', 'postClases');
+    Route::post('/clase/updateClase', 'updateClases');
+    Route::get('/clase/baja', 'indexBaja');
+    Route::get("/clase", "index");
+});
+
 Route::middleware('auth:sanctum')->controller(ActividadController::class)->group(function () {
-    Route::get('/actividades/get','getActividades');
-    Route::get('/actividades/baja','getActividadesBaja');
-    Route::post('/actividades/post','postActividad');
-    Route::post('/actividades/update','updateActividad');
-    Route::post('/actividades/ultimaSecuencia','ultimaSecuencia');
+    Route::get('/actividades/get', 'getActividades');
+    Route::get('/actividades/baja', 'getActividadesBaja');
+    Route::post('/actividades/post', 'postActividad');
+    Route::post('/actividades/update', 'updateActividad');
+    Route::post('/actividades/ultimaSecuencia', 'ultimaSecuencia');
 });
