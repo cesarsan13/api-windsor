@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('calificaciones', function (Blueprint $table) {
             $table->integer('bimestre')->default(0);
             $table->string('grupo', 15)->default('');
-            $table->foreignId('alumno')->constrained('alumnos', 'numero');
+            $table->integer('alumno')->default('');
             $table->integer('materia')->default(0);
             $table->integer('actividad')->default(0);
             $table->integer('unidad')->default(0);
             $table->decimal('calificacion', 8, 2)->default(0);
             $table->string('baja', 1)->default('');
-            $table->primary(['bimestre', 'grupo', 'materia', 'actividad', 'unidad']);
+            $table->primary(['bimestre', 'grupo', 'alumno', 'materia', 'actividad', 'unidad']);
             $table->timestamps();
         });
     }

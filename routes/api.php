@@ -170,12 +170,14 @@ Route::middleware('auth:sanctum')->controller(ProcesosController::class)->group(
     Route::post('/cartera/proceso', 'procesoCartera');
     Route::get('/cartera/actualizar', 'actualizarDocumentoCartera');
     Route::post('/cancelacion-recibo', 'cancelarRecibo');
-    Route::post('/proceso/calificaciones-get', 'buscarCalificaciones');
+    Route::post('/proceso/calificaciones-alumnos', 'buscarCalificaciones_1');
+    Route::post('/proceso/calificaciones-get', 'buscarCalificaciones_2');
     Route::post('/proceso/busca-cat', 'indexBuscaCat');
     Route::post('/proceso/materia-buscar', 'materiaBuscar');
     Route::post('/proceso/materia-evaluacion', 'materiaBuscarEvaluacion');
     Route::post('/proceso/actividad-secuencia', 'actividadesSecuencia');
     Route::post('/proceso/profesor-contraseña', 'getContraseñaProfe');
+    Route::post('/proceso/guardar-calificaciones', 'guardarCalificaciones');
 });
 
 Route::middleware('auth:sanctum')->controller(ProfesoresController::class)->group(function () {
