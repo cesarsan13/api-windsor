@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActCobranzaController;
 use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\AdeudosPendientesController;
 use Illuminate\Http\Request;
@@ -204,12 +205,20 @@ Route::middleware('auth:sanctum')->controller(ClasesController::class)->group(fu
 });
 
 Route::middleware('auth:sanctum')->controller(ActividadController::class)->group(function () {
-    Route::get('/actividades/get', 'getActividades');
-    Route::get('/actividades/baja', 'getActividadesBaja');
-    Route::post('/actividades/post', 'postActividad');
-    Route::post('/actividades/update', 'updateActividad');
-    Route::post('/actividades/ultimaSecuencia', 'ultimaSecuencia');
+    Route::get('/actividades/get','getActividades');
+    Route::get('/actividades/baja','getActividadesBaja');
+    Route::post('/actividades/post','postActividad');
+    Route::post('/actividades/update','updateActividad');
+    Route::post('/actividades/ultimaSecuencia','ultimaSecuencia');
 });
+
+Route::middleware('auth:sanctum')->controller(ActCobranzaController::class)->group(function (){
+    Route::post('/act-cobranza/doc-alumno','getDocumentosAlumno');
+    Route::post('/act-cobranza/post','postActCobranza');
+    Route::post('/act-cobranza/update','updateActCobranza');
+    Route::post('/act-cobranza/delete','deleteActCobranza');
+});
+  
 
 //Route::middleware('auth:sanctum')->controller(UsuarioController::class)->group(function () {
     //Route::get('/usuario/get', 'GetUsuarios');
