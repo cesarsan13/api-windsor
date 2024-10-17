@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Hash;
 
 class ClasesController extends Controller
 {
+
+
     public function index() {
         $response = ObjectResponse::DefaultResponse();
         try{
