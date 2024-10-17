@@ -41,7 +41,7 @@ class ComentariosController extends Controller
 
     public function indexBaja()
     {
-        $response  = ObjectResponse::DefaultResponse();
+        $response = ObjectResponse::DefaultResponse();
         try {
             $comentarios = Comentarios::where("baja", '=', '*')
                 ->get();
@@ -56,7 +56,7 @@ class ComentariosController extends Controller
 
     public function siguiente()
     {
-        $response  = ObjectResponse::DefaultResponse();
+        $response = ObjectResponse::DefaultResponse();
         try {
             $siguiente = Comentarios::max('numero');
             $response = ObjectResponse::CorrectResponse();
@@ -71,13 +71,17 @@ class ComentariosController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), $this->rules, $this->messages);
-        $response = ObjectResponse::DefaultResponse();
-        if ($validator->fails()) {
-            $response = ObjectResponse::CatchResponse($validator->errors()->all());
-            return response()->json($response, $response['status_code']);
-        }
         try {
+
+            $ultimo_comentario = $this->siguiente();
+            $nuevo_comentario = intval($ultimo_comentario->getData()->data) + 1;
+            $request->merge(['numero' => $nuevo_comentario]);
+            $validator = Validator::make($request->all(), $this->rules, $this->messages);
+            $response = ObjectResponse::DefaultResponse();
+            if ($validator->fails()) {
+                $response = ObjectResponse::CatchResponse($validator->errors()->all());
+                return response()->json($response, $response['status_code']);
+            }
             $datosFiltrados = $request->only([
                 'numero',
                 'comentario_1',
@@ -96,6 +100,7 @@ class ComentariosController extends Controller
             ]);
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'peticion satisfactoria | Comentarios registrados.');
+            data_set($response, 'data', $request->numero);
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
