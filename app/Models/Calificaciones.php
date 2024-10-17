@@ -20,9 +20,9 @@ class Calificaciones extends Model
     ];
     protected $table = 'calificaciones';
     public $timestamps = false;
-    // protected $primaryKey = ['bimestre', 'grupo', 'actividad', 'unidad'];
+    // protected $primaryKey = ['bimestre', 'grupo', 'materia', 'alumno', 'actividad', 'unidad'];
     public function alumno()
     {
-        return $this->belongsTo(Alumno::class, 'alumnos', 'numero');
+        return $this->belongsTo(Alumno::class, 'alumno', 'numero');
     }
 }
