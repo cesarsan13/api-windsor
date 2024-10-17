@@ -5,123 +5,178 @@ use Illuminate\Http\Request;
 use App\Models\User; 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Hash; 
-//use App\Events\UsuarioInsertado;
+use Illuminate\Support\Facades\Hash;
+use App\Models\ObjectResponse;
+
 
 class UsuarioController extends Controller
 {
-    public function GetBajaUsuarios(){
-        $usuarios = DB::table('users')
-        ->select('id', 'name', 'email', 'password')
-        ->where('baja', '=', "*") 
-        ->get();
-    
-    return response()->json($usuarios, 200);
-    }
 
+    protected   $messages = [
+        'required' => 'El campo :attribute es obligatorio.',
+        'max' => 'El campo :attribute no puede tener más de :max caracteres.',
+        'unique' => 'El campo :attribute ya ha sido registrado',
+    ];
+    protected $rules = [
+        'id' => 'required|integer',
+        'name' => 'required|string|max:250',
+        'nombre' => 'required|string|max:50',
+        'email' => 'required|string',
+        'password' => 'nullable|string',
+        'numero_prop' => 'required|integer',
+        'baja' => 'nullable|string|max:1',
+    ];
 
     public function GetUsuarios()
     {
-            $usuarios = DB::table('users')
-            ->select('id', 'nombre', 'name', 'email', 'password')
-            ->where('baja', '!=', "*") 
-            ->get();                
-            return response()->json($usuarios, 200);        
+        $response = ObjectResponse::DefaultResponse();
+        try {
+            $usuarios = User::select('id', 'name', 'nombre', 'email', 'baja') //'password',
+                ->where("baja", '<>', '*')
+                ->get();    
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Peticion Satisfactoria | lista de Comentarios');
+            data_set($response, 'data', $usuarios);
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response["status_code"]); 
     }
 
-
-    public function UpdateUsuarios(Request $request, $id){       
-        $validator = Validator::make($request->all(), [
-            'nombre' => 'required|string', 
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()->all()], 422);
-            console.log(json);
-        }
-
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json("Usuario no encontrado", 404);
-        }
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);       
-        $user->baja= $request = $request->baja=" " ;
-        $user->save();
-        return response()->json($user, 201);
-
-    }
-
-    
-    public function PostUsuarios(Request $request)
+    public function GetUsuariosBaja()
     {
-        $validator = Validator::make($request->all(), [
-            'id' => 'required|integer',
-            'nombre' => 'required|string', 
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()->all()], 422);
-            console.log(json);
+        $response = ObjectResponse::DefaultResponse();
+        try {
+            $usuarios = User::select('id', 'nombre', 'name', 'email', 'baja') //'password',
+                ->where("baja", '=', '*')
+                ->get();    
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Peticion Satisfactoria | lista de Comentarios');
+            data_set($response, 'data', $usuarios);
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
-
-        $user = new User;
-        $user->id = $request->id;
-        $user->nombre = $request->nombre;
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        //$user->rol = 1;
-        $user->baja = "";
-        $user->save();
-
-        event(new UsuarioInsertado($user));
-
-        return response()->json(['message' => 'Usuario creado correctamente', 'usuario' => $user], 201);
+        return response()->json($response, $response["status_code"]); 
     }
 
 
-    public function GetXUsuario($id)
+    //Nuevo
+    public function update(Request $request, User $user)
     {
-        $validator = Validator::make(['id' => $id], [
-            'id' => 'required|integer|exists:users,id',
-        ]);
-    
+        $response = ObjectResponse::DefaultResponse();
+        try {
+            $user = User::where('id', $request->id)->first();
+        } catch (\Throwable $th) {
+            $response = ObjectResponse::CatchResponse($th->getMessage());
+            data_set($response, 'data', $th);
+            return response()->json($response, $response['status_code']);
+        }
+        $validator = Validator::make($request->all(), $this->rules, $this->messages);
         if ($validator->fails()) {
-            return response()->json(['error' => 'Usuario no encontrado'], 404);
+            $response = ObjectResponse::CatchResponse($validator->errors()->all());
+            return response()->json($response, $response['status_code']);
         }
-    
-        $usuario = DB::table('users')
-            ->select( 'name', 'email', 'password')
-            ->where('id', $id)
-            //->where('baja', '!=', "*") 
-            ->get();
-    
-        if (!$usuario) {
-            return response()->json(['error' => 'Usuario no encontrado'], 404);
+        try {
+            $user = User::where('id', $request->id)
+                ->update([
+                    "name" => $request->name,
+                    "nombre" => $request->nombre,
+                    "password"=>Hash::make($request->password),
+                    "email" => $request->email,
+                    "baja" => $request->baja ?? '',
+                    "numero_prop" => $request->numero_prop,
+                ]);
+
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'peticion satisfactoria | Usuario actualizado');
+            data_set($response, 'alert_text', 'Usuario actualizado');
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+            data_set($response, 'message', 'Peticion fallida | Actualizacion de Usuario');
+            data_set($response, 'data', $ex);
         }
-    
-        return response()->json($usuario, 200);
+        return response()->json($response, $response['status_code']);
     }
 
-    
-    public function BajaUsuario(Request $request, $id)
+    public function delete(Request $request, User $user)
     {
-        $validator = Validator::make(['id' => $id], [
-            'id' => 'required|integer|exists:users,id',
-        ]);
+        $response = ObjectResponse::DefaultResponse();
+        $validator = Validator::make($request->all(), $this->rules, $this->messages);
         if ($validator->fails()) {
-            return response()->json(['error' => 'Usuario no encontrado'], 404);
+            $response = ObjectResponse::CatchResponse($validator->errors()->all());
+            return response()->json($response, $response['status_code']);
         }
-        $affected = DB::table('users')
-        ->where('id', $id)
-        ->update(['baja' => "*"]);
-    return response()->json(['message' => 'Estado de baja actualizado correctamente'], 200);
+        try {
+            $user = User::where('id', $request->id)
+                ->update([
+                    "name" => $request->name,
+                    "nombre" => $request->nombre,
+                    "email" => $request->email,
+                    "baja" => $request->baja,
+                    "numero_prop" => $request->numero_prop,
+                ]);
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'peticion satisfactoria | usuario dado de Baja');
+            data_set($response, 'alert_text', 'Usuario actualizado');
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+            data_set($response, 'message', 'Peticion fallida | Actualizacion de Usuario');
+            data_set($response, 'data', $ex);
+        }
+        return response()->json($response, $response['status_code']);
     }
+
+    public function store(Request $request)
+    {
+        $ultimo_usuario = $this->siguiente();
+        $nuevo_usuario = intval($ultimo_usuario->getData()->data) + 1;
+        $request->merge(['id' => $nuevo_usuario]);
+        $validator = Validator::make($request->all(), $this->rules, $this->messages);
+        $response = ObjectResponse::DefaultResponse();
+        if ($validator->fails()) {
+            $response = ObjectResponse::CatchResponse($validator->errors()->all());
+            return response()->json($response, $response['status_code']);
+        }
+        try {
+            $datosFiltrados = $request->only([
+                'id',
+                'name',
+                'nombre',
+                'email',
+                'password',
+                'numero_prop'
+            ]);
+            $nuevoProveedor = User::create([
+                "id" => $datosFiltrados['id'],
+                "name" => $datosFiltrados['name'],
+                "nombre" => $datosFiltrados['nombre'],
+                "email" => $datosFiltrados['email'],
+                "password" => Hash::make($datosFiltrados['password']),
+                "numero_prop" => $datosFiltrados['numero_prop'],
+                "baja" => $datosFiltrados['baja'] ?? '',
+            ]);
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'peticion satisfactoria | Usuario registrado.');
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response['status_code']);
+    }
+
+    public function siguiente()
+    {
+        $response  = ObjectResponse::DefaultResponse();
+        try {
+            $siguiente = User::max('id');
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'peticion satisfactoria | Siguiente Usuario');
+            data_set($response, 'alert_text', 'Siguiente Usuario');
+            data_set($response, 'data', $siguiente);
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response["status_code"]);
+    }
+
+    //aqui
 }
