@@ -27,8 +27,11 @@ use Database\Seeders\DocumentosCobranzaSeeder;
 use App\Http\Controllers\ProcesosController;
 use App\Http\Controllers\ProfesoresController;
 use App\Http\Controllers\ClasesController;
+use App\Http\Controllers\UsuarioController;
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/usuario/get', [AuthController::class, 'GetUsuarios']);
+Route::get('/usuario/getBaja', [AuthController::class, 'GetUsuariosBaja']);
 
 Route::middleware('auth:sanctum')->controller(TipoCobroController::class)->group(function () {
     Route::get("/tipo_cobro", "index");
@@ -196,3 +199,8 @@ Route::middleware('auth:sanctum')->controller(ActividadController::class)->group
     Route::post('/actividades/update', 'updateActividad');
     Route::post('/actividades/ultimaSecuencia', 'ultimaSecuencia');
 });
+
+//Route::middleware('auth:sanctum')->controller(UsuarioController::class)->group(function () {
+    //Route::get('/usuario/get', 'GetUsuarios');
+    //Route::get('/usuario/baja', 'GetBajaUsuarios');
+///});
