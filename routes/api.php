@@ -16,6 +16,7 @@ use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ComentariosController;
 use App\Http\Controllers\AlumnosPorClaseController;
+use App\Http\Controllers\ClasesController;
 use App\Http\Controllers\CobranzaController;
 use App\Http\Controllers\CobranzaProductosController;
 use App\Http\Controllers\DocumentosCobranzaController;
@@ -27,7 +28,6 @@ use App\Http\Controllers\ReportesController;
 use Database\Seeders\DocumentosCobranzaSeeder;
 use App\Http\Controllers\ProcesosController;
 use App\Http\Controllers\ProfesoresController;
-use App\Http\Controllers\ClasesController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -171,6 +171,12 @@ Route::middleware('auth:sanctum')->controller(ProcesosController::class)->group(
     Route::post('/cartera/proceso', 'procesoCartera');
     Route::get('/cartera/actualizar', 'actualizarDocumentoCartera');
     Route::post('/cancelacion-recibo', 'cancelarRecibo');
+    Route::post('/proceso/calificaciones-get', 'buscarCalificaciones');
+    Route::post('/proceso/busca-cat', 'indexBuscaCat');
+    Route::post('/proceso/materia-buscar', 'materiaBuscar');
+    Route::post('/proceso/materia-evaluacion', 'materiaBuscarEvaluacion');
+    Route::post('/proceso/actividad-secuencia', 'actividadesSecuencia');
+    Route::post('/proceso/profesor-contraseña', 'getContraseñaProfe');
 });
 
 Route::middleware('auth:sanctum')->controller(ProfesoresController::class)->group(function () {
@@ -179,6 +185,11 @@ Route::middleware('auth:sanctum')->controller(ProfesoresController::class)->grou
     Route::get('/profesores/siguiente', 'siguiente');
     Route::post('/profesores/update', 'update');
     Route::post('/profesores/save', 'save');
+});
+
+Route::middleware('auth:sanctum')->controller(GruposController::class)->group(function () {
+    Route::get('/grupos/index', 'index');
+    Route::get('/grupos/index-baja', 'indexBaja');
 });
 
 Route::post('/documentosCobranza', [AdeudosPendientesController::class, 'getDetallePedidos'])->middleware('auth:sanctum');

@@ -115,6 +115,7 @@ class AlumnoController extends Controller
         'rfc_factura' => 'nullable|string|max:50',
         'estatus' => 'required|string|max:20',
         'escuela' => 'nullable|string|max:50',
+        'grupo' => 'nullable|string|max:15',
         'baja' => 'nullable|string|max:1',
     ];
     public function showImageStudents($imagen)
@@ -222,6 +223,7 @@ class AlumnoController extends Controller
                 'al.rfc_factura',
                 'al.estatus',
                 'al.escuela',
+                'al.grupo',
                 'al.baja'
             );
 
@@ -357,6 +359,7 @@ class AlumnoController extends Controller
                 'al.rfc_factura',
                 'al.estatus',
                 'al.escuela',
+                'al.grupo',
                 'al.baja'
             );
 
@@ -485,6 +488,7 @@ class AlumnoController extends Controller
                     'al.rfc_factura',
                     'al.estatus',
                     'al.escuela',
+                    'al.grupo',
                     'al.baja'
                 )
                 ->where('al.baja', '<>', '*')
@@ -630,6 +634,7 @@ class AlumnoController extends Controller
                     'al.rfc_factura',
                     'al.estatus',
                     'al.escuela',
+                    'al.grupo',
                     'al.baja'
                 )
                 ->where('al.baja', '=', '*')
@@ -753,6 +758,7 @@ class AlumnoController extends Controller
         $alumno->rfc_factura = $request->rfc_factura ?? '';
         $alumno->estatus = $request->estatus ?? '';
         $alumno->escuela = $request->escuela ?? '';
+        $alumno->grupo = $request->grupo ?? '';
         $alumno->baja = $request->baja ?? '';
         if ($request->hasFile('imagen')) {
             $image = $request->file('imagen');
@@ -944,6 +950,7 @@ class AlumnoController extends Controller
         $alumno->rfc_factura = $request->rfc_factura ?? '';
         $alumno->estatus = $request->estatus ?? '';
         $alumno->escuela = $request->escuela ?? '';
+        $alumno->grupo = $request->grupo ?? '';
         $alumno->baja = $request->baja ?? '';
         if ($request->hasFile('imagen')) {
             $image = $request->file('imagen');
