@@ -30,8 +30,8 @@ use App\Http\Controllers\ClasesController;
 use App\Http\Controllers\UsuarioController;
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/usuario/get', [AuthController::class, 'GetUsuarios']);
-Route::get('/usuario/getBaja', [AuthController::class, 'GetUsuariosBaja']);
+//Route::get('/usuario/get', [AuthController::class, 'GetUsuarios']);
+//Route::get('/usuario/getBaja', [AuthController::class, 'GetUsuariosBaja']);
 
 Route::middleware('auth:sanctum')->controller(TipoCobroController::class)->group(function () {
     Route::get("/tipo_cobro", "index");
@@ -109,8 +109,6 @@ Route::middleware('auth:sanctum')->controller(FacturasFormatoController::class)-
     Route::get("/facturasformato/{id}", "index");
     Route::post("/facturasformato/update", "updateFormato");
 });
-
-
 
 Route::middleware('auth:sanctum')->controller(HorarioController::class)->group(function () {
     Route::get('/horarios', 'getHorarios');
@@ -200,7 +198,13 @@ Route::middleware('auth:sanctum')->controller(ActividadController::class)->group
     Route::post('/actividades/ultimaSecuencia', 'ultimaSecuencia');
 });
 
-//Route::middleware('auth:sanctum')->controller(UsuarioController::class)->group(function () {
-    //Route::get('/usuario/get', 'GetUsuarios');
-    //Route::get('/usuario/baja', 'GetBajaUsuarios');
-///});
+Route::middleware('auth:sanctum')->controller(UsuarioController::class)->group(function () {
+    Route::get('/usuario/get', 'GetUsuarios');
+    Route::get('/usuario/baja', 'GetUsuariosBaja');
+    Route::post('/usuario/update', 'update');
+    Route::post('/usuario/validate-password', 'validatePassword');
+    Route::post('/usuario/update-password/{id}', 'updatePasswordAndData');
+    Route::post('/usuario/delete', 'delete');
+    Route::post('/usuario/post', 'store');
+    Route::get('/usuario/getxuser/{id}', 'getxuser');
+});
