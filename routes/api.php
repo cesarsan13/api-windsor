@@ -30,8 +30,6 @@ use App\Http\Controllers\ClasesController;
 use App\Http\Controllers\UsuarioController;
 
 Route::post('/login', [AuthController::class, 'login']);
-//Route::get('/usuario/get', [AuthController::class, 'GetUsuarios']);
-//Route::get('/usuario/getBaja', [AuthController::class, 'GetUsuariosBaja']);
 
 Route::middleware('auth:sanctum')->controller(TipoCobroController::class)->group(function () {
     Route::get("/tipo_cobro", "index");
