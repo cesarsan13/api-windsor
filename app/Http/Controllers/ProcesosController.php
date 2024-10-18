@@ -2,13 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Actividad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\ObjectResponse;
 use Illuminate\Support\Facades\Log;
+use App\Models\Calificaciones;
+use App\Models\Alumno;
+use App\Models\Profesores;
+use App\Models\Clases;
+use App\Models\Materias;
+use Illuminate\Support\Facades\Validator;
 
 class ProcesosController extends Controller
 {
+    protected $messages = [
+        'required' => 'El campo :attribute es obligatorio.',
+        'max' => 'El campo :attribute no puede tener más de :max caracteres.',
+        'min' => 'El campo :attribute debe tener al menos :min caracteres.',
+        'unique' => 'El  :attribute ya ha sido registrado anteriormente',
+        'numeric' => 'El campo :attribute debe ser un número decimal.',
+        'string' => 'El campo :attribute debe ser una cadena.',
+        'integer' => 'El campo :attribute debe ser un número.',
+        'boolean' => 'El campo :attribute debe ser un valor booleano.',
+    ];
     public function actualizarDocumentoCartera()
     {
         try {
@@ -188,5 +205,279 @@ class ProcesosController extends Controller
             data_set($response, 'alert_text', 'Recibo cancelado correctamente');
             return response()->json($response, $response['status_code']);
         }
+    }
+
+    public function buscarCalificaciones_1(Request $request)
+    {
+        $rules = [
+            'grupo' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $response = ObjectResponse::BadResponse('Error de validación');
+            data_set($response, 'errors', $validator->errors());
+            return response()->json($response, $response['status_code']);
+        }
+
+        $grupo = $request->grupo;
+        $alumnos = Alumno::select('numero', 'nombre')
+            ->where('grupo', '=', $grupo)
+            ->orderBy('nombre')
+            ->get();
+
+        if ($alumnos->isEmpty()) {
+            $response = ObjectResponse::BadResponse('No se encontraron alumnos');
+            return response()->json($response, $response['status_code']);
+        }
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'alert_title', 'Lista de alumnos por grupo');
+        data_set($response, 'alert_text', 'Lista de alumnos por grupo');
+        data_set($response, 'data', $alumnos);
+        return response()->json($response, $response['status_code']);
+    }
+    public function buscarCalificaciones_2(Request $request)
+    {
+        try {
+            $rules = [
+                // 'alumno' => 'required',
+                'numero' => 'required',
+                'nombre' => 'required',
+                'grupo' => 'required',
+                'materia' => 'required',
+                'bimestre' => 'required',
+                'cb_actividad' => 'required|boolean',
+                'actividad' => 'nullable',
+                'unidad' => 'nullable',
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                $response = ObjectResponse::BadResponse('Error de validación');
+                data_set($response, 'errors', $validator->errors());
+                return response()->json($response, $response['status_code']);
+            }
+
+            $numero = $request->numero;
+            $nombre = $request->nombre;
+            $grupo = $request->grupo;
+            $materia = $request->materia;
+            $cb_actividad = $request->cb_actividad;
+            $actividad = $request->actividad;
+            $unidad = $request->unidad;
+            $bimestre = $request->bimestre;
+
+            if ($cb_actividad === true) {
+                $calificacion = Calificaciones::select('calificacion')
+                    ->where('alumno', '=', $numero)
+                    ->where('materia', '=', $materia)
+                    ->where('grupo', '=', $grupo)
+                    ->where('bimestre', '=', $bimestre)
+                    ->where('actividad', '=', $actividad)
+                    ->where('unidad', '=', $unidad)
+                    ->first();
+            } else {
+                $calificacion = Calificaciones::select('calificacion')
+                    ->where('alumno', '=', $numero)
+                    ->where('materia', '=', $materia)
+                    ->where('grupo', '=', $grupo)
+                    ->where('bimestre', '=', $bimestre)
+                    ->first();
+            }
+            Log::info($calificacion);
+            $response_data[] = [
+                'numero' => $numero,
+                'nombre' => $nombre,
+                'unidad' => $unidad ?? '',
+                'calificacion' => $calificacion->calificacion ?? '',
+            ];
+            // }
+
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'alert_title', 'Lista de calificaciones');
+            data_set($response, 'alert_text', 'Lista de calificaciones');
+            data_set($response, 'data', $response_data);
+            data_set($response, 'calis', $calificacion);
+            return response()->json($response, $response['status_code']);
+        } catch (\Exception $e) {
+            $response = ObjectResponse::CatchResponse($e->getMessage());
+            return response()->json($response, $response['status_code']);
+        }
+    }
+
+    public function materiaBuscar(Request $request)
+    {
+        $rules = [
+            'numero' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $response = ObjectResponse::BadResponse('Error de validación');
+            data_set($response, 'errors', $validator->errors());
+            return response()->json($response, $response['status_code']);
+        }
+
+        $materias = Materias::select('descripcion', 'area', 'actividad', 'caso_evaluar')
+            ->where('numero', '=', $request->numero)
+            ->get();
+
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'data', $materias);
+        data_set($response, 'message', 'peticion satisfactoria');
+        return response()->json($response, $response['status_code']);
+    }
+
+    public function materiaBuscarEvaluacion(Request $request)
+    {
+        $rules = [
+            'numero' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $response = ObjectResponse::BadResponse('Error de validación');
+            data_set($response, 'errors', $validator->errors());
+            return response()->json($response, $response['status_code']);
+        }
+
+        $materias = Materias::select('evaluaciones')
+            ->where('numero', '=', $request->numero)
+            ->get();
+
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'data', $materias);
+        data_set($response, 'message', 'peticion satisfactoria');
+        return response()->json($response, $response['status_code']);
+    }
+
+    public function actividadesSecuencia(Request $request)
+    {
+        $rules = [
+            'materia' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $response = ObjectResponse::BadResponse('Error de validación');
+            data_set($response, 'errors', $validator->errors());
+            return response()->json($response, $response['status_code']);
+        }
+
+        $act = Actividad::select('secuencia as id', 'descripcion')
+            ->where('materia', '=', $request->materia)
+            ->where('baja', '<>', '*')
+            ->get();
+
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'data', $act);
+        data_set($response, 'message', 'peticion satisfactoria');
+        return response()->json($response, $response['status_code']);
+    }
+
+    public function indexBuscaCat(Request $request)
+    {
+        $rules = [
+            'grupo' => 'required',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $response = ObjectResponse::BadResponse('Error de validación');
+            data_set($response, 'errors', $validator->errors());
+            return response()->json($response, $response['status_code']);
+        }
+        $resultados = Clases::leftJoin('materias', 'clases.materia', '=', 'materias.numero')
+            ->leftJoin('horarios', 'clases.grupo', '=', 'horarios.numero')
+            ->select('clases.grupo', 'horarios.horario', 'clases.materia', 'materias.actividad', 'materias.descripcion', 'materias.area', 'materias.caso_evaluar')
+            ->where('clases.grupo', $request->grupo)
+            ->orderBy('materias.descripcion')
+            ->get();
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'data', $resultados);
+        data_set($response, 'message', 'peticion satisfactoria');
+        return response()->json($response, $response['status_code']);
+    }
+
+    public function getContraseñaProfe(Request $request)
+    {
+        $rules = [
+            'grupo' => 'required',
+            'materia' => 'required',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $response = ObjectResponse::BadResponse('Error de validación');
+            data_set($response, 'errors', $validator->errors());
+            return response()->json($response, $response['status_code']);
+        }
+        $grupo = $request->grupo;
+        $materia = $request->materia;
+        $contraseña = Profesores::where('numero', function ($query) use ($grupo, $materia) {
+            $query->select('profesor')
+                ->from('clases')
+                ->where('grupo', $grupo)
+                ->where('materia', $materia)
+                ->limit(1);
+        })
+            ->first();
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'data', $contraseña);
+        data_set($response, 'message', 'peticion satisfactoria');
+        return response()->json($response, $response['status_code']);
+    }
+
+    public function guardarCalificaciones(Request $request)
+    {
+        $rules = [
+            'alumno' => 'required',
+            'calificacion' => 'required',
+            'materia' => 'required',
+            'grupo' => 'required',
+            'bimestre' => 'required',
+            'actividad' => 'required',
+            'unidad' => 'required',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $response = ObjectResponse::BadResponse('Error de validación');
+            data_set($response, 'errors', $validator->errors());
+            return response()->json($response, $response['status_code']);
+        }
+        $existe = DB::table('calificaciones')
+            ->where('alumno', $request->alumno)
+            ->where('grupo', $request->grupo)
+            ->where('materia', $request->materia)
+            ->where('bimestre', $request->bimestre)
+            ->where('actividad', $request->actividad)
+            ->where('unidad', $request->unidad)
+            ->first();
+        if (!$existe) {
+            $calificacion = DB::table('calificaciones')->insert([
+                'alumno' => $request->alumno,
+                'calificacion' => $request->calificacion,
+                'materia' => $request->materia,
+                'grupo' => $request->grupo,
+                'bimestre' => $request->bimestre,
+                'actividad' => $request->actividad,
+                'unidad' => $request->unidad
+            ]);
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'alert_text', "Calificación guardada con éxito");
+            data_set($response, 'message', 'Calificación guardada con éxito');
+        } else {
+            DB::table('calificaciones')
+                ->where('alumno', $request->alumno)
+                ->where('grupo', $request->grupo)
+                ->where('materia', $request->materia)
+                ->where('bimestre', $request->bimestre)
+                ->where('actividad', $request->actividad)
+                ->where('unidad', $request->unidad)
+                ->update(['calificacion' => $request->calificacion]);
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'alert_text', "Calificación actualizada con éxito");
+            data_set($response, 'message', 'Calificación actualizada con éxito');
+        }
+
+        return response()->json($response, $response['status_code']);
     }
 }

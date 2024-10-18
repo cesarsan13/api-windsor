@@ -5,22 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Clases extends Model
+class Grupos extends Model
 {
     use HasFactory;
     public $timestamps = false;
     protected $fillable = [
         'grupo',
-        'materia',
+        'salon',
+        'cve_seg',
+        'fecha_seg',
+        'hora_seg',
+        'baja',
         'profesor',
-        'lunes',
-        'martes',
-        'miercoles',
-        'jueves',
-        'viernes',
-        'sabado',
-        'domingo',
         'baja',
     ];
-    protected $table = 'clases';
+    protected $table = 'grupos';
 }

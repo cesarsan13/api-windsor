@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActCobranzaController;
 use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\AdeudosPendientesController;
 use Illuminate\Http\Request;
@@ -28,6 +29,7 @@ use App\Http\Controllers\ProcesosController;
 use App\Http\Controllers\ProfesoresController;
 use App\Http\Controllers\ClasesController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\MailController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -169,6 +171,14 @@ Route::middleware('auth:sanctum')->controller(ProcesosController::class)->group(
     Route::post('/cartera/proceso', 'procesoCartera');
     Route::get('/cartera/actualizar', 'actualizarDocumentoCartera');
     Route::post('/cancelacion-recibo', 'cancelarRecibo');
+    Route::post('/proceso/calificaciones-alumnos', 'buscarCalificaciones_1');
+    Route::post('/proceso/calificaciones-get', 'buscarCalificaciones_2');
+    Route::post('/proceso/busca-cat', 'indexBuscaCat');
+    Route::post('/proceso/materia-buscar', 'materiaBuscar');
+    Route::post('/proceso/materia-evaluacion', 'materiaBuscarEvaluacion');
+    Route::post('/proceso/actividad-secuencia', 'actividadesSecuencia');
+    Route::post('/proceso/profesor-contraseña', 'getContraseñaProfe');
+    Route::post('/proceso/guardar-calificaciones', 'guardarCalificaciones');
 });
 
 Route::middleware('auth:sanctum')->controller(ProfesoresController::class)->group(function () {
@@ -177,6 +187,11 @@ Route::middleware('auth:sanctum')->controller(ProfesoresController::class)->grou
     Route::get('/profesores/siguiente', 'siguiente');
     Route::post('/profesores/update', 'update');
     Route::post('/profesores/save', 'save');
+});
+
+Route::middleware('auth:sanctum')->controller(GruposController::class)->group(function () {
+    Route::get('/grupos/index', 'index');
+    Route::get('/grupos/index-baja', 'indexBaja');
 });
 
 Route::post('/documentosCobranza', [AdeudosPendientesController::class, 'getDetallePedidos'])->middleware('auth:sanctum');
@@ -196,6 +211,13 @@ Route::middleware('auth:sanctum')->controller(ActividadController::class)->group
     Route::post('/actividades/ultimaSecuencia', 'ultimaSecuencia');
 });
 
+Route::middleware('auth:sanctum')->controller(ActCobranzaController::class)->group(function () {
+    Route::post('/act-cobranza/doc-alumno', 'getDocumentosAlumno');
+    Route::post('/act-cobranza/post', 'postActCobranza');
+    Route::post('/act-cobranza/update', 'updateActCobranza');
+    Route::post('/act-cobranza/delete', 'deleteActCobranza');
+});
+
 Route::middleware('auth:sanctum')->controller(UsuarioController::class)->group(function () {
     Route::get('/usuario/get', 'GetUsuarios');
     Route::get('/usuario/baja', 'GetUsuariosBaja');
@@ -205,4 +227,7 @@ Route::middleware('auth:sanctum')->controller(UsuarioController::class)->group(f
     Route::post('/usuario/delete', 'delete');
     Route::post('/usuario/post', 'store');
     Route::get('/usuario/getxuser/{id}', 'getxuser');
+});
+Route::controller(MailController::class)->group(function () {
+    Route::post('send-mail', 'index');
 });
