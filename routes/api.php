@@ -31,10 +31,9 @@ use App\Http\Controllers\ProcesosController;
 use App\Http\Controllers\ProfesoresController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\RegisterController;
 
 Route::post('/login', [AuthController::class, 'login']);
-//Route::get('/usuario/get', [AuthController::class, 'GetUsuarios']);
-//Route::get('/usuario/getBaja', [AuthController::class, 'GetUsuariosBaja']);
 
 Route::middleware('auth:sanctum')->controller(TipoCobroController::class)->group(function () {
     Route::get("/tipo_cobro", "index");
@@ -235,6 +234,7 @@ Route::middleware('auth:sanctum')->controller(UsuarioController::class)->group(f
 Route::controller(MailController::class)->group(function () {
     Route::post('send-mail', 'index');
 });
+Route::post("/register", [RegisterController::class, 'register']);
 Route::middleware('auth:sanctum')->controller(CalificacionesController::class)->group(function () {
     Route::post('/calificaciones/materias', 'getMaterias');
     Route::post('/calificaciones', 'getCalificacionesMateria');
