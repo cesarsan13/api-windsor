@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use Illuminate\Support\Str;
+use App\Http\Controllers\MailController;
 
 class RegisterController extends Controller
 {
@@ -19,12 +20,12 @@ class RegisterController extends Controller
         'unique' => 'El  :attribute ya ha sido registrado anteriormente',
     ];
     protected $rules = [
-        'name' => 'required|string|max:250',
-        'nombre'=>'required|string|max:50',
+        'name' => 'required|string|max:250|unique:users',
+        'nombre'=>'required|string|max:50|unique:users',
         'email' => 'required|email|max:40|unique:users',
-        'password' => 'required|string|min:6',
-        'numero_prop' => 'required|integer',
-        'baja' => 'nullable|string|max:1',
+        //'password' => 'required|string|min:6',
+        //'numero_prop' => 'required|integer',
+        //'baja' => 'nullable|string|max:1',
     ];
 
     public function Register(Request $request)
@@ -60,19 +61,22 @@ class RegisterController extends Controller
                 "baja" => '',
             ]);
 
-            $mailData = [
-                'title' => `Bienvenido ${$datosFiltradosUsuario['nombre']}`,
-                'subject' => "Generación de Contraseña",
-                'body' => `Estamado/a <b>${$datosFiltradosUsuario['nombre']}</b>, su contraseña para el inicio de sesion es la siguiente: <b>${$paswordgenerate}</b>`,
-                'styles' => "<style>h1{color: #333;font-size:30px} p{color:#777;font-size:15px} body{font-family: Arial, sans-serif;text-align: center;background-color: #f9f9f9;} div{ max-width: 600px;margin: 0 auto;padding: 20px;background-color: #ffffff;border-radius: 10px;box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);}</style>",
+            $DataI = [
+                "title" => "Bienvenido/a {$datosFiltradosUsuario['nombre']}",
+                "title2" => "Generación de Contraseña",
+                "body" => "Estimado/a {$datosFiltradosUsuario['nombre']}, su contraseña para el inicio de sesion es la siguiente: {$passwordgenerate}",
+                "view" => "mail-template",
+                "email" => $datosFiltradosUsuario['email'],         
             ];
 
-            Mail::to($request->email)->send(new DemoMail($mailData));
+            $mailController = new MailController();
+            $resultado = $mailController->enviarNuevaContrasenaRegister($DataI); 
 
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'peticion satisfactoria | Usuario registrado.');
+            data_set($resultado, 'messageMail', 'Peticion satisfactoria | Contraseña Enviada');
             data_set($response, 'alert_text', 'Usuario registrado exitosamente');
-            
+
         } catch (\Exception $e) {
             $response = ObjectResponse::CatchResponse($e->getMessage());
         }

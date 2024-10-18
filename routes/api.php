@@ -30,6 +30,7 @@ use App\Http\Controllers\ProfesoresController;
 use App\Http\Controllers\ClasesController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\RegisterController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -231,3 +232,4 @@ Route::middleware('auth:sanctum')->controller(UsuarioController::class)->group(f
 Route::controller(MailController::class)->group(function () {
     Route::post('send-mail', 'index');
 });
+Route::post("/register", [RegisterController::class, 'register']);
