@@ -16,6 +16,8 @@ use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ComentariosController;
 use App\Http\Controllers\AlumnosPorClaseController;
+use App\Http\Controllers\CalificacionesController;
+use App\Http\Controllers\ClasesController;
 use App\Http\Controllers\CobranzaController;
 use App\Http\Controllers\CobranzaProductosController;
 use App\Http\Controllers\DocumentosCobranzaController;
@@ -27,7 +29,6 @@ use App\Http\Controllers\ReportesController;
 use Database\Seeders\DocumentosCobranzaSeeder;
 use App\Http\Controllers\ProcesosController;
 use App\Http\Controllers\ProfesoresController;
-use App\Http\Controllers\ClasesController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\MailController;
 
@@ -125,6 +126,7 @@ Route::middleware('auth:sanctum')->controller(AlumnosPorClaseController::class)-
     Route::get('/AlumnosPC/HorariosAPC', 'getHorariosAPC');
     Route::get('/AlumnosPC/Lista/{idHorario1}/{idHorario2}/{orden}', 'UpdateRepDosSel');
     Route::get('/AlumnosPC/Lista/{idHorario}/{orden}', 'getListaHorariosAPC');
+    Route::post('/AlumnosPC/Lista', 'getListaHorario');
 });
 
 Route::post('/cobranza', [CobranzaController::class, 'PDF'])->middleware('auth:sanctum');
@@ -232,4 +234,8 @@ Route::middleware('auth:sanctum')->controller(UsuarioController::class)->group(f
 });
 Route::controller(MailController::class)->group(function () {
     Route::post('send-mail', 'index');
+});
+Route::middleware('auth:sanctum')->controller(CalificacionesController::class)->group(function () {
+    Route::post('/calificaciones/materias', 'getMaterias');
+    Route::post('/calificaciones', 'getCalificacionesMateria');
 });
