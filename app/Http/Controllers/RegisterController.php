@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
@@ -26,8 +27,6 @@ class RegisterController extends Controller
         'baja' => 'nullable|string|max:1',
     ];
 
-   
-    
     public function Register(Request $request)
     {
         $response = ObjectResponse::DefaultResponse();
@@ -45,25 +44,39 @@ class RegisterController extends Controller
                 'name',
                 'email',
                 'nombre',
-                'password',
                 'numero_prop',
                 'baja'
             ]);
+
+            $passwordgenerate = Str::random(10);
+
             $nuevoUsuario = User::create([
                 "id" => $usuario,
                 "name" => $datosFiltradosUsuario['name'],
                 "nombre" => $datosFiltradosUsuario['nombre'],
                 "email" => $datosFiltradosUsuario['email'],
-                "password" => Hash::make($datosFiltradosUsuario['password']),
+                "password" => Hash::make($passwordgenerate),
                 "numero_prop" => 1,
                 "baja" => '',
             ]);
+
+            $mailData = [
+                'title' => `Bienvenido ${$datosFiltradosUsuario['nombre']}`,
+                'subject' => "Generación de Contraseña",
+                'body' => `Estamado/a <b>${$datosFiltradosUsuario['nombre']}</b>, su contraseña para el inicio de sesion es la siguiente: <b>${$paswordgenerate}</b>`,
+                'styles' => "<style>h1{color: #333;font-size:30px} p{color:#777;font-size:15px} body{font-family: Arial, sans-serif;text-align: center;background-color: #f9f9f9;} div{ max-width: 600px;margin: 0 auto;padding: 20px;background-color: #ffffff;border-radius: 10px;box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);}</style>",
+            ];
+
+            Mail::to($request->email)->send(new DemoMail($mailData));
+
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'peticion satisfactoria | Usuario registrado.');
             data_set($response, 'alert_text', 'Usuario registrado exitosamente');
+            
         } catch (\Exception $e) {
             $response = ObjectResponse::CatchResponse($e->getMessage());
         }
         return response()->json($response, $response['status_code']);
     }
+
 }
