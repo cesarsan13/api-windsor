@@ -29,6 +29,7 @@ use App\Http\Controllers\ProcesosController;
 use App\Http\Controllers\ProfesoresController;
 use App\Http\Controllers\ClasesController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\MailController;
 
 Route::post('/login', [AuthController::class, 'login']);
 //Route::get('/usuario/get', [AuthController::class, 'GetUsuarios']);
@@ -205,20 +206,20 @@ Route::middleware('auth:sanctum')->controller(ClasesController::class)->group(fu
 });
 
 Route::middleware('auth:sanctum')->controller(ActividadController::class)->group(function () {
-    Route::get('/actividades/get','getActividades');
-    Route::get('/actividades/baja','getActividadesBaja');
-    Route::post('/actividades/post','postActividad');
-    Route::post('/actividades/update','updateActividad');
-    Route::post('/actividades/ultimaSecuencia','ultimaSecuencia');
+    Route::get('/actividades/get', 'getActividades');
+    Route::get('/actividades/baja', 'getActividadesBaja');
+    Route::post('/actividades/post', 'postActividad');
+    Route::post('/actividades/update', 'updateActividad');
+    Route::post('/actividades/ultimaSecuencia', 'ultimaSecuencia');
 });
 
-Route::middleware('auth:sanctum')->controller(ActCobranzaController::class)->group(function (){
-    Route::post('/act-cobranza/doc-alumno','getDocumentosAlumno');
-    Route::post('/act-cobranza/post','postActCobranza');
-    Route::post('/act-cobranza/update','updateActCobranza');
-    Route::post('/act-cobranza/delete','deleteActCobranza');
+Route::middleware('auth:sanctum')->controller(ActCobranzaController::class)->group(function () {
+    Route::post('/act-cobranza/doc-alumno', 'getDocumentosAlumno');
+    Route::post('/act-cobranza/post', 'postActCobranza');
+    Route::post('/act-cobranza/update', 'updateActCobranza');
+    Route::post('/act-cobranza/delete', 'deleteActCobranza');
 });
-  
+
 Route::middleware('auth:sanctum')->controller(UsuarioController::class)->group(function () {
     Route::get('/usuario/get', 'GetUsuarios');
     Route::get('/usuario/baja', 'GetUsuariosBaja');
@@ -228,4 +229,7 @@ Route::middleware('auth:sanctum')->controller(UsuarioController::class)->group(f
     Route::post('/usuario/delete', 'delete');
     Route::post('/usuario/post', 'store');
     Route::get('/usuario/getxuser/{id}', 'getxuser');
+});
+Route::controller(MailController::class)->group(function () {
+    Route::post('send-mail', 'index');
 });
