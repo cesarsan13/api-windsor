@@ -480,4 +480,180 @@ class ProcesosController extends Controller
 
         return response()->json($response, $response['status_code']);
     }
+
+
+    public function buscarBoleta3(Request $request)
+    {
+        $rules = [
+            'grupo' => 'required',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $response = ObjectResponse::BadResponse('Error de validación');
+            data_set($response, 'errors', $validator->errors());
+            return response()->json($response, $response['status_code']);
+        }
+        $boleta = Clases::select('materias.numero', 'materias.descripcion', 'materias.area', 'materias.caso_evaluar')
+            ->leftJoin('materias', 'clases.materia', '=', 'materias.numero')
+            ->where('clases.baja', '<>', '*')
+            ->where('materias.baja', '<>', '*')
+            ->where('clases.grupo', $request->grupo)
+            ->orderBy('materias.area')
+            ->orderBy('materias.orden')
+            ->get();
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'data', $boleta);
+        data_set($response, 'message', 'peticion satisfactoria');
+        return response()->json($response, $response['status_code']);
+    }
+
+    public function buscarActividadMateria(Request $request)
+    {
+        $rules = [
+            'numero' => 'required',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $response = ObjectResponse::BadResponse('Error de validación');
+            data_set($response, 'errors', $validator->errors());
+            return response()->json($response, $response['status_code']);
+        }
+        $boleta = Materias::select('actividad')
+            ->where('numero', '=', $request->numero)
+            ->get();
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'data', $boleta);
+        data_set($response, 'message', 'peticion satisfactoria');
+        return response()->json($response, $response['status_code']);
+    }
+
+    public function sacarEvaluacionMateria(Request $request)
+    {
+        $rules = [
+            'grupo' => 'required',
+            'bimestre' => 'required',
+            'alumno' => 'required',
+            'materia' => 'required',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $response = ObjectResponse::BadResponse('Error de validación');
+            data_set($response, 'errors', $validator->errors());
+            return response()->json($response, $response['status_code']);
+        }
+        $materias = Materias::select('evaluaciones')
+            ->where('numero', '=', $request->materia)
+            ->first();
+        // Log::info($materias);
+        $calificacion = Calificaciones::where('grupo', '=', $request->grupo)
+            ->where('bimestre', '=', $request->bimestre)
+            ->where('alumno', '=', $request->alumno)
+            ->where('actividad', '=', '0')
+            ->where('materia', '=', $request->materia)
+            ->where('unidad', '<=', $materias->evaluaciones)
+            ->sum('calificacion');
+        // ->first();
+        if ($calificacion) {
+            $resultados = $calificacion;
+        } else {
+            $resultados = 0;
+        }
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'data', $resultados);
+        data_set($response, 'message', 'peticion satisfactoria');
+        return response()->json($response, $response['status_code']);
+    }
+
+    public function buscarAreas1Y2(Request $request)
+    {
+        $rules = [
+            'materia' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $response = ObjectResponse::BadResponse('Error de validación');
+            data_set($response, 'errors', $validator->errors());
+            return response()->json($response, $response['status_code']);
+        }
+        $materias = Actividad::select('Secuencia', 'EB1', 'EB2', 'EB3', 'EB4', 'EB5')
+            ->where('materia', '=', $request->materia)
+            ->first();
+        $sumatoria = 0;
+        $evaluaciones = 0;
+        foreach ($materias as $materia) {
+            $cpa = Calificaciones::where('alumno', '=', $request->alumno)
+                ->where('materia', '=', $request->materia)
+                ->where('Bimestre', '=', $request->bimestre - 1)
+                ->where('Actividad', '=', $materia->Secuencia)
+                ->where('unidad', '<=', $materia->{'EB' . ($request->bimestre - 1)})
+                ->sum('Calificacion');
+            if ($cpa > 0) {
+                $sumatoria += $this->truncarUno($cpa / $materia->{'EB' . ($request->bimestre - 1)});
+                $evaluaciones += 1;
+            }
+        }
+        if ($sumatoria === 0 || $evaluaciones === 0) {
+            $cal = 0;
+            $data = [
+                "calificacion" => $cal
+            ];
+        } else {
+            $calificacion = ($sumatoria / $evaluaciones);
+            if ($calificacion < 5.0) {
+                $calificacion = 5;
+                $data = [
+                    "calificacion" => $calificacion
+                ];
+            } else {
+                $calificacion = ($sumatoria / $evaluaciones);
+                $data = [
+                    "calificacion" => $calificacion
+                ];
+            }
+        }
+        $response = ObjectResponse::CorrectResponse();
+        // data_set($response, 'data', $);  
+        data_set($response, 'message', 'peticion satisfactoria');
+        return response()->json($response, $response['status_code']);
+    }
+
+    public function buscarAreasOtros(Request $request)
+    {
+        $rules = [
+            'grupo' => 'required',
+            'bimestre' => 'required',
+            'alumno' => 'required',
+            'materia' => 'required',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $response = ObjectResponse::BadResponse('Error de validación');
+            data_set($response, 'errors', $validator->errors());
+            return response()->json($response, $response['status_code']);
+        }
+        $cali = Calificaciones::where('grupo', $request->grupo)
+            ->where('alumno', $request->alumno)
+            ->where('materia', $request->materia)
+            ->where('bimestre', '<=', $request->bimestre)
+            ->sum('calificacion');
+        $suma = 0;
+        if (!$cali) {
+            $suma = 0;
+        } else {
+            $suma = $cali;
+        }
+        $data = [
+            "calificacion" => $suma
+        ];
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'data', $data);
+        data_set($response, 'message', 'peticion satisfactoria');
+        return response()->json($response, $response['status_code']);
+    }
+
+    public function truncarUno($numero)
+    {
+        return floor($numero * 10) / 10;
+    }
 }

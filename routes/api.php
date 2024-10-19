@@ -122,6 +122,7 @@ Route::middleware('auth:sanctum')->controller(AlumnosPorClaseController::class)-
     Route::get('/AlumnosPC/HorariosAPC', 'getHorariosAPC');
     Route::get('/AlumnosPC/Lista/{idHorario1}/{idHorario2}/{orden}', 'UpdateRepDosSel');
     Route::get('/AlumnosPC/Lista/{idHorario}/{orden}', 'getListaHorariosAPC');
+    Route::post('/AlumnosPC/Lista', 'getListaHorario');
 });
 
 Route::post('/cobranza', [CobranzaController::class, 'PDF'])->middleware('auth:sanctum');
@@ -178,6 +179,9 @@ Route::middleware('auth:sanctum')->controller(ProcesosController::class)->group(
     Route::post('/proceso/actividad-secuencia', 'actividadesSecuencia');
     Route::post('/proceso/profesor-contraseña', 'getContraseñaProfe');
     Route::post('/proceso/guardar-calificaciones', 'guardarCalificaciones');
+    Route::post('/proceso/boleta-get', 'buscarBoleta3');
+    Route::post('/proceso/materia-actividad', 'buscarActividadMateria');
+    Route::post('/proceso/boleta-evaluacion', 'sacarEvaluacionMateria');
 });
 
 Route::middleware('auth:sanctum')->controller(ProfesoresController::class)->group(function () {
