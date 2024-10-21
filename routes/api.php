@@ -182,6 +182,9 @@ Route::middleware('auth:sanctum')->controller(ProcesosController::class)->group(
     Route::post('/proceso/actividad-secuencia', 'actividadesSecuencia');
     Route::post('/proceso/profesor-contraseña', 'getContraseñaProfe');
     Route::post('/proceso/guardar-calificaciones', 'guardarCalificaciones');
+    Route::post('/proceso/boleta-get', 'buscarBoleta3');
+    Route::post('/proceso/materia-actividad', 'buscarActividadMateria');
+    Route::post('/proceso/boleta-evaluacion', 'sacarEvaluacionMateria');
 });
 
 Route::middleware('auth:sanctum')->controller(ProfesoresController::class)->group(function () {
