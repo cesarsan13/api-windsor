@@ -182,6 +182,8 @@ Route::middleware('auth:sanctum')->controller(ProcesosController::class)->group(
     Route::post('/proceso/boleta-get', 'buscarBoleta3');
     Route::post('/proceso/materia-actividad', 'buscarActividadMateria');
     Route::post('/proceso/boleta-evaluacion', 'sacarEvaluacionMateria');
+    Route::post('/proceso/boleta-areas', 'buscarAreas1Y2');
+    Route::post('/proceso/boleta-areas-otros', 'buscarAreasOtros');
 });
 
 Route::middleware('auth:sanctum')->controller(ProfesoresController::class)->group(function () {
