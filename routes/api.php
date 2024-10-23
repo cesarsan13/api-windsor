@@ -187,6 +187,7 @@ Route::middleware('auth:sanctum')->controller(ProcesosController::class)->group(
     Route::post('/proceso/boleta-evaluacion', 'sacarEvaluacionMateria');
     Route::post('/proceso/boleta-areas', 'buscarAreas1Y2');
     Route::post('/proceso/boleta-areas-otros', 'buscarAreasOtros');
+    Route::post('/proceso/datos-por-grupo', 'getDatosPorGrupo');
 });
 
 Route::middleware('auth:sanctum')->controller(ProfesoresController::class)->group(function () {

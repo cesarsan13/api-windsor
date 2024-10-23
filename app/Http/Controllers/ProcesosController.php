@@ -670,25 +670,41 @@ class ProcesosController extends Controller
         return floor($numero * 10) / 10;
     }
 
-    public function getCalificacionesMateria(Request $request)
+    public function getDatosPorGrupo(Request $request)
     {
         $rules = [
             'grupo' => 'required',
+            'grupo_nombre' => 'required',
         ];
         $validator = Validator::make($request->all(), $rules);
-
         if ($validator->fails()) {
             $response = ObjectResponse::BadResponse('Error de validación');
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
+
         $alumno = Alumno::select('numero')->where('grupo', '=', $request->grupo)->get();
-        $materias = Materias::select('numero', 'actividad', 'evaluaciones')->get();
-        $calificaciones = Calificaciones::select('alumno', 'bimestre', 'materia', 'actividad', 'unidad', 'calificacion')
-            ->where('grupo', $request->grupo)
+
+        $materias = Clases::select('clases.materia', 'materias.actividad', 'materias.evaluaciones')
+            ->leftJoin('materias', 'clases.materia', '=', 'materias.numero')
+            ->where('clases.grupo', '=', $request->grupo)
+            ->where('materias.area', '=', '1')
+            ->where('materias.baja', '<>', '*')
+            ->where('clases.baja', '<>', '*')
             ->get();
+
+        $calificaciones = Calificaciones::select('alumno', 'bimestre', 'materia', 'actividad', 'unidad', 'calificacion')
+            ->where('grupo', $request->grupo_nombre)
+            ->get();
+
         $actividades = Actividad::select('materia', 'secuencia', 'EB1', 'EB2', 'EB3', 'EB4', 'EB5')->get();
-        $data = ["materias" => $materias, "calificaciones" => $calificaciones, "actividades" => $actividades];
+
+        $data = [
+            "materias" => $materias,
+            "calificaciones" => $calificaciones,
+            "actividades" => $actividades,
+            "alumnos" => $alumno
+        ];
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'data', $data);
         data_set($response, 'message', 'peticion satisfactoria');
