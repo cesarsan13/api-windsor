@@ -556,7 +556,7 @@ class ProcesosController extends Controller
         if ($calificacion) {
             $resultados = $calificacion;
         } else {
-            $resultados = 0;
+            $resultados = "0.00";
         }
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'data', $resultados);
@@ -567,41 +567,51 @@ class ProcesosController extends Controller
     public function buscarAreas1Y2(Request $request)
     {
         $rules = [
+            'grupo' => 'required',
             'materia' => 'required',
+            'bimestre' => 'required',
+            'alumno' => 'required',
         ];
-
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             $response = ObjectResponse::BadResponse('Error de validación');
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
-        $materias = Actividad::select('Secuencia', 'EB1', 'EB2', 'EB3', 'EB4', 'EB5')
-            ->where('materia', '=', $request->materia)
-            ->first();
+        $calificaciones = Calificaciones::select('alumno', 'bimestre', 'materia', 'actividad', 'unidad', 'calificacion')
+            ->where('grupo', $request->grupo)
+            ->get();
+        $cali = Actividad::select('secuencia', 'EB1', 'EB2', 'EB3', 'EB4', 'EB5')
+            ->where('materia', $request->materia)
+            ->orderBy('secuencia')
+            ->get();
         $sumatoria = 0;
         $evaluaciones = 0;
-        foreach ($materias as $materia) {
-            $cpa = Calificaciones::where('alumno', '=', $request->alumno)
-                ->where('materia', '=', $request->materia)
-                ->where('Bimestre', '=', $request->bimestre - 1)
-                ->where('Actividad', '=', $materia->Secuencia)
-                ->where('unidad', '<=', $materia->{'EB' . ($request->bimestre - 1)})
-                ->sum('Calificacion');
+        foreach ($cali as $cal) {
+            $filteredCalificaciones = $calificaciones->filter(function ($calificacion) use ($cal, $request) {
+                return $calificacion->alumno == $request->alumno &&
+                    $calificacion->materia == $request->materia &&
+                    $calificacion->bimestre == $request->bimestre  &&
+                    $calificacion->actividad == $cal->secuencia &&
+                    $calificacion->unidad <= $cal->{'EB' . ($request->bimestre)};
+            });
+            $cpa = $filteredCalificaciones->sum('calificacion');
             if ($cpa > 0) {
-                $sumatoria += $this->truncarUno($cpa / $materia->{'EB' . ($request->bimestre - 1)});
+                $nose = $cal->{'EB' . ($request->bimestre)};
+                $sumatoria += ($cpa / $nose);
                 $evaluaciones += 1;
             }
         }
         if ($sumatoria === 0 || $evaluaciones === 0) {
-            $cal = 0;
+            $calificacion = "0.00";
             $data = [
-                "calificacion" => $cal
+                "calificacion" => $calificacion
             ];
         } else {
             $calificacion = ($sumatoria / $evaluaciones);
+            Log::info($calificacion);
             if ($calificacion < 5.0) {
-                $calificacion = 5;
+                $calificacion = "5.00";
                 $data = [
                     "calificacion" => $calificacion
                 ];
@@ -612,8 +622,11 @@ class ProcesosController extends Controller
                 ];
             }
         }
+        $data = [
+            "calificacion" => $calificacion
+        ];
         $response = ObjectResponse::CorrectResponse();
-        // data_set($response, 'data', $);  
+        data_set($response, 'data', $data);
         data_set($response, 'message', 'peticion satisfactoria');
         return response()->json($response, $response['status_code']);
     }
@@ -639,7 +652,7 @@ class ProcesosController extends Controller
             ->sum('calificacion');
         $suma = 0;
         if (!$cali) {
-            $suma = 0;
+            $suma = '0.00';
         } else {
             $suma = $cali;
         }
