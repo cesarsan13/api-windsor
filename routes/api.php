@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActCobranzaController;
 use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\AdeudosPendientesController;
 use Illuminate\Http\Request;
@@ -15,6 +16,7 @@ use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ComentariosController;
 use App\Http\Controllers\AlumnosPorClaseController;
+use App\Http\Controllers\CalificacionesController;
 use App\Http\Controllers\ClasesController;
 use App\Http\Controllers\CobranzaController;
 use App\Http\Controllers\CobranzaProductosController;
@@ -27,6 +29,9 @@ use App\Http\Controllers\ReportesController;
 use Database\Seeders\DocumentosCobranzaSeeder;
 use App\Http\Controllers\ProcesosController;
 use App\Http\Controllers\ProfesoresController;
+use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\MailController;
+use App\Http\Controllers\RegisterController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -106,8 +111,6 @@ Route::middleware('auth:sanctum')->controller(FacturasFormatoController::class)-
     Route::get("/facturasformato/{id}", "index");
     Route::post("/facturasformato/update", "updateFormato");
 });
-
-
 
 Route::middleware('auth:sanctum')->controller(HorarioController::class)->group(function () {
     Route::get('/horarios', 'getHorarios');
@@ -214,4 +217,30 @@ Route::middleware('auth:sanctum')->controller(ActividadController::class)->group
     Route::post('/actividades/post', 'postActividad');
     Route::post('/actividades/update', 'updateActividad');
     Route::post('/actividades/ultimaSecuencia', 'ultimaSecuencia');
+});
+
+Route::middleware('auth:sanctum')->controller(ActCobranzaController::class)->group(function () {
+    Route::post('/act-cobranza/doc-alumno', 'getDocumentosAlumno');
+    Route::post('/act-cobranza/post', 'postActCobranza');
+    Route::post('/act-cobranza/update', 'updateActCobranza');
+    Route::post('/act-cobranza/delete', 'deleteActCobranza');
+});
+
+Route::middleware('auth:sanctum')->controller(UsuarioController::class)->group(function () {
+    Route::get('/usuario/get', 'GetUsuarios');
+    Route::get('/usuario/baja', 'GetUsuariosBaja');
+    Route::post('/usuario/update', 'update');
+    Route::post('/usuario/validate-password', 'validatePassword');
+    Route::post('/usuario/update-password/{id}', 'updatePasswordAndData');
+    Route::post('/usuario/delete', 'delete');
+    Route::post('/usuario/post', 'store');
+    Route::get('/usuario/getxuser/{id}', 'getxuser');
+});
+Route::controller(MailController::class)->group(function () {
+    Route::post('send-mail', 'index');
+});
+Route::post("/register", [RegisterController::class, 'register']);
+Route::middleware('auth:sanctum')->controller(CalificacionesController::class)->group(function () {
+    Route::post('/calificaciones/materias', 'getMaterias');
+    Route::post('/calificaciones', 'getCalificacionesMateria');
 });

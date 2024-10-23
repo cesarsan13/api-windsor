@@ -26,6 +26,7 @@ class AuthController extends Controller
             return response()->json(['errors' => $validator->errors()->all()], 422);
         }
         $user = User::where('email', $request->email)
+            ->where('baja', "<>", "*")
             ->first();
         if (!$user || !Hash::check($request->password, $user->password)) {
             $response = ObjectResponse::CatchResponse("Credenciales incorrectas");
@@ -38,4 +39,5 @@ class AuthController extends Controller
         data_set($response, 'data', $user);
         return response()->json($response, $response['status_code']);
     }
+
 }
