@@ -493,7 +493,7 @@ class ProcesosController extends Controller
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
-        $boleta = Clases::select('materias.numero', 'materias.descripcion', 'materias.area', 'materias.caso_evaluar')
+        $clases = Clases::select('materias.numero', 'materias.descripcion', 'materias.area', 'materias.caso_evaluar')
             ->leftJoin('materias', 'clases.materia', '=', 'materias.numero')
             ->where('clases.baja', '<>', '*')
             ->where('materias.baja', '<>', '*')
@@ -501,8 +501,18 @@ class ProcesosController extends Controller
             ->orderBy('materias.area')
             ->orderBy('materias.orden')
             ->get();
+        $materias = Materias::where('baja', '<>', '*')->get();
+        $calificaciones = Calificaciones::where('baja', '<>', '*')->get();
+        $actividad = Actividad::where('baja', '<>', '*')->get();
+        $data = [
+            'clases' => $clases,
+            'materias' => $materias,
+            'calificaciones' => $calificaciones,
+            'actividades' => $actividad,
+        ];
+
         $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'data', $boleta);
+        data_set($response, 'data', $data);
         data_set($response, 'message', 'peticion satisfactoria');
         return response()->json($response, $response['status_code']);
     }
@@ -611,12 +621,12 @@ class ProcesosController extends Controller
             $calificacion = ($sumatoria / $evaluaciones);
             Log::info($calificacion);
             if ($calificacion < 5.0) {
-                $calificacion = "5.00";
+                $calificacion = "5.0";
                 $data = [
                     "calificacion" => $calificacion
                 ];
             } else {
-                $calificacion = ($sumatoria / $evaluaciones);
+
                 $data = [
                     "calificacion" => $calificacion
                 ];
@@ -675,6 +685,7 @@ class ProcesosController extends Controller
         $rules = [
             'grupo' => 'required',
             'grupo_nombre' => 'required',
+            'orden_alfabetico' => 'required|boolean',
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
@@ -683,12 +694,23 @@ class ProcesosController extends Controller
             return response()->json($response, $response['status_code']);
         }
 
-        $alumno = Alumno::select('numero')->where('grupo', '=', $request->grupo)->get();
-
+        $alumnoQuery = Alumno::select('numero')->where('grupo', '=', $request->grupo);
+        if ($request->orden_alfabetico) {
+            $alumnoQuery->orderBy('nombre', 'asc');
+        }
+        $alumno = $alumnoQuery->get();
         $materias = Clases::select('clases.materia', 'materias.actividad', 'materias.evaluaciones')
             ->leftJoin('materias', 'clases.materia', '=', 'materias.numero')
             ->where('clases.grupo', '=', $request->grupo)
             ->where('materias.area', '=', '1')
+            ->where('materias.baja', '<>', '*')
+            ->where('clases.baja', '<>', '*')
+            ->get();
+
+        $materias2 = Clases::select('clases.materia', 'materias.actividad', 'materias.evaluaciones')
+            ->leftJoin('materias', 'clases.materia', '=', 'materias.numero')
+            ->where('clases.grupo', '=', $request->grupo)
+            ->where('materias.area', '=', '4')
             ->where('materias.baja', '<>', '*')
             ->where('clases.baja', '<>', '*')
             ->get();
@@ -700,7 +722,8 @@ class ProcesosController extends Controller
         $actividades = Actividad::select('materia', 'secuencia', 'EB1', 'EB2', 'EB3', 'EB4', 'EB5')->get();
 
         $data = [
-            "materias" => $materias,
+            "materias_español" => $materias,
+            "materias_ingles" => $materias2,
             "calificaciones" => $calificaciones,
             "actividades" => $actividades,
             "alumnos" => $alumno
