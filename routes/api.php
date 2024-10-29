@@ -32,6 +32,7 @@ use App\Http\Controllers\ProfesoresController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ConcentradoCalificacionesController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -243,4 +244,10 @@ Route::post("/register", [RegisterController::class, 'register']);
 Route::middleware('auth:sanctum')->controller(CalificacionesController::class)->group(function () {
     Route::post('/calificaciones/materias', 'getMaterias');
     Route::post('/calificaciones', 'getCalificacionesMateria');
+});
+
+Route::middleware('auth:sanctum')->controller(ConcentradoCalificacionesController::class)->group(function () {
+    Route::get('/concentradoCalificaciones/materiasGrupo/{idHorario}', 'getMateriasPorGrupo');
+    Route::get('/concentradoCalificaciones/detalles/{idHorario}/{idAlumno}/{idMateria}/{idBimestre}', 'getActividadesXHorarioXAlumnoXMateriaXBimestre');
+    Route::get('/concentradoCalificaciones/detallesGrupoGeneral/{idHorario}/{idBimestre}', 'getInfoActividadesXGrupo');
 });
