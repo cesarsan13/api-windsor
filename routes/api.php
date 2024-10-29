@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccesosMenuController;
 use App\Http\Controllers\ActCobranzaController;
 use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\AdeudosPendientesController;
@@ -244,4 +245,11 @@ Route::post("/register", [RegisterController::class, 'register']);
 Route::middleware('auth:sanctum')->controller(CalificacionesController::class)->group(function () {
     Route::post('/calificaciones/materias', 'getMaterias');
     Route::post('/calificaciones', 'getCalificacionesMateria');
+});
+Route::middleware('auth:sanctum')->controller(AccesosMenuController::class)->group(function () {
+    Route::get('/accesos-menu/get', 'index');
+    Route::get('/accesos-menu/baja', 'indexBaja');
+    Route::get('/accesos-menu/siguiente', 'siguiente');
+    Route::post('/accesos-menu/save', 'save');
+    Route::put('/accesos-menu/update', 'update');
 });
