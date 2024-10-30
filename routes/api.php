@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccesosMenuController;
 use App\Http\Controllers\ActCobranzaController;
 use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\AdeudosPendientesController;
@@ -251,4 +252,11 @@ Route::middleware('auth:sanctum')->controller(ConcentradoCalificacionesControlle
     Route::get('/concentradoCalificaciones/materiasGrupo/{idHorario}', 'getMateriasPorGrupo');
     Route::get('/concentradoCalificaciones/detalles/{idHorario}/{idAlumno}/{idMateria}/{idBimestre}', 'getActividadesXHorarioXAlumnoXMateriaXBimestre');
     Route::get('/concentradoCalificaciones/detallesGrupoGeneral/{idHorario}/{idBimestre}', 'getInfoActividadesXGrupo');
+});
+Route::middleware('auth:sanctum')->controller(AccesosMenuController::class)->group(function () {
+    Route::get('/accesos-menu/get', 'index');
+    Route::get('/accesos-menu/baja', 'indexBaja');
+    Route::get('/accesos-menu/siguiente', 'siguiente');
+    Route::post('/accesos-menu/save', 'save');
+    Route::put('/accesos-menu/update', 'update');
 });
