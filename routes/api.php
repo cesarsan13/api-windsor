@@ -262,3 +262,10 @@ Route::middleware('auth:sanctum')->controller(AccesosMenuController::class)->gro
     Route::post('/accesos-menu/save', 'save');
     Route::put('/accesos-menu/update', 'update');
 });
+
+Route::middleware('auth:sanctum')->controller(CalificacionesController::class)->group(function (){
+    Route::post('/calificaciones/materias','getMaterias');
+    Route::post('/calificaciones','getCalificacionesMateria');
+    Route::post('/calificaciones/new','getNewCalificacionesMateria');
+    Route::post('/calificaciones/alumnosArea1','getCalificacionesAlumnosArea1');
+});
