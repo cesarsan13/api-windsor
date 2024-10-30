@@ -305,7 +305,7 @@ class ProcesosController extends Controller
         }
     }
 
-    public function buscaTareasTrabajosPendientes(Request $request){
+    public function buscaTareasTrabajosPendientes(Request $request){ 
         try {
             
             $rules = [
@@ -482,7 +482,7 @@ class ProcesosController extends Controller
         data_set($response, 'message', 'peticion satisfactoria');
         return response()->json($response, $response['status_code']);
     }
-    public function guardarC_Otras(Request $request){
+    public function guardarC_Otras(Request $request){ 
         $rules = [
             'alumno' => 'required',
             'calificacion' => 'required',
