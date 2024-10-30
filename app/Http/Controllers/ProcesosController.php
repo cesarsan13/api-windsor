@@ -518,8 +518,8 @@ class ProcesosController extends Controller
                     'unidad' => 0
                 ]);
                 $response = ObjectResponse::CorrectResponse();
-                data_set($response, 'alert_text', "Calificación guardada con éxito");
-                data_set($response, 'message', 'Calificación guardada con éxito');
+                data_set($response, 'alert_text', "Sus cambios han sido guardados");
+                data_set($response, 'message', 'Sus cambios han sido guardados');
             } else {
                 DB::table('calificaciones')
                     ->where('alumno', $request->alumno)
@@ -530,8 +530,8 @@ class ProcesosController extends Controller
                     ->where('unidad', 0)
                     ->update(['calificacion' => $request->calificacion]);
                 $response = ObjectResponse::CorrectResponse();
-                data_set($response, 'alert_text', "Calificación actualizada con éxito");
-                data_set($response, 'message', 'Calificación actualizada con éxito');
+                data_set($response, 'alert_text', "Sus cambios han sido guardados");
+                data_set($response, 'message', 'Sus cambios han sido guardados');
             }
 
             return response()->json($response, $response['status_code']);
