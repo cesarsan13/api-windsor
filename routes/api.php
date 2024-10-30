@@ -221,4 +221,6 @@ Route::middleware('auth:sanctum')->controller(ActCobranzaController::class)->gro
 Route::middleware('auth:sanctum')->controller(CalificacionesController::class)->group(function (){
     Route::post('/calificaciones/materias','getMaterias');
     Route::post('/calificaciones','getCalificacionesMateria');
+    Route::post('/calificaciones/new','getNewCalificacionesMateria');
+    Route::post('/calificaciones/alumnosArea1','getCalificacionesAlumnosArea1');
 });
