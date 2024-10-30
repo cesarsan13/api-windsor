@@ -67,7 +67,7 @@ class AsignaturasController extends Controller
             return response()->json($response, $response['status_code']);
         }
     }
-    public function showSubjectCasoEvaluarOtro()
+    public function showSubjectCasoEvaluarOtro() 
     {
         $response = ObjectResponse::DefaultResponse();
         try {
