@@ -7,6 +7,7 @@ use App\Models\ObjectResponse;
 use App\Models\Alumno;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 
@@ -670,6 +671,7 @@ class AlumnoController extends Controller
             return response()->json($response, $response['status_code']);
         }
 
+        Log::info('Datos de la petición:', ['data' => $request->all()]);
         $alumno = new Alumno();
         $alumno->numero = $request->numero ?? 0;
         $alumno->nombre = $request->nombre ?? '';
@@ -760,11 +762,11 @@ class AlumnoController extends Controller
         $alumno->escuela = $request->escuela ?? '';
         $alumno->grupo = $request->grupo ?? '';
         $alumno->baja = $request->baja ?? '';
-        if ($request->hasFile('imagen')) {
-            $image = $request->file('imagen');
+        if ($request->hasFile('ruta_foto')) {
+            $image = $request->file('ruta_foto');
             $destinationPath = "images/alumnos";
             $imageName = $image->getClientOriginalName();
-            // $fullPath = $destinationPath . '/' . $imageName;
+            $fullPath = $destinationPath . '/' . $imageName;
             $fullPath = $imageName;
             if (file_exists($fullPath)) {
                 $alumno->ruta_foto = $fullPath;
@@ -864,6 +866,7 @@ class AlumnoController extends Controller
             return response()->json($response, $response['status_code']);
         }
 
+        Log::info('Datos de la petición:', ['data' => $request->all()]);
         $alumno->nombre = $request->nombre ?? '';
         $alumno->a_paterno = $request->a_paterno ?? '';
         $alumno->a_materno = $request->a_materno ?? '';
@@ -952,11 +955,11 @@ class AlumnoController extends Controller
         $alumno->escuela = $request->escuela ?? '';
         $alumno->grupo = $request->grupo ?? '';
         $alumno->baja = $request->baja ?? '';
-        if ($request->hasFile('imagen')) {
-            $image = $request->file('imagen');
+        if ($request->hasFile('ruta_foto')) {
+            $image = $request->file('ruta_foto');
             $destinationPath = "images/alumnos";
             $imageName = $image->getClientOriginalName();
-            // $fullPath = $destinationPath . '/' . $imageName;
+            $fullPath = $destinationPath . '/' . $imageName;
             $fullPath = $imageName;
             if (file_exists($fullPath)) {
                 $alumno->ruta_foto = $fullPath;
