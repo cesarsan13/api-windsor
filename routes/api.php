@@ -67,6 +67,7 @@ Route::middleware('auth:sanctum')->controller(FormFactController::class)->group(
 Route::middleware('auth:sanctum')->controller(AsignaturasController::class)->group(function () {
     Route::get('/subject/filter/{type}/{value}', 'subjectFilter');
     Route::get('/subject', 'showSubject');
+    Route::get('/subject/caso-otro', 'showSubjectCasoEvaluarOtro');
     Route::get('/subject/last', 'lastSubject');
     Route::post('/subject/save', 'storeSubject');
     Route::get('/subject/bajas', 'bajaSubject');

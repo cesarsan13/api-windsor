@@ -67,6 +67,20 @@ class AsignaturasController extends Controller
             return response()->json($response, $response['status_code']);
         }
     }
+    public function showSubjectCasoEvaluarOtro()
+    {
+        $response = ObjectResponse::DefaultResponse();
+        try {
+            $asignaturas = DB::table('asignaturas')->where('baja', '<>', '*')->where('caso_evaluar','=','OTRO')->orderBy('numero', 'ASC')->get();
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Peticion satisfactoria');
+            data_set($response, 'data', $asignaturas);
+            return response()->json($response, $response['status_code']);
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+            return response()->json($response, $response['status_code']);
+        }
+    }
     public function lastSubject()
     {
         $maxId = DB::table('asignaturas')->max('numero');
