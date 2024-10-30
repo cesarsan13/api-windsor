@@ -178,12 +178,14 @@ Route::middleware('auth:sanctum')->controller(ProcesosController::class)->group(
     Route::post('/cancelacion-recibo', 'cancelarRecibo');
     Route::post('/proceso/calificaciones-alumnos', 'buscarCalificaciones_1');
     Route::post('/proceso/calificaciones-get', 'buscarCalificaciones_2');
+    Route::post('/proceso/tareastrabajos-get', 'buscaTareasTrabajosPendientes');
     Route::post('/proceso/busca-cat', 'indexBuscaCat');
     Route::post('/proceso/materia-buscar', 'materiaBuscar');
     Route::post('/proceso/materia-evaluacion', 'materiaBuscarEvaluacion');
     Route::post('/proceso/actividad-secuencia', 'actividadesSecuencia');
     Route::post('/proceso/profesor-contraseña', 'getContraseñaProfe');
     Route::post('/proceso/guardar-calificaciones', 'guardarCalificaciones');
+    Route::post('/proceso/guardar-c-otras', 'guardarC_Otras');
     Route::post('/proceso/boleta-get', 'buscarBoleta3');
     Route::post('/proceso/materia-actividad', 'buscarActividadMateria');
     Route::post('/proceso/boleta-evaluacion', 'sacarEvaluacionMateria');

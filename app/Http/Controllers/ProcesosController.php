@@ -305,6 +305,63 @@ class ProcesosController extends Controller
         }
     }
 
+    public function buscaTareasTrabajosPendientes(Request $request){
+        try {
+            
+            $rules = [
+                // 'alumno' => 'required',
+                'numero' => 'required',
+                'nombre' => 'required',
+                'grupo' => 'required',
+                'materia' => 'required',
+                'bimestre' => 'required',
+            ];
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                $response = ObjectResponse::BadResponse('Error de validación');
+                data_set($response, 'errors', $validator->errors());
+                return response()->json($response, $response['status_code']);
+            }
+            $numero = $request->numero;
+            $nombre = $request->nombre;
+            $grupo = $request->grupo;
+            $materia = $request->materia;
+            $bimestre = $request->bimestre;
+            $calificacion = Calificaciones::select('calificacion')
+                    ->where('alumno', '=', $numero)
+                    ->where('materia', '=', $materia)
+                    ->where('grupo', '=', $grupo)
+                    ->where('bimestre', '=', $bimestre)
+                    ->where('actividad', '=', 0)
+                    ->where('unidad', '=', 0)
+                    ->first();
+            $sqlQuery = Calificaciones::select('calificacion')
+                ->where('alumno', '=', $numero)
+                ->where('materia', '=', $materia)
+                ->where('grupo', '=', $grupo)
+                ->where('bimestre', '=', $bimestre)
+                ->where('actividad', '=', 0)
+                ->where('unidad', '=', 0)
+                ->toSql();
+                $response_data[] = [
+                    'numero' => $numero,
+                    'nombre' => $nombre,
+                    'unidad' => $unidad ?? '',
+                    'calificacion' => $calificacion->calificacion ?? 0,
+                    'materia' => $materia ?? 0
+                ];
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'alert_title', 'Lista de calificaciones');
+            data_set($response, 'alert_text', 'Lista de calificaciones. => '.$sqlQuery. " => ".$numero.";".$materia.";".$grupo.";".$bimestre);
+            data_set($response, 'data', $response_data);
+            return response()->json($response, $response['status_code']);
+        } catch (\Exception $e) {
+            $response = ObjectResponse::CatchResponse($e->getMessage());
+            return response()->json($response, $response['status_code']);
+        }
+
+    }
+
     public function materiaBuscar(Request $request)
     {
         $rules = [
@@ -424,6 +481,67 @@ class ProcesosController extends Controller
         data_set($response, 'data', $contraseña);
         data_set($response, 'message', 'peticion satisfactoria');
         return response()->json($response, $response['status_code']);
+    }
+    public function guardarC_Otras(Request $request){
+        $rules = [
+            'alumno' => 'required',
+            'calificacion' => 'required',
+            'materia' => 'required',
+            'grupo' => 'required',
+            'bimestre' => 'required',
+            // 'actividad' => 'required',
+            // 'unidad' => 'required',
+        ];
+        try {
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                $response = ObjectResponse::BadResponse('Error de validación');
+                data_set($response, 'errors', $validator->errors());
+                return response()->json($response, $response['status_code']);
+            }
+            $existe = DB::table('calificaciones')
+                ->where('alumno', $request->alumno)
+                ->where('grupo', $request->grupo)
+                ->where('materia', $request->materia)
+                ->where('bimestre', $request->bimestre)
+                ->where('actividad', 0)
+                ->where('unidad', 0)
+                ->first();
+            if (!$existe) {
+                $calificacion = DB::table('calificaciones')->insert([
+                    'alumno' => $request->alumno,
+                    'calificacion' => $request->calificacion,
+                    'materia' => $request->materia,
+                    'grupo' => $request->grupo,
+                    'bimestre' => $request->bimestre,
+                    'actividad' => 0,
+                    'unidad' => 0
+                ]);
+                $response = ObjectResponse::CorrectResponse();
+                data_set($response, 'alert_text', "Calificación guardada con éxito");
+                data_set($response, 'message', 'Calificación guardada con éxito');
+            } else {
+                DB::table('calificaciones')
+                    ->where('alumno', $request->alumno)
+                    ->where('grupo', $request->grupo)
+                    ->where('materia', $request->materia)
+                    ->where('bimestre', $request->bimestre)
+                    ->where('actividad', 0)
+                    ->where('unidad', 0)
+                    ->update(['calificacion' => $request->calificacion]);
+                $response = ObjectResponse::CorrectResponse();
+                data_set($response, 'alert_text', "Calificación actualizada con éxito");
+                data_set($response, 'message', 'Calificación actualizada con éxito');
+            }
+
+            return response()->json($response, $response['status_code']);
+        } catch (\Exception $e) {
+            $response = ObjectResponse::CatchResponse($e->getMessage());
+            return response()->json($response, $response['status_code']);
+        }
+        
+        
+
     }
 
     public function guardarCalificaciones(Request $request)
