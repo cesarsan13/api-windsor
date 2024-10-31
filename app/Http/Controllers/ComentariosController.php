@@ -19,7 +19,7 @@ class ComentariosController extends Controller
         'comentario_1' => 'required|string|max:50',
         'comentario_2' => 'required|string|max:50',
         'comentario_3' => 'required|string|max:50',
-        'generales' => 'nullable|string|max:1',
+        'generales' => 'nullable|integer|max:1',
         'baja' => 'nullable|string|max:1',
 
     ];
@@ -116,7 +116,7 @@ class ComentariosController extends Controller
             return response()->json($response, $response['status_code']);
         }
         try {
-            $tipo_cobro = Comentarios::where('numero', $request->id)
+            $tipo_cobro = Comentarios::where('numero', $request->numero)
                 ->update([
                     "comentario_1" => $request->comentario_1,
                     "comentario_2" => $request->comentario_2,
