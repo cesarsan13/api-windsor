@@ -140,9 +140,8 @@ class ProcesosController extends Controller
         $recibo = $request->recibo;
         $cobranza_diaria = DB::table('cobranza_diaria')
             ->where('recibo', '=', $recibo)
-            ->where('fecha_cobro', '<>', $fecha)
+            ->where('fecha_cobro', '=', $fecha)
             ->first();
-        // Log::info($cobranza_diaria);
         if (!$cobranza_diaria) {
             $response = ObjectResponse::BadResponse();
             data_set($response, 'alert_title', 'Cancelación de Recibos');
@@ -152,7 +151,6 @@ class ProcesosController extends Controller
         $encab_pedido = DB::table('encab_pedido')
             ->where('recibo', '=', $recibo)
             ->first();
-        // Log::info($encab_pedido);
         if (!$encab_pedido) {
             $response = ObjectResponse::BadResponse();
             data_set($response, 'alert_title', 'Cancelación de Recibos');
@@ -162,23 +160,24 @@ class ProcesosController extends Controller
         $detalle_pedido = DB::table('detalle_pedido')
             ->where('recibo', '=', $recibo)
             ->first();
+        // Log::info((array) $detalle_pedido);
         if (!$detalle_pedido) {
             $response = ObjectResponse::BadResponse();
             data_set($response, 'alert_title', 'Cancelación de Recibos');
-            data_set($response, 'alert_text', 'Númerode recibo no localizado');
+            data_set($response, 'alert_text', 'Número de recibo no localizado');
             return response()->json($response, $response['status_code']);
         } else {
-            if ($detalle_pedido->documento > 0) {
+            if ($detalle_pedido->documento > 0 || $detalle_pedido->documento === '0') {
                 DB::table('documentos_cobranza')
                     ->where('alumno', '=', $detalle_pedido->alumno)
                     ->where('producto', '=', $detalle_pedido->articulo)
                     ->where('numero_doc', '=', $detalle_pedido->documento)
                     ->update([
                         'importe_pago' => 0,
-                        'fecha_cobros' => ' '
+                        'fecha_cobro' => ' '
                     ]);
+                // Log::info('detalleUpdate result: ' . $docs);
             }
-
             DB::table('detalle_pedido')
                 ->where('recibo', '=', $recibo)
                 ->update([
@@ -188,8 +187,8 @@ class ProcesosController extends Controller
                     'iva' => 0,
                     'fecha' => ' '
                 ]);
-
-            db::table('encab_pedido')
+            // Log::info('detalleUpdate result: ' . $detalleUpdate);
+            DB::table('encab_pedido')
                 ->where('recibo', '=', $recibo)
                 ->where('fecha', '=', $fecha)
                 ->update([
@@ -199,9 +198,9 @@ class ProcesosController extends Controller
                     'referencia_1' => ' ',
                     'tipo_pago_2' => 0,
                     'importe_pago_2' => 0,
-                    'referencia_2' => ' ',
+                    'referencia_2' => ' '
                 ]);
-
+            // Log::info('encabUpdate result: ' . $encabUpdate);
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'alert_title', 'Cancelación de Recibos');
             data_set($response, 'alert_text', 'Recibo cancelado correctamente');
