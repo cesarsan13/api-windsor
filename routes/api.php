@@ -212,7 +212,7 @@ Route::post('/documentosCobranza', [AdeudosPendientesController::class, 'getDeta
 
 Route::middleware('auth:sanctum')->controller(ClasesController::class)->group(function () {
     Route::post('/clase', 'postClases');
-    Route::post('/clase/updateClase', 'updateClases');
+    Route::post('/clase/updateClases', 'updateClases');
     Route::get('/clase/baja', 'indexBaja');
     Route::get("/clase", "index");
 });
