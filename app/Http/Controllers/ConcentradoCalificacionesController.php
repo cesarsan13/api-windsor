@@ -112,12 +112,31 @@ class ConcentradoCalificacionesController extends Controller
         return response()->json($response, $response['status_code']);
     }
 
-    function getMateriasReg(){
+    //function getMateriasReg(){
+    //    $response = ObjectResponse::DefaultResponse();
+    //    try{
+    //        $resultados = DB::table('materias')
+    //        ->select('numero', 'descripcion', 'evaluaciones', 'actividad')
+    //        ->where('baja', '!=', '*')
+    //        ->get();
+    //
+    //        $response = ObjectResponse::CorrectResponse();
+    //        data_set($response, 'data', $resultados);
+    //        data_set($response, 'message', 'peticion satisfactoria');
+    //    } catch (\Exception $ex) {
+    //        $response = ObjectResponse::CatchResponse($ex->getMessage());
+    //    }
+    //    return response()->json($response, $response['status_code']);
+    //}
+
+    function getMateriasReg($idHorario){
         $response = ObjectResponse::DefaultResponse();
         try{
-            $resultados = DB::table('materias')
-            ->select('numero', 'descripcion', 'evaluaciones', 'actividad')
-            ->where('baja', '!=', '*')
+            $resultados = DB::table('materias as M')
+            ->select('M.numero', 'M.descripcion', 'M.evaluaciones', 'M.actividad')
+            ->leftJoin('clases as C', 'C.materia', '=', 'M.numero')
+            ->where('M.baja', '!=', '*')
+            ->where('C.grupo', '=', $idHorario)
             ->get();
 
             $response = ObjectResponse::CorrectResponse();
