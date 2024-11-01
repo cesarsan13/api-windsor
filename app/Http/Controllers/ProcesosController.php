@@ -402,15 +402,15 @@ class ProcesosController extends Controller
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
-        $resultados = Clases::leftJoin('materias', 'clases.materia', '=', 'materias.numero')
-            ->leftJoin('horarios', 'clases.grupo', '=', 'horarios.numero')
+        $resultados = Clases::join('materias', 'clases.materia', '=', 'materias.numero')
+            ->join('horarios', 'clases.grupo', '=', 'horarios.numero')
             ->select('clases.grupo', 'horarios.horario', 'clases.materia', 'materias.actividad', 'materias.descripcion', 'materias.area', 'materias.caso_evaluar')
             ->where('clases.grupo', $request->grupo)
             ->orderBy('materias.descripcion')
             ->get();
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'data', $resultados);
-        data_set($response, 'message', 'peticion satisfactoria');
+        data_set($response, 'message', 'Consulta realizada con éxito');
         return response()->json($response, $response['status_code']);
     }
 
