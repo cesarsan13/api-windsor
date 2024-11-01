@@ -282,6 +282,7 @@ class ProcesosController extends Controller
             $unidad = $request->unidad;
             $bimestre = $request->bimestre;
 
+            Log::info($request);
             if ($cb_actividad === true) {
                 $calificacion = Calificaciones::select('calificacion')
                     ->where('alumno', '=', $numero)
@@ -289,7 +290,7 @@ class ProcesosController extends Controller
                     ->where('grupo', '=', $grupo)
                     ->where('bimestre', '=', $bimestre)
                     ->where('actividad', '=', $actividad)
-                    ->where('unidad', '=', $unidad)
+                    ->where('unidad', '=', $unidad ?? '')
                     ->first();
             } else {
                 $calificacion = Calificaciones::select('calificacion')
@@ -304,7 +305,7 @@ class ProcesosController extends Controller
                 'numero' => $numero,
                 'nombre' => $nombre,
                 'unidad' => $unidad ?? '',
-                'calificacion' => $calificacion->calificacion ?? '',
+                'calificacion' => $calificacion->calificacion ?? '0.00',
             ];
             // }
 
