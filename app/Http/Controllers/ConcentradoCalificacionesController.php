@@ -15,7 +15,7 @@ class ConcentradoCalificacionesController extends Controller
             $resultados = Clases::leftJoin('materias', 'clases.materia', '=', 'materias.numero')
                 ->select('materias.numero', 'materias.descripcion', 'materias.area')
                 ->where('clases.baja', ' ')
-                ->where('materias.baja', ' ')
+                ->where('materias.baja', '!=', '*')
                 ->where('grupo', $idHorario)
                 ->orderBy('materias.area')
                 ->orderBy('materias.orden')->get();
@@ -52,7 +52,7 @@ class ConcentradoCalificacionesController extends Controller
         $response = ObjectResponse::DefaultResponse();
         try{
             $resultados = DB::table('calificaciones as C')
-            ->select('C.alumno as numero', 'A.nombre', 'C.bimestre', 'C.materia', 'C.actividad', 'C.unidad', 'C.calificacion', 'M.area')
+            ->select('C.alumno as numero', 'C.bimestre', 'C.materia', 'C.actividad', 'C.unidad', 'C.calificacion', 'M.area')
             ->leftJoin('horarios as H', 'H.horario', '=', 'C.grupo')
             ->leftJoin('alumnos as A', 'A.numero', '=', 'C.alumno')
             ->leftJoin('materias as M', 'M.numero', '=', 'C.materia')
