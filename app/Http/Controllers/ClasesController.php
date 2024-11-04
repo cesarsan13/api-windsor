@@ -36,10 +36,10 @@ class ClasesController extends Controller
             return response()->json($response,$response['status_code']);
         }
         try {
-            $clase = Clases::where('materia',$request->materia)
-                ->where('grupo', $request->id_grupo)
-                ->update(["lunes"=>$request->lunes ?? '',
-                        "profesor"=>$request->profesor,
+            $clase = Clases::where("materia",$request->materia)
+                ->where("grupo", $request->grupo)
+                ->update(["profesor"=>$request->profesor,
+                        "lunes"=>$request->lunes ?? '',
                         "martes"=>$request->martes ?? '',
                         "miercoles"=>$request->miercoles ?? '',
                         "jueves"=>$request->jueves ?? '',
