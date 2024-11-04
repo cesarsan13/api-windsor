@@ -133,7 +133,7 @@ class ConcentradoCalificacionesController extends Controller
         $response = ObjectResponse::DefaultResponse();
         try{
             $resultados = DB::table('materias as M')
-            ->select('M.numero', 'M.descripcion', 'M.evaluaciones', 'M.actividad')
+            ->select('M.numero', 'M.descripcion', 'M.evaluaciones', 'M.actividad', 'M.area')
             ->leftJoin('clases as C', 'C.materia', '=', 'M.numero')
             ->where('M.baja', '!=', '*')
             ->where('C.grupo', '=', $idHorario)
