@@ -308,9 +308,8 @@ class ProcesosController extends Controller
     public function buscaTareasTrabajosPendientes(Request $request)
     {
         try {
-
+            
             $rules = [
-                // 'alumno' => 'required',
                 'numero' => 'required',
                 'nombre' => 'required',
                 'grupo' => 'required',
@@ -360,7 +359,6 @@ class ProcesosController extends Controller
             $response = ObjectResponse::CatchResponse($e->getMessage());
             return response()->json($response, $response['status_code']);
         }
-
     }
 
     public function materiaBuscar(Request $request)
@@ -493,8 +491,6 @@ class ProcesosController extends Controller
             'materia' => 'required',
             'grupo' => 'required',
             'bimestre' => 'required',
-            // 'actividad' => 'required',
-            // 'unidad' => 'required',
         ];
         try {
             $validator = Validator::make($request->all(), $rules);
@@ -512,7 +508,7 @@ class ProcesosController extends Controller
                 ->where('unidad', 0)
                 ->first();
             if (!$existe) {
-                $calificacion = DB::table('calificaciones')->insert([
+                DB::table('calificaciones')->insert([
                     'alumno' => $request->alumno,
                     'calificacion' => $request->calificacion,
                     'materia' => $request->materia,
@@ -543,8 +539,8 @@ class ProcesosController extends Controller
             $response = ObjectResponse::CatchResponse($e->getMessage());
             return response()->json($response, $response['status_code']);
         }
-
-
+        
+        
 
     }
 
