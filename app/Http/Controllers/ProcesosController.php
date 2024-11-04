@@ -391,9 +391,9 @@ class ProcesosController extends Controller
         return response()->json($response, $response['status_code']);
     }
 
-    public function indexBuscaCat(Request $request)
-    {
-        $rules = [
+    public function indexBuscaCat(Request $request) 
+    { 
+        $rules = [ 
             'grupo' => 'required',
         ];
         $validator = Validator::make($request->all(), $rules);
