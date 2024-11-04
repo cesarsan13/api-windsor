@@ -37,46 +37,43 @@ class AlumnosPorClaseController extends Controller
     public function getListaHorario(Request $request)
     {
         $Alumnos = DB::table('alumnos')
-            ->select('nombre', 'numero', DB::raw('SUBSTRING(fecha_nac, 1, 4) AS año_nac'), DB::raw('SUBSTRING(fecha_nac, 6, 2) AS mes_nac'), 'telefono1')
-            ->where("baja", '<>', '*')
-            ->where("grupo", "=", $request->horario)
-            ->orderBy('nombre', 'ASC')->get();
+        ->select('nombre','numero', DB::raw('SUBSTRING(fecha_nac, 1, 4) AS año_nac'),DB::raw('SUBSTRING(fecha_nac, 6, 2) AS mes_nac'),'telefono1')
+        ->where("baja",'<>','*')
+        ->where("grupo","=",$request->horario)
+        ->orderBy('nombre', 'ASC' )->get();        
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'peticion satisfactoria | lista de Horarios');
         data_set($response, 'data', $Alumnos);
 
         return response()->json($response, $response['status_code']);
-    }
-
-
-    public function getListaHorariosAPC($idHorario1, $idHorario2, $orden)
-    {
-        $AlumnosPC1 = DB::table('alumnos')
-            ->select('nombre', 'numero', DB::raw('SUBSTRING(fecha_nac, 1, 4) AS año_nac'), DB::raw('SUBSTRING(fecha_nac, 6, 2) AS mes_nac'), 'telefono1')
-            ->where("baja", '<>', '*')
-            ->where(function ($query) use ($idHorario1) {
-                $query->orWhere("horario_1", "=", $idHorario1)
-                    ->orWhere("horario_2", "=", $idHorario1)
-                    ->orWhere("horario_3", "=", $idHorario1)
-                    ->orWhere("horario_4", "=", $idHorario1)
-                    ->orWhere("horario_5", "=", $idHorario1)
-                    ->orWhere("horario_6", "=", $idHorario1)
-                    ->orWhere("horario_7", "=", $idHorario1)
-                    ->orWhere("horario_8", "=", $idHorario1)
-                    ->orWhere("horario_9", "=", $idHorario1)
-                    ->orWhere("horario_10", "=", $idHorario1)
-                    ->orWhere("horario_11", "=", $idHorario1)
-                    ->orWhere("horario_12", "=", $idHorario1)
-                    ->orWhere("horario_13", "=", $idHorario1)
-                    ->orWhere("horario_14", "=", $idHorario1)
-                    ->orWhere("horario_15", "=", $idHorario1)
-                    ->orWhere("horario_16", "=", $idHorario1)
-                    ->orWhere("horario_17", "=", $idHorario1)
-                    ->orWhere("horario_18", "=", $idHorario1)
-                    ->orWhere("horario_19", "=", $idHorario1)
-                    ->orWhere("horario_20", "=", $idHorario1);
-            })
-            ->orderBy($orden, 'ASC')->get();
+    }    
+    public function getListaHorariosAPC($idHorario1, $idHorario2, $orden){
+        $AlumnosPC1 = DB::table ('alumnos')
+        ->select('nombre','numero', DB::raw('SUBSTRING(fecha_nac, 1, 4) AS año_nac'),DB::raw('SUBSTRING(fecha_nac, 6, 2) AS mes_nac'),'telefono1')
+        ->where("baja",'<>','*')
+        ->where(function ($query) use ($idHorario1){
+        $query->orWhere("horario_1", "=", $idHorario1)
+            ->orWhere("horario_2", "=", $idHorario1)
+            ->orWhere("horario_3", "=", $idHorario1)
+            ->orWhere("horario_4", "=", $idHorario1)
+            ->orWhere("horario_5", "=", $idHorario1)
+            ->orWhere("horario_6", "=", $idHorario1)
+            ->orWhere("horario_7", "=", $idHorario1)
+            ->orWhere("horario_8", "=", $idHorario1)
+            ->orWhere("horario_9", "=", $idHorario1)
+            ->orWhere("horario_10", "=", $idHorario1)
+            ->orWhere("horario_11", "=", $idHorario1)
+            ->orWhere("horario_12", "=", $idHorario1)
+            ->orWhere("horario_13", "=", $idHorario1)
+            ->orWhere("horario_14", "=", $idHorario1)
+            ->orWhere("horario_15", "=", $idHorario1)
+            ->orWhere("horario_16", "=", $idHorario1)
+            ->orWhere("horario_17", "=", $idHorario1)
+            ->orWhere("horario_18", "=", $idHorario1)
+            ->orWhere("horario_19", "=", $idHorario1)
+            ->orWhere("horario_20", "=", $idHorario1);
+        })
+        ->orderBy($orden, 'ASC' )->get();
 
         $AlumnosPC2 = DB::table('alumnos')
             ->select('nombre', 'numero', DB::raw('SUBSTRING(fecha_nac, 1, 4) AS año_nac'), DB::raw('SUBSTRING(fecha_nac, 6, 2) AS mes_nac'), 'telefono1')

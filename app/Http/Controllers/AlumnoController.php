@@ -837,6 +837,13 @@ class AlumnoController extends Controller
         data_set($response, 'alert_text', 'Se actualizó el ciclo escolar de todos los alumnos');
         return response()->json($response, $response['status_code']);
     }
+    public function getCicloAlumnos() {
+        $ciclo=Alumno::select('ciclo_escolar')->first();
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'data', $ciclo);
+        data_set($response, 'message', 'Petición satisfactoria | Cumpleañeros del mes.');
+        return response()->json($response, $response['status_code']);
+    }
     public function cumpleanerosDelMes()
     {
         $cumpleaneros = Alumno::select('nombre', 'fecha_nac')

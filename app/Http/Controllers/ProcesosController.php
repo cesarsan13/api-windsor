@@ -51,8 +51,7 @@ class ProcesosController extends Controller
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'data', $cond_ant);
             data_set($response, 'message', 'peticion satisfactoria');
-            data_set($response, 'alert_title', 'EXITO!');
-            data_set($response, 'alert_text', 'Productos actualizados en documentos cobranza.');
+            data_set($response, 'alert_title', 'EXITO!, Productos actualizados en documentos cobranza');
             return response()->json($response, $response['status_code']);
         } catch (\Exception $e) {
             $response = ObjectResponse::CatchResponse($e->getMessage());
@@ -124,8 +123,7 @@ class ProcesosController extends Controller
             }
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'Petición satisfactoria');
-            data_set($response, 'alert_title', '¡ÉXITO!');
-            data_set($response, 'alert_text', 'Cartera procesada.');
+            data_set($response, 'alert_title', '¡ÉXITO! Cartera procesada');
             return response()->json($response, $response['status_code']);
         } catch (\Exception $e) {
             $response = ObjectResponse::CatchResponse($e->getMessage());
@@ -140,8 +138,9 @@ class ProcesosController extends Controller
         $recibo = $request->recibo;
         $cobranza_diaria = DB::table('cobranza_diaria')
             ->where('recibo', '=', $recibo)
-            ->where('fecha_cobro', '=', $fecha)
+            ->where('fecha_cobro', '<>', $fecha)
             ->first();
+        // Log::info($cobranza_diaria);
         if (!$cobranza_diaria) {
             $response = ObjectResponse::BadResponse();
             data_set($response, 'alert_title', 'Cancelación de Recibos');
@@ -151,6 +150,7 @@ class ProcesosController extends Controller
         $encab_pedido = DB::table('encab_pedido')
             ->where('recibo', '=', $recibo)
             ->first();
+        // Log::info($encab_pedido);
         if (!$encab_pedido) {
             $response = ObjectResponse::BadResponse();
             data_set($response, 'alert_title', 'Cancelación de Recibos');
@@ -160,24 +160,23 @@ class ProcesosController extends Controller
         $detalle_pedido = DB::table('detalle_pedido')
             ->where('recibo', '=', $recibo)
             ->first();
-        // Log::info((array) $detalle_pedido);
         if (!$detalle_pedido) {
             $response = ObjectResponse::BadResponse();
             data_set($response, 'alert_title', 'Cancelación de Recibos');
-            data_set($response, 'alert_text', 'Número de recibo no localizado');
+            data_set($response, 'alert_text', 'Númerode recibo no localizado');
             return response()->json($response, $response['status_code']);
         } else {
-            if ($detalle_pedido->documento > 0 || $detalle_pedido->documento === '0') {
+            if ($detalle_pedido->documento > 0) {
                 DB::table('documentos_cobranza')
                     ->where('alumno', '=', $detalle_pedido->alumno)
                     ->where('producto', '=', $detalle_pedido->articulo)
                     ->where('numero_doc', '=', $detalle_pedido->documento)
                     ->update([
                         'importe_pago' => 0,
-                        'fecha_cobro' => ' '
+                        'fecha_cobros' => ' '
                     ]);
-                // Log::info('detalleUpdate result: ' . $docs);
             }
+
             DB::table('detalle_pedido')
                 ->where('recibo', '=', $recibo)
                 ->update([
@@ -187,8 +186,8 @@ class ProcesosController extends Controller
                     'iva' => 0,
                     'fecha' => ' '
                 ]);
-            // Log::info('detalleUpdate result: ' . $detalleUpdate);
-            DB::table('encab_pedido')
+
+            db::table('encab_pedido')
                 ->where('recibo', '=', $recibo)
                 ->where('fecha', '=', $fecha)
                 ->update([
@@ -198,23 +197,9 @@ class ProcesosController extends Controller
                     'referencia_1' => ' ',
                     'tipo_pago_2' => 0,
                     'importe_pago_2' => 0,
-                    'referencia_2' => ' '
+                    'referencia_2' => ' ',
                 ]);
 
-            DB::table('cobranza_diaria')
-                ->where('recibo', '=', $recibo)
-                ->where('fecha_cobro', '=', $fecha)
-                ->update([
-                    'importe_cobro' => 0,
-                    'tipo_pago_1' => 0,
-                    'importe_pago_1' => 0,
-                    'referencia_1' => ' ',
-                    'tipo_pago_2' => 0,
-                    'importe_pago_2' => 0,
-                    'referencia_2' => ' '
-                ]);
-
-            // Log::info('encabUpdate result: ' . $encabUpdate);
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'alert_title', 'Cancelación de Recibos');
             data_set($response, 'alert_text', 'Recibo cancelado correctamente');
@@ -282,7 +267,6 @@ class ProcesosController extends Controller
             $unidad = $request->unidad;
             $bimestre = $request->bimestre;
 
-            Log::info($request);
             if ($cb_actividad === true) {
                 $calificacion = Calificaciones::select('calificacion')
                     ->where('alumno', '=', $numero)
@@ -290,7 +274,7 @@ class ProcesosController extends Controller
                     ->where('grupo', '=', $grupo)
                     ->where('bimestre', '=', $bimestre)
                     ->where('actividad', '=', $actividad)
-                    ->where('unidad', '=', $unidad ?? '')
+                    ->where('unidad', '=', $unidad)
                     ->first();
             } else {
                 $calificacion = Calificaciones::select('calificacion')
@@ -305,7 +289,7 @@ class ProcesosController extends Controller
                 'numero' => $numero,
                 'nombre' => $nombre,
                 'unidad' => $unidad ?? '',
-                'calificacion' => $calificacion->calificacion ?? '0.00',
+                'calificacion' => $calificacion->calificacion ?? '',
             ];
             // }
 
@@ -319,6 +303,63 @@ class ProcesosController extends Controller
             $response = ObjectResponse::CatchResponse($e->getMessage());
             return response()->json($response, $response['status_code']);
         }
+    }
+
+    public function buscaTareasTrabajosPendientes(Request $request){ 
+        try {
+            
+            $rules = [
+                // 'alumno' => 'required',
+                'numero' => 'required',
+                'nombre' => 'required',
+                'grupo' => 'required',
+                'materia' => 'required',
+                'bimestre' => 'required',
+            ];
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                $response = ObjectResponse::BadResponse('Error de validación');
+                data_set($response, 'errors', $validator->errors());
+                return response()->json($response, $response['status_code']);
+            }
+            $numero = $request->numero;
+            $nombre = $request->nombre;
+            $grupo = $request->grupo;
+            $materia = $request->materia;
+            $bimestre = $request->bimestre;
+            $calificacion = Calificaciones::select('calificacion')
+                    ->where('alumno', '=', $numero)
+                    ->where('materia', '=', $materia)
+                    ->where('grupo', '=', $grupo)
+                    ->where('bimestre', '=', $bimestre)
+                    ->where('actividad', '=', 0)
+                    ->where('unidad', '=', 0)
+                    ->first();
+            $sqlQuery = Calificaciones::select('calificacion')
+                ->where('alumno', '=', $numero)
+                ->where('materia', '=', $materia)
+                ->where('grupo', '=', $grupo)
+                ->where('bimestre', '=', $bimestre)
+                ->where('actividad', '=', 0)
+                ->where('unidad', '=', 0)
+                ->toSql();
+                $response_data[] = [
+                    'numero' => $numero,
+                    'nombre' => $nombre,
+                    'unidad' => $unidad ?? '',
+                    'calificacion' => $calificacion->calificacion ?? 0,
+                    'materia' => $materia ?? 0
+                ];
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'alert_title', 'Lista de calificaciones');
+            data_set($response, 'alert_text', 'Lista de calificaciones. => '.$sqlQuery. " => ".$numero.";".$materia.";".$grupo.";".$bimestre);
+            data_set($response, 'data', $response_data);
+            return response()->json($response, $response['status_code']);
+        } catch (\Exception $e) {
+            $response = ObjectResponse::CatchResponse($e->getMessage());
+            return response()->json($response, $response['status_code']);
+        }
+
     }
 
     public function materiaBuscar(Request $request)
@@ -402,15 +443,15 @@ class ProcesosController extends Controller
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
-        $resultados = Clases::join('materias', 'clases.materia', '=', 'materias.numero')
-            ->join('horarios', 'clases.grupo', '=', 'horarios.numero')
+        $resultados = Clases::leftJoin('materias', 'clases.materia', '=', 'materias.numero')
+            ->leftJoin('horarios', 'clases.grupo', '=', 'horarios.numero')
             ->select('clases.grupo', 'horarios.horario', 'clases.materia', 'materias.actividad', 'materias.descripcion', 'materias.area', 'materias.caso_evaluar')
             ->where('clases.grupo', $request->grupo)
             ->orderBy('materias.descripcion')
             ->get();
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'data', $resultados);
-        data_set($response, 'message', 'Consulta realizada con éxito');
+        data_set($response, 'message', 'peticion satisfactoria');
         return response()->json($response, $response['status_code']);
     }
 
@@ -440,6 +481,67 @@ class ProcesosController extends Controller
         data_set($response, 'data', $contraseña);
         data_set($response, 'message', 'peticion satisfactoria');
         return response()->json($response, $response['status_code']);
+    }
+    public function guardarC_Otras(Request $request){ 
+        $rules = [
+            'alumno' => 'required',
+            'calificacion' => 'required',
+            'materia' => 'required',
+            'grupo' => 'required',
+            'bimestre' => 'required',
+            // 'actividad' => 'required',
+            // 'unidad' => 'required',
+        ];
+        try {
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                $response = ObjectResponse::BadResponse('Error de validación');
+                data_set($response, 'errors', $validator->errors());
+                return response()->json($response, $response['status_code']);
+            }
+            $existe = DB::table('calificaciones')
+                ->where('alumno', $request->alumno)
+                ->where('grupo', $request->grupo)
+                ->where('materia', $request->materia)
+                ->where('bimestre', $request->bimestre)
+                ->where('actividad', 0)
+                ->where('unidad', 0)
+                ->first();
+            if (!$existe) {
+                $calificacion = DB::table('calificaciones')->insert([
+                    'alumno' => $request->alumno,
+                    'calificacion' => $request->calificacion,
+                    'materia' => $request->materia,
+                    'grupo' => $request->grupo,
+                    'bimestre' => $request->bimestre,
+                    'actividad' => 0,
+                    'unidad' => 0
+                ]);
+                $response = ObjectResponse::CorrectResponse();
+                data_set($response, 'alert_text', "Sus cambios han sido guardados");
+                data_set($response, 'message', 'Sus cambios han sido guardados');
+            } else {
+                DB::table('calificaciones')
+                    ->where('alumno', $request->alumno)
+                    ->where('grupo', $request->grupo)
+                    ->where('materia', $request->materia)
+                    ->where('bimestre', $request->bimestre)
+                    ->where('actividad', 0)
+                    ->where('unidad', 0)
+                    ->update(['calificacion' => $request->calificacion]);
+                $response = ObjectResponse::CorrectResponse();
+                data_set($response, 'alert_text', "Sus cambios han sido guardados");
+                data_set($response, 'message', 'Sus cambios han sido guardados');
+            }
+
+            return response()->json($response, $response['status_code']);
+        } catch (\Exception $e) {
+            $response = ObjectResponse::CatchResponse($e->getMessage());
+            return response()->json($response, $response['status_code']);
+        }
+        
+        
+
     }
 
     public function guardarCalificaciones(Request $request)
