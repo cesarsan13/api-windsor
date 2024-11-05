@@ -68,6 +68,77 @@ class ConcentradoCalificacionesController extends Controller
            return response()->json($response, $response['status_code']);
     }
     
+    function getActividadesReg(){
+        $response = ObjectResponse::DefaultResponse();
+        try{
+            $resultados = DB::table('actividades')
+            ->select('materia', 'secuencia' ,'EB1', 'EB2', 'EB3', 'EB4', 'EB5')
+            ->where('baja', '!=', '*')
+            ->orderBy('materia', 'ASC')
+            ->orderBy('secuencia', 'ASC')
+            ->get();
 
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'data', $resultados);
+            data_set($response, 'message', 'peticion satisfactoria');
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response['status_code']);
+    }
+
+    //function getMateriasReg(){
+    //    $response = ObjectResponse::DefaultResponse();
+    //    try{
+    //        $resultados = DB::table('materias')
+    //        ->select('numero', 'descripcion', 'evaluaciones', 'actividad')
+    //        ->where('baja', '!=', '*')
+    //        ->get();
+    //
+    //        $response = ObjectResponse::CorrectResponse();
+    //        data_set($response, 'data', $resultados);
+    //        data_set($response, 'message', 'peticion satisfactoria');
+    //    } catch (\Exception $ex) {
+    //        $response = ObjectResponse::CatchResponse($ex->getMessage());
+    //    }
+    //    return response()->json($response, $response['status_code']);
+    //}
+
+    function getMateriasReg($idHorario){
+        $response = ObjectResponse::DefaultResponse();
+        try{
+            $resultados = DB::table('materias as M')
+            ->select('M.numero', 'M.descripcion', 'M.evaluaciones', 'M.actividad', 'M.area')
+            ->leftJoin('clases as C', 'C.materia', '=', 'M.numero')
+            ->where('M.baja', '!=', '*')
+            ->where('C.grupo', '=', $idHorario)
+            ->get();
+
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'data', $resultados);
+            data_set($response, 'message', 'peticion satisfactoria');
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response['status_code']);
+    }
+
+    function getAlumno($idHorario){
+        $response = ObjectResponse::DefaultResponse();
+        try{
+            $resultados = DB::table('alumnos')
+            ->select('numero', 'nombre')
+            ->where('grupo','=', $idHorario)
+            ->where('baja', '!=', '*')
+            ->orderBy('nombre')
+            ->get();
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'data', $resultados);
+            data_set($response, 'message', 'peticion satisfactoria');
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response['status_code']);
+    }
 }
 
