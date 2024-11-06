@@ -67,7 +67,7 @@ Route::middleware('auth:sanctum')->controller(FormFactController::class)->group(
 Route::middleware('auth:sanctum')->controller(AsignaturasController::class)->group(function () {
     Route::get('/subject/filter/{type}/{value}', 'subjectFilter');
     Route::get('/subject', 'showSubject');
-    Route::get('/subject/caso-otro', 'showSubjectCasoEvaluarOtro'); 
+    Route::get('/subject/caso-otro', 'showSubjectCasoEvaluarOtro');
     Route::get('/subject/last', 'lastSubject');
     Route::post('/subject/save', 'storeSubject');
     Route::get('/subject/bajas', 'bajaSubject');
@@ -101,7 +101,7 @@ Route::middleware('auth:sanctum')->controller(AlumnoController::class)->group(fu
     Route::put('/students-cambio-id', 'changeIdAlumno');
     Route::get('/students/cumpleanos-mes', 'cumpleanerosDelMes');
     Route::put('/students/cambio-ciclo', 'cambiarCicloAlumnos');
-    Route::get('/students/cicloEscolar','getCicloAlumnos');
+    Route::get('/students/cicloEscolar', 'getCicloAlumnos');
 });
 
 Route::middleware('auth:sanctum')->controller(ComentariosController::class)->group(function () {
@@ -256,6 +256,7 @@ Route::middleware('auth:sanctum')->controller(ConcentradoCalificacionesControlle
     Route::get('/concentradoCalificaciones/materiasGrupo/{idHorario}', 'getMateriasPorGrupo');
     Route::get('/concentradoCalificaciones/detalles/{idHorario}/{idAlumno}/{idMateria}/{idBimestre}', 'getActividadesXHorarioXAlumnoXMateriaXBimestre');
     Route::get('/concentradoCalificaciones/detallesGrupoGeneral/{idHorario}/{idBimestre}', 'getInfoActividadesXGrupo');
+    Route::get('/concentradoCalificaciones/actividadesMateria/{idMateria}', 'getActividadesPorMateria');
 });
 Route::middleware('auth:sanctum')->controller(AccesosMenuController::class)->group(function () {
     Route::get('/accesos-menu/get', 'index');
@@ -265,9 +266,23 @@ Route::middleware('auth:sanctum')->controller(AccesosMenuController::class)->gro
     Route::put('/accesos-menu/update', 'update');
 });
 
-Route::middleware('auth:sanctum')->controller(CalificacionesController::class)->group(function (){
-    Route::post('/calificaciones/materias','getMaterias');
-    Route::post('/calificaciones','getCalificacionesMateria');
-    Route::post('/calificaciones/new','getNewCalificacionesMateria');
-    Route::post('/calificaciones/alumnosArea1','getCalificacionesAlumnosArea1');
+Route::middleware('auth:sanctum')->controller(CalificacionesController::class)->group(function () {
+    Route::post('/calificaciones/materias', 'getMaterias');
+    Route::post('/calificaciones', 'getCalificacionesMateria');
+    Route::post('/calificaciones/new', 'getNewCalificacionesMateria');
+    Route::post('/calificaciones/alumnosArea1', 'getCalificacionesAlumnosArea1');
+});
+Route::middleware('auth:sanctum')->controller(AccesosMenuController::class)->group(function () {
+    Route::get('/accesos-menu/get', 'index');
+    Route::get('/accesos-menu/baja', 'indexBaja');
+    Route::get('/accesos-menu/siguiente', 'siguiente');
+    Route::post('/accesos-menu/save', 'save');
+    Route::put('/accesos-menu/update', 'update');
+});
+
+Route::middleware('auth:sanctum')->controller(CalificacionesController::class)->group(function () {
+    Route::post('/calificaciones/materias', 'getMaterias');
+    Route::post('/calificaciones', 'getCalificacionesMateria');
+    Route::post('/calificaciones/new', 'getNewCalificacionesMateria');
+    Route::post('/calificaciones/alumnosArea1', 'getCalificacionesAlumnosArea1');
 });
