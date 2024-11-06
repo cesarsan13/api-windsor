@@ -13,7 +13,8 @@ class HorarioController extends Controller
     protected $messages = [
         'required' => 'El campo :attribute es obligatorio.',
         'max' => 'El campo :attribute no puede tener más de :max caracteres.',
-        'unique' => 'El  :attribute ya ha sido registrado anteriormente',
+        'unique' => 'El campo :attribute ya ha sido registrado anteriormente',
+        'integer' => 'El  campo :attribute debe ser un numero',
     ];
     protected $rules = [
         'numero' => 'required|integer',
@@ -86,7 +87,7 @@ class HorarioController extends Controller
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         $response = ObjectResponse::DefaultResponse();
         if ($validator->fails()) {
-            $alert_text = "Ingrese bien los datos, no estas ingresando completamente todos los campos (no campos vacios).";
+            $alert_text = implode("<br>", $validator->messages()->all());
             $response = ObjectResponse::BadResponse($alert_text);
             data_set($response, 'message', 'Informacion no valida');
             return response()->json($response, $response['status_code']);
@@ -129,7 +130,7 @@ class HorarioController extends Controller
     {
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         if ($validator->fails()) {
-            $alert_text = "Ingrese bien los datos, no estas ingresando completamente todos los campos (no campos vacios).";
+            $alert_text = implode("<br>", $validator->messages()->all());
             $response = ObjectResponse::BadResponse($alert_text);
             data_set($response, 'message', 'Informacion no valida');
             return response()->json($response, $response['status_code']);
@@ -147,7 +148,7 @@ class HorarioController extends Controller
                 'baja' => $request->baja ?? ''
             ]);
         $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'Peticion satisfactoria : Datos Actualizados');
+        data_set($response, 'message', 'Horario Actualizado Correctamente');
         data_set($response, 'data', $horario);
         return response()->json($response, $response['status_code']);
     }

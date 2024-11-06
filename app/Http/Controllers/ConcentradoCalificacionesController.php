@@ -9,75 +9,79 @@ use Illuminate\Support\Facades\Validator;
 
 class ConcentradoCalificacionesController extends Controller
 {
-    public function getMateriasPorGrupo($idHorario){
-        $response  = ObjectResponse::DefaultResponse();
-        try {
-        $resultados = Clases::leftJoin('materias', 'clases.materia', '=', 'materias.numero')
-            ->select('materias.numero', 'materias.descripcion', 'materias.area', 'materias.caso_evaluar', 'materias.area')
-            ->where('clases.baja', ' ')
-            ->where('materias.baja', '')
-            ->where('grupo', $idHorario)
-            ->orderBy('materias.area')
-            ->orderBy('materias.orden')->get();
-        $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'data', $resultados);
-        data_set($response, 'message', 'peticion satisfactoria');
-        } catch (\Exception $ex) {
-            $response = ObjectResponse::CatchResponse($ex->getMessage());
-        }
-        return response()->json($response, $response['status_code']);
-    }
-
-    function getActividadesXHorarioXAlumnoXMateriaXBimestre($idHorario, $idAlumno, $idMateria, $idBimestre){
-        $response  = ObjectResponse::DefaultResponse();
-        try {
-         $resultados = DB::table('calificaciones as C')
-         ->select('C.alumno', 'C.bimestre', 'C.materia', 'C.actividad', 'C.unidad', 'C.calificacion')
-         ->leftJoin('horarios as H', 'H.horario', '=', 'C.grupo')
-         ->where('H.numero','=', $idHorario)
-         ->where('C.bimestre', '=', $idBimestre)
-         ->where('C.alumno', '=', $idAlumno)
-         ->where('C.materia', '=', $idMateria)
-         ->get();
-         $response = ObjectResponse::CorrectResponse();
-         data_set($response, 'data', $resultados);
-         data_set($response, 'message', 'peticion satisfactoria');
-        } catch (\Exception $ex) {
-            $response = ObjectResponse::CatchResponse($ex->getMessage());
-        }
-        return response()->json($response, $response['status_code']);
-    }
-
-    function getInfoActividadesXGrupo($idHorario, $idBimestre){
+    public function getMateriasPorGrupo($idHorario)
+    {
         $response = ObjectResponse::DefaultResponse();
-        try{
+        try {
+            $resultados = Clases::leftJoin('materias', 'clases.materia', '=', 'materias.numero')
+                ->select('materias.numero', 'materias.descripcion', 'materias.area', 'materias.caso_evaluar', 'materias.area')
+                ->where('clases.baja', ' ')
+                ->where('materias.baja', '')
+                ->where('grupo', $idHorario)
+                ->orderBy('materias.area')
+                ->orderBy('materias.orden')->get();
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'data', $resultados);
+            data_set($response, 'message', 'peticion satisfactoria');
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response['status_code']);
+    }
+
+    function getActividadesXHorarioXAlumnoXMateriaXBimestre($idHorario, $idAlumno, $idMateria, $idBimestre)
+    {
+        $response = ObjectResponse::DefaultResponse();
+        try {
             $resultados = DB::table('calificaciones as C')
-            ->select('C.alumno', 'A.nombre', 'C.bimestre', 'C.materia', 'C.actividad', 'C.unidad', 'C.calificacion', 'M.area')
-            ->leftJoin('horarios as H', 'H.horario', '=', 'C.grupo')
-            ->leftJoin('alumnos as A', 'A.numero', '=', 'C.alumno')
-            ->leftJoin('materias as M', 'M.numero', '=', 'C.materia')
-            ->where('H.numero','=', $idHorario)
-            ->where('C.bimestre', '=', $idBimestre)
-            ->get();
+                ->select('C.alumno', 'C.bimestre', 'C.materia', 'C.actividad', 'C.unidad', 'C.calificacion')
+                ->leftJoin('horarios as H', 'H.horario', '=', 'C.grupo')
+                ->where('H.numero', '=', $idHorario)
+                ->where('C.bimestre', '=', $idBimestre)
+                ->where('C.alumno', '=', $idAlumno)
+                ->where('C.materia', '=', $idMateria)
+                ->get();
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'data', $resultados);
+            data_set($response, 'message', 'peticion satisfactoria');
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response['status_code']);
+    }
+
+    function getInfoActividadesXGrupo($idHorario, $idBimestre)
+    {
+        $response = ObjectResponse::DefaultResponse();
+        try {
+            $resultados = DB::table('calificaciones as C')
+                ->select('C.alumno', 'A.nombre', 'C.bimestre', 'C.materia', 'C.actividad', 'C.unidad', 'C.calificacion', 'M.area')
+                ->leftJoin('horarios as H', 'H.horario', '=', 'C.grupo')
+                ->leftJoin('alumnos as A', 'A.numero', '=', 'C.alumno')
+                ->leftJoin('materias as M', 'M.numero', '=', 'C.materia')
+                ->where('H.numero', '=', $idHorario)
+                ->where('C.bimestre', '=', $idBimestre)
+                ->get();
 
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'data', $resultados);
             data_set($response, 'message', 'peticion satisfactoria');
-           } catch (\Exception $ex) {
-               $response = ObjectResponse::CatchResponse($ex->getMessage());
-           }
-           return response()->json($response, $response['status_code']);
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response['status_code']);
     }
-    
-    function getActividadesReg(){
+
+    function getActividadesReg()
+    {
         $response = ObjectResponse::DefaultResponse();
-        try{
+        try {
             $resultados = DB::table('actividades')
-            ->select('materia', 'secuencia' ,'EB1', 'EB2', 'EB3', 'EB4', 'EB5')
-            ->where('baja', '!=', '*')
-            ->orderBy('materia', 'ASC')
-            ->orderBy('secuencia', 'ASC')
-            ->get();
+                ->select('materia', 'secuencia', 'EB1', 'EB2', 'EB3', 'EB4', 'EB5')
+                ->where('baja', '!=', '*')
+                ->orderBy('materia', 'ASC')
+                ->orderBy('secuencia', 'ASC')
+                ->get();
 
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'data', $resultados);
@@ -89,15 +93,16 @@ class ConcentradoCalificacionesController extends Controller
     }
 
 
-    function getMateriasReg($idHorario){
+    function getMateriasReg($idHorario)
+    {
         $response = ObjectResponse::DefaultResponse();
-        try{
+        try {
             $resultados = DB::table('materias as M')
-            ->select('M.numero', 'M.descripcion', 'M.evaluaciones', 'M.actividad', 'M.area')
-            ->leftJoin('clases as C', 'C.materia', '=', 'M.numero')
-            ->where('M.baja', '!=', '*')
-            ->where('C.grupo', '=', $idHorario)
-            ->get();
+                ->select('M.numero', 'M.descripcion', 'M.evaluaciones', 'M.actividad', 'M.area')
+                ->leftJoin('clases as C', 'C.materia', '=', 'M.numero')
+                ->where('M.baja', '!=', '*')
+                ->where('C.grupo', '=', $idHorario)
+                ->get();
 
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'data', $resultados);
@@ -108,40 +113,16 @@ class ConcentradoCalificacionesController extends Controller
         return response()->json($response, $response['status_code']);
     }
 
-    function getAlumno($idHorario){
+    function getAlumno($idHorario)
+    {
         $response = ObjectResponse::DefaultResponse();
-        try{
-            $resultados = DB::table('alumnos')
-            ->select('numero', 'nombre')
-            ->where('grupo','=', $idHorario)
-            ->where('baja', '!=', '*')
-            ->orderBy('nombre')
-            ->get();
-            $response = ObjectResponse::CorrectResponse();
-            data_set($response, 'data', $resultados);
-            data_set($response, 'message', 'peticion satisfactoria');
-        } catch (\Exception $ex) {
-            $response = ObjectResponse::CatchResponse($ex->getMessage());
-        }
-        return response()->json($response, $response['status_code']);
-    }
-
-    function getActividadesXHorarioXAlumnoXMateriaXBimestre($idHorario, $idAlumno, $idMateria, $idBimestre){
-        $response  = ObjectResponse::DefaultResponse();
         try {
-            $resultados = DB::table('calificaciones as C')
-            ->select('C.alumno', 'C.bimestre', 'C.materia', 'C.actividad', 'C.unidad', 'C.calificacion')  //'A.descripcion',
-            ->leftJoin('horarios as H', 'H.horario', '=', 'C.grupo')
-            //->leftJoin('actividades as A', 'A.secuencia', '=', 'C.actividad')
-            //->where('A.materia', '=', 'C.materia')
-            ->where('H.numero','=', $idHorario)
-            ->where('C.bimestre', '=', $idBimestre)
-            ->where('C.alumno', '=', $idAlumno)
-            ->where('C.materia', '=', $idMateria)
-            ->orderBy('C.materia')
-            ->ordeRby('C.actividad')
-            ->orderBy('C.unidad')
-            ->get();
+            $resultados = DB::table('alumnos')
+                ->select('numero', 'nombre')
+                ->where('grupo', '=', $idHorario)
+                ->where('baja', '!=', '*')
+                ->orderBy('nombre')
+                ->get();
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'data', $resultados);
             data_set($response, 'message', 'peticion satisfactoria');
@@ -151,15 +132,17 @@ class ConcentradoCalificacionesController extends Controller
         return response()->json($response, $response['status_code']);
     }
 
-    
-    function getActividadesPorMateria($idMateria){
+
+
+    function getActividadesPorMateria($idMateria)
+    {
         $response = ObjectResponse::DefaultResponse();
 
-        try{
+        try {
             $resultados = DB::table('actividades')
-            ->select('materia', 'secuencia', 'descripcion', 'EB1', 'EB2', 'EB3', 'EB4', 'EB5')
-            ->where('materia', '=', $idMateria)
-            ->get();
+                ->select('materia', 'secuencia', 'descripcion', 'EB1', 'EB2', 'EB3', 'EB4', 'EB5')
+                ->where('materia', '=', $idMateria)
+                ->get();
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'data', $resultados);
             data_set($response, 'message', 'peticion satisfactoria');
