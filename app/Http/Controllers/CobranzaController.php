@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CobranzaDiaria;
 use Illuminate\Http\Request;
 use App\Models\ObjectResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class CobranzaController extends Controller
 {
@@ -57,6 +60,70 @@ class CobranzaController extends Controller
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'peticion satisfactoria | lista de Horarios');
         data_set($response, 'data', $data);
+        return response()->json($response, $response['status_code']);
+    }
+    public function getCobranza(Request $request)
+    {
+        $rules = [
+            'fecha' => 'required',
+            'cheque' => 'nullable|boolean',
+            'recibo' => 'nullable|integer',
+            'alumno' => 'nullable|integer'
+        ];
+        $messages = [
+            'required' => 'El campo :attribute es obligatorio.',
+            'max' => 'El campo :attribute no puede tener más de :max caracteres.',
+            'min' => 'El campo :attribute debe tener al menos :min caracteres.',
+            'unique' => 'El  :attribute ya ha sido registrado anteriormente',
+            'numeric' => 'El campo :attribute debe ser un número decimal.',
+            'string' => 'El campo :attribute debe ser una cadena.',
+            'integer' => 'El campo :attribute debe ser un número.',
+            'boolean' => 'El campo :attribute debe ser un valor booleano.',
+        ];
+        $validator = Validator::make($request->all(), $rules, $messages);
+        if ($validator->fails()) {
+            $response = ObjectResponse::BadResponse('Error de validacion' . $validator->errors(), 'Error de validacion');
+            data_set($response, 'errors', $validator->errors());
+            return response()->json($response, $response['status_code']);
+        }
+        $response = ObjectResponse::DefaultResponse();
+        $cobranzaDiaria = CobranzaDiaria::where('fecha_cobro', '=', $request->fecha);
+        if ($request->cheque) {
+            $cobranzaDiaria->where(function ($query) {
+                $query->where('tipo_pago_1', '=', '2')
+                    ->orWhere('tipo_pago_2', '=', '2')
+                    ->orWhere('tipo_pago_1', '=', '3')
+                    ->orWhere('tipo_pago_2', '=', '3')
+                    ->orWhere('tipo_pago_1', '=', '4')
+                    ->orWhere('tipo_pago_2', '=', '4');
+            });
+        }
+        if ($request->recibo > 0) {
+            $cobranzaDiaria->where('recibo', $request->recibo);
+        }
+        if ($request->alumno > 0) {
+            $cobranzaDiaria->where('alumno', $request->alumno);
+        }
+        $cobranzaDiaria->join('alumnos', 'cobranza_diaria.alumno', '=', 'alumnos.numero');
+        $cobranzaDiaria->select('cobranza_diaria.*', 'alumnos.nombre');
+        $result = $cobranzaDiaria->get();
+        Log::info($result);
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'data', $result);
+        data_set($response, 'message', 'Petición satisfactoria | Cobranza Diaria.');
+        return response()->json($response, $response['status_code']);
+    }
+    public function updateCobranza(Request $request)
+    {
+        $cobranza = CobranzaDiaria::where('recibo', $request->recibo)
+            ->update([
+                "cue_banco" => $request->cue_banco,
+                "referencia" => $request->referencia,
+                "importe" => $request->importe
+            ]);
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'peticion satisfactoria | Cobranza Diaria actualizada');
+        data_set($response, 'alert_text', 'Cobranza Diaria actualizado');
         return response()->json($response, $response['status_code']);
     }
 }
