@@ -23,14 +23,14 @@ class ProfesoresController extends Controller
         'colonia' => 'required|string|max:50',
         'ciudad' => 'required|string|max:50',
         'estado' => 'required|string|max:20',
-        'cp' => 'required|string|max:06',
-        'pais' => 'required|string|max:50',
-        'rfc' => 'required|string|max:20',
-        'telefono_1' => 'required|string|max:20',
-        'telefono_2' => 'required|string|max:20',
-        'fax' => 'required|string|max:20',
-        'celular' => 'required|string|max:20',
-        'email' => 'required|string|max:80',
+        'cp' => 'nullable|string|max:06',
+        'pais' => 'nullable|string|max:50',
+        'rfc' => 'nullable|string|max:20',
+        'telefono_1' => 'nullable|string|max:20',
+        'telefono_2' => 'nullable|string|max:20',
+        'fax' => 'nullable|string|max:20',
+        'celular' => 'nullable|string|max:20',
+        'email' => 'nullable|string|max:80',
         'contraseña' => 'nullable|string|max:12',
     ];
     public function index()
@@ -96,23 +96,23 @@ class ProfesoresController extends Controller
 
         $profesor = new Profesores();
         $profesor->numero = $request->numero;
-        $profesor->nombre = $request->nombre;
-        $profesor->ap_paterno = $request->ap_paterno;
-        $profesor->ap_materno = $request->ap_materno;
-        $profesor->direccion = $request->direccion;
-        $profesor->colonia = $request->colonia;
-        $profesor->ciudad = $request->ciudad;
-        $profesor->estado = $request->estado;
-        $profesor->cp = $request->cp;
-        $profesor->pais = $request->pais;
-        $profesor->rfc = $request->rfc;
-        $profesor->telefono_1 = $request->telefono_1;
-        $profesor->telefono_2 = $request->telefono_2;
-        $profesor->fax = $request->fax;
-        $profesor->celular = $request->celular;
-        $profesor->email = $request->email;
-        $profesor->contraseña = bcrypt($request->contraseña);
-        $profesor->baja = $request->baja;
+        $profesor->nombre = $request->nombre ?? "";
+        $profesor->ap_paterno = $request->ap_paterno ?? "";
+        $profesor->ap_materno = $request->ap_materno ?? "";
+        $profesor->direccion = $request->direccion ?? "";
+        $profesor->colonia = $request->colonia ?? "";
+        $profesor->ciudad = $request->ciudad ?? "";
+        $profesor->estado = $request->estado ?? "";
+        $profesor->cp = $request->cp ?? "";
+        $profesor->pais = $request->pais ?? "";
+        $profesor->rfc = $request->rfc ?? "";
+        $profesor->telefono_1 = $request->telefono_1 ?? "";
+        $profesor->telefono_2 = $request->telefono_2 ?? "";
+        $profesor->fax = $request->fax ?? "";
+        $profesor->celular = $request->celular ?? "";
+        $profesor->email = $request->email ?? "";
+        $profesor->contraseña = bcrypt($request->contraseña ?? "");
+        $profesor->baja = $request->baja ?? "";
         $profesor->save();
 
         $response = ObjectResponse::CorrectResponse();
@@ -136,25 +136,25 @@ class ProfesoresController extends Controller
             return response()->json($response, $response['status_code']);
         }
 
-        $profesor->nombre = $request->nombre;
-        $profesor->ap_paterno = $request->ap_paterno;
-        $profesor->ap_materno = $request->ap_materno;
-        $profesor->direccion = $request->direccion;
-        $profesor->colonia = $request->colonia;
-        $profesor->ciudad = $request->ciudad;
-        $profesor->estado = $request->estado;
-        $profesor->cp = $request->cp;
-        $profesor->pais = $request->pais;
-        $profesor->rfc = $request->rfc;
-        $profesor->telefono_1 = $request->telefono_1;
-        $profesor->telefono_2 = $request->telefono_2;
-        $profesor->fax = $request->fax;
-        $profesor->celular = $request->celular;
-        $profesor->email = $request->email;
+        $profesor->nombre = $request->nombre ?? "";
+        $profesor->ap_paterno = $request->ap_paterno ?? "";
+        $profesor->ap_materno = $request->ap_materno ?? "";
+        $profesor->direccion = $request->direccion ?? "";
+        $profesor->colonia = $request->colonia ?? "";
+        $profesor->ciudad = $request->ciudad ?? "";
+        $profesor->estado = $request->estado ?? "";
+        $profesor->cp = $request->cp ?? "";
+        $profesor->pais = $request->pais ?? "";
+        $profesor->rfc = $request->rfc ?? "";
+        $profesor->telefono_1 = $request->telefono_1 ?? "";
+        $profesor->telefono_2 = $request->telefono_2 ?? "";
+        $profesor->fax = $request->fax ?? "";
+        $profesor->celular = $request->celular ?? "";
+        $profesor->email = $request->email ?? "";
         if (!empty($request->contraseña)) {
-            $profesor->contraseña = bcrypt($request->contraseña);
+            $profesor->contraseña = bcrypt($request->contraseña ?? "");
         }
-        $profesor->baja = $request->baja;
+        $profesor->baja = $request->baja ?? "";
         $profesor->save();
 
         $response = ObjectResponse::CorrectResponse();
