@@ -24,8 +24,8 @@ class AlumnoController extends Controller
         'boolean' => 'El campo :attribute debe ser un valor booleano.',
     ];
     protected $rules2 = [
-        'numero_ant' => 'required|numeric',
-        'numero_nuev' => 'required|numeric',
+        'numero_ant' => 'required|integer',
+        'numero_nuev' => 'required|integer',
     ];
     protected $rules = [
         'numero' => 'required|numeric',
@@ -792,11 +792,20 @@ class AlumnoController extends Controller
     public function changeIdAlumno(Request $request)
     {
         $rules2 = $this->rules2;
-        $validator = Validator::make($request->all(), $rules2);
+        $mensajes = $this->messages;
+        $validator = Validator::make($request->all(), $rules2, $mensajes);
         if ($validator->fails()) {
-
-            $response = ObjectResponse::BadResponse('Error de validacion');
-            data_set($response, 'errors', $validator->errors());
+            Log::info($validator->errors());
+            $errors = [];
+            foreach ($validator->errors()->toArray() as $field => $mensajes) {
+                $errors[$field] = implode(', ', $mensajes);
+            }
+            $mensaje = "Error de validación:\n";
+            foreach ($errors as $error) {
+                $mensaje .= $error . "\n";
+            }
+            $response = ObjectResponse::BadResponse($mensaje);
+            data_set($response, 'errors', $errors);
             return response()->json($response, $response['status_code']);
         }
         $alumno3 = Alumno::find($request->numero_ant);
@@ -837,8 +846,9 @@ class AlumnoController extends Controller
         data_set($response, 'alert_text', 'Se actualizó el ciclo escolar de todos los alumnos');
         return response()->json($response, $response['status_code']);
     }
-    public function getCicloAlumnos() {
-        $ciclo=Alumno::select('ciclo_escolar')->first();
+    public function getCicloAlumnos()
+    {
+        $ciclo = Alumno::select('ciclo_escolar')->first();
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'data', $ciclo);
         data_set($response, 'message', 'Petición satisfactoria | Cumpleañeros del mes.');
