@@ -17,6 +17,7 @@ use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ComentariosController;
 use App\Http\Controllers\AlumnosPorClaseController;
+use App\Http\Controllers\Aplicacion1Controller;
 use App\Http\Controllers\CalificacionesController;
 use App\Http\Controllers\ClasesController;
 use App\Http\Controllers\CobranzaController;
@@ -286,3 +287,17 @@ Route::middleware('auth:sanctum')->controller(CalificacionesController::class)->
     Route::post('/calificaciones/new', 'getNewCalificacionesMateria');
     Route::post('/calificaciones/alumnosArea1', 'getCalificacionesAlumnosArea1');
 });
+
+Route::middleware('auth:sanctum')->controller(CobranzaController::class)->group(function () {
+    Route::post('/cobranzaDiaria', 'getCobranza');
+    Route::post('/cobranzaDiaria/update', 'updateCobranza');
+});
+
+Route::middleware('auth:sanctum')->controller(Aplicacion1Controller::class)->group(function () {
+    Route::get('/aplicacion1', 'index');
+    Route::get('/aplicacion1/siguiente', 'siguiente');
+    Route::post('/aplicacion1/post', 'postAplicacion1');
+    Route::post('/aplicacion1/update', 'updateAplicacion1');
+});
+
+
