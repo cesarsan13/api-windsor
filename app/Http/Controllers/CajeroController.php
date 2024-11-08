@@ -43,7 +43,9 @@ class CajeroController extends Controller
         $response = ObjectResponse::DefaultResponse();
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         if($validator->fails()){
+            $alert_text = implode("<br>", $validator->messages()->all());
             $response = ObjectResponse::CatchResponse($validator->errors()->all());
+            data_set($response, 'message', 'Informacion no valida');
             return response()->json($response,$response['status_code']);
         }
         try {
@@ -90,7 +92,9 @@ class CajeroController extends Controller
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         $response = ObjectResponse::DefaultResponse();
         if ($validator->fails()) {
-            $response = ObjectResponse::CatchResponse($validator->errors()->all());
+            $alert_text = implode("<br>", $validator->messages()->all());
+            $response = ObjectResponse::BadResponse($alert_text);
+            data_set($response, 'message', 'Informacion no valida');
             return response()->json($response,$response['status_code']);
         }
         try {
