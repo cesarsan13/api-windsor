@@ -254,6 +254,10 @@ Route::middleware('auth:sanctum')->controller(CalificacionesController::class)->
 });
 
 Route::middleware('auth:sanctum')->controller(ConcentradoCalificacionesController::class)->group(function () {
+    Route::get('/concentradoCalificaciones/ActividadesReg', 'getActividadesReg');
+    //Route::get('/concentradoCalificaciones/MateriasReg', 'getMateriasReg');
+    Route::get('/concentradoCalificaciones/MateriasReg/{idHorario}', 'getMateriasReg');
+    Route::get('/concentradoCalificaciones/Alumno/{idHorario}', 'getAlumno');
     Route::get('/concentradoCalificaciones/materiasGrupo/{idHorario}', 'getMateriasPorGrupo');
     Route::get('/concentradoCalificaciones/detalles/{idHorario}/{idAlumno}/{idMateria}/{idBimestre}', 'getActividadesXHorarioXAlumnoXMateriaXBimestre');
     Route::get('/concentradoCalificaciones/detallesGrupoGeneral/{idHorario}/{idBimestre}', 'getInfoActividadesXGrupo');
