@@ -188,8 +188,8 @@ class AsignaturasController extends Controller
             $asignatura->caso_evaluar = $request->caso_evaluar;
             $asignatura->save();
             $response = ObjectResponse::CorrectResponse();
-            data_set($response, 'message', 'Petición satisfactoria | Asignatura registrada.');
-            data_set($response, 'alert_text', 'Asignatura registrada');
+            data_set($response, 'message', 'Petición satisfactoria | Asignatura actualizada.');
+            data_set($response, 'alert_text', 'Asignatura actualizada');
             return response()->json($response, $response['status_code']);
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
