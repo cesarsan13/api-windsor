@@ -158,8 +158,9 @@ class ProductoController extends Controller
     {
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         if ($validator->fails()) {
-            $response = ObjectResponse::BadResponse('Error de validacion' . $validator->errors(),'Error de validacion');
-            data_set($response, 'errors', $validator->errors());
+            $alert_text = implode("<br>",$validator->messages()->all());
+            $response = ObjectResponse::BadResponse($alert_text);
+            data_set($response, 'message', 'Informacion no valida');
             return response()->json($response, $response['status_code']);
         }
         $producto = Producto::find($request->numero);
