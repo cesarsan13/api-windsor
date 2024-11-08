@@ -101,7 +101,8 @@ class ComentariosController extends Controller
 
             ]);
             $response = ObjectResponse::CorrectResponse();
-            data_set($response, 'message', 'peticion satisfactoria | Comentarios registrados.');
+            data_set($response, 'message', 'peticion satisfactoria | Comentario registrado.');
+            data_set($response, 'alert_text', 'Comentario registrado');
             data_set($response, 'data', $request->numero);
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
@@ -130,11 +131,11 @@ class ComentariosController extends Controller
 
                 ]);
             $response = ObjectResponse::CorrectResponse();
-            data_set($response, 'message', 'peticion satisfactoria | Comentarios actualizado');
-            data_set($response, 'alert_text', 'Comentarios actualizado');
+            data_set($response, 'message', 'peticion satisfactoria | Comentario actualizado');
+            data_set($response, 'alert_text', 'Comentario actualizado');
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
-            data_set($response, 'message', 'Peticion fallida | Actualizacion de Comentarios');
+            data_set($response, 'message', 'Peticion fallida | Actualizacion de Comentario');
             data_set($response, 'data', $ex);
         }
         return response()->json($response, $response['status_code']);
