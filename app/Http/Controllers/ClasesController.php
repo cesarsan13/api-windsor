@@ -60,7 +60,16 @@ class ClasesController extends Controller
         $response = ObjectResponse::DefaultResponse();
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         if ($validator->fails()) {
-            $response = ObjectResponse::CatchResponse($validator->errors()->all());
+            $errors = [];
+            foreach ($validator->errors()->toArray() as $field => $mensajes) {
+                $errors[$field] = implode(', ', $mensajes);
+            }
+            $mensaje = "Error de validación:\n";
+            foreach ($errors as $error) {
+                $mensaje .= $error . "\n";
+            }
+            $response = ObjectResponse::BadResponse($mensaje);
+            data_set($response, 'errors', $errors);
             return response()->json($response, $response['status_code']);
         }
         try {
@@ -93,7 +102,16 @@ class ClasesController extends Controller
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         $response = ObjectResponse::DefaultResponse();
         if ($validator->fails()) {
-            $response = ObjectResponse::CatchResponse($validator->errors()->all());
+            $errors = [];
+            foreach ($validator->errors()->toArray() as $field => $mensajes) {
+                $errors[$field] = implode(', ', $mensajes);
+            }
+            $mensaje = "Error de validación:\n";
+            foreach ($errors as $error) {
+                $mensaje .= $error . "\n";
+            }
+            $response = ObjectResponse::BadResponse($mensaje);
+            data_set($response, 'errors', $errors);
             return response()->json($response, $response['status_code']);
         }
         try {
