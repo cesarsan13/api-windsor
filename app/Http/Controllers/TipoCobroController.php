@@ -71,7 +71,9 @@ class TipoCobroController extends Controller
         $response = ObjectResponse::DefaultResponse();
         
         if ($validator->fails()) {
-            $response = ObjectResponse::CatchResponse($validator->errors()->all());
+            $alert_text = implode("<br>", $validator->messages()->all());
+            $response = ObjectResponse::BadResponse($alert_text);
+            data_set($response, 'message', 'Informacion no valida');
             return response()->json($response, $response['status_code']);
         }
         
@@ -97,6 +99,7 @@ class TipoCobroController extends Controller
             
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'Petición satisfactoria | Tipo de Cobro registrado.');
+            data_set($response, 'alert_text', 'Tipo de Cobro registrado');
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
@@ -108,8 +111,10 @@ class TipoCobroController extends Controller
         $response = ObjectResponse::DefaultResponse();
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         if($validator->fails()){
-            $response = ObjectResponse::CatchResponse($validator->errors()->all());
-            return response()->json($response,$response['status_code']);
+            $alert_text = implode("<br>", $validator->messages()->all());
+            $response = ObjectResponse::BadResponse($alert_text);
+            data_set($response, 'message', 'Informacion no valida');
+            return response()->json($response, $response['status_code']);
         }
         try {
             // Limpiar las comas de los importes
