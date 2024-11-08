@@ -100,7 +100,7 @@ class TipoCobroController extends Controller
             
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'Petición satisfactoria | Tipo de Cobro registrado.');
-            data_set($response, 'alert_text', 'Tipo de Cobro registrado');
+            data_set($response, 'alert_text', 'Forma de Pago registrada');
             data_set($response, 'alert_icon', 'success');
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
@@ -137,7 +137,7 @@ class TipoCobroController extends Controller
                 ]);
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'Petición satisfactoria | Tipo de cobro actualizado');
-            data_set($response, 'alert_text', 'Tipo de Cobro actualizado');
+            data_set($response, 'alert_text', 'Forma de Pago actualizada');
             data_set($response, 'alert_icon', 'success');
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
