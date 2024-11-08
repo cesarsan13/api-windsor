@@ -90,7 +90,10 @@ class ProfesoresController extends Controller
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         $response = ObjectResponse::DefaultResponse();
         if ($validator->fails()) {
-            $response = ObjectResponse::CatchResponse($validator->errors()->all());
+            $alert_text = implode("<br>", $validator->messages()->all());
+            $response = ObjectResponse::BadResponse($alert_text);
+            data_set($response, 'message', 'Informacion no valida');
+            data_set($response, 'alert_icon', 'error');
             return response()->json($response, $response['status_code']);
         }
 
@@ -117,6 +120,7 @@ class ProfesoresController extends Controller
 
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'alert_text', 'Profesor registrado.');
+        data_set($response, 'alert_icon', 'success');
         data_set($response, 'data', $profesor);
         return response()->json($response, $response['status_code']);
     }
@@ -126,13 +130,17 @@ class ProfesoresController extends Controller
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         $response = ObjectResponse::DefaultResponse();
         if ($validator->fails()) {
-            $response = ObjectResponse::CatchResponse($validator->errors()->all());
+            $alert_text = implode("<br>", $validator->messages()->all());
+            $response = ObjectResponse::BadResponse($alert_text);
+            data_set($response, 'message', 'Informacion no valida');
+            data_set($response, 'alert_icon', 'error');
             return response()->json($response, $response['status_code']);
         }
 
         $profesor = Profesores::find($request->numero);
         if (!$profesor) {
             $response = ObjectResponse::CatchResponse('Profesor no encontrado');
+            data_set($response, 'alert_icon', 'error');
             return response()->json($response, $response['status_code']);
         }
 
@@ -160,6 +168,7 @@ class ProfesoresController extends Controller
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'alert_text', 'Profesor actualizado.');
         data_set($response, 'data', $profesor);
+        data_set($response, 'alert_icon', 'success');
         return response()->json($response, $response['status_code']);
     }
 }
