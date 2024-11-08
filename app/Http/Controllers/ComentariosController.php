@@ -82,6 +82,7 @@ class ComentariosController extends Controller
                 $alert_text = implode("<br>", $validator->messages()->all());
                 $response = ObjectResponse::BadResponse($alert_text);
                 data_set($response, 'message', 'Informacion no valida');
+                data_set($response, 'alert_icon', 'error');
                 return response()->json($response, $response['status_code']);
             }
             $datosFiltrados = $request->only([
@@ -103,6 +104,7 @@ class ComentariosController extends Controller
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'peticion satisfactoria | Comentario registrado.');
             data_set($response, 'alert_text', 'Comentario registrado');
+            data_set($response, 'alert_icon', 'success');
             data_set($response, 'data', $request->numero);
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
@@ -117,6 +119,7 @@ class ComentariosController extends Controller
         if ($validator->fails()) {
             $alert_text = implode("<br>", $validator->messages()->all());
             $response = ObjectResponse::BadResponse($alert_text);
+            data_set($response, 'alert_icon', 'error');
             data_set($response, 'message', 'Informacion no valida');
             return response()->json($response, $response['status_code']);
         }
@@ -133,6 +136,7 @@ class ComentariosController extends Controller
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'peticion satisfactoria | Comentario actualizado');
             data_set($response, 'alert_text', 'Comentario actualizado');
+            data_set($response, 'alert_icon', 'success');
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
             data_set($response, 'message', 'Peticion fallida | Actualizacion de Comentario');

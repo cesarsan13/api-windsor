@@ -74,6 +74,7 @@ class TipoCobroController extends Controller
             $alert_text = implode("<br>", $validator->messages()->all());
             $response = ObjectResponse::BadResponse($alert_text);
             data_set($response, 'message', 'Informacion no valida');
+            data_set($response, 'alert_icon', 'error');
             return response()->json($response, $response['status_code']);
         }
         
@@ -100,6 +101,7 @@ class TipoCobroController extends Controller
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'Petición satisfactoria | Tipo de Cobro registrado.');
             data_set($response, 'alert_text', 'Tipo de Cobro registrado');
+            data_set($response, 'alert_icon', 'success');
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
@@ -114,6 +116,7 @@ class TipoCobroController extends Controller
             $alert_text = implode("<br>", $validator->messages()->all());
             $response = ObjectResponse::BadResponse($alert_text);
             data_set($response, 'message', 'Informacion no valida');
+            data_set($response, 'alert_icon', 'error');
             return response()->json($response, $response['status_code']);
         }
         try {
@@ -135,6 +138,7 @@ class TipoCobroController extends Controller
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'Petición satisfactoria | Tipo de cobro actualizado');
             data_set($response, 'alert_text', 'Tipo de Cobro actualizado');
+            data_set($response, 'alert_icon', 'success');
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
             data_set($response, 'message', 'Petición fallida | Actualización de Tipo de Cobro');
