@@ -99,8 +99,9 @@ class AsignaturasController extends Controller
 
             $validator = Validator::make($request->all(), $this->rules, $this->messages);
             if ($validator->fails()) {
-                $response = ObjectResponse::BadResponse('Error de validacion' . $validator->errors(),'Error de validacion');
-                data_set($response, 'errors', $validator->errors());
+                $alert_text = implode("<br>", $validator->messages()->all());
+                $response = ObjectResponse::BadResponse($alert_text);
+                data_set($response, 'message', 'Informacion no valida');
                 return response()->json($response, $response['status_code']);
             }
             $asignatura = Asignaturas::find($request->numero);
@@ -149,8 +150,9 @@ class AsignaturasController extends Controller
         try {
             $validator = Validator::make($request->all(), $this->rules, $this->messages);
             if ($validator->fails()) {
-                $response = ObjectResponse::BadResponse('Error de validacion' . $validator->errors(),'Error de validacion');
-                data_set($response, 'errors', $validator->errors());
+                $alert_text = implode("<br>", $validator->messages()->all());
+                $response = ObjectResponse::BadResponse($alert_text);
+                data_set($response, 'message', 'Informacion no valida');
                 return response()->json($response, $response['status_code']);
             }
             if($request->area == 1 || $request->area == 4){
