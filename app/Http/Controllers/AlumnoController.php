@@ -8,8 +8,6 @@ use App\Models\Alumno;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Validation\Rule;
 
 class AlumnoController extends Controller
 {
@@ -659,7 +657,8 @@ class AlumnoController extends Controller
         $validator = Validator::make($request->all(), $this->rules);
 
         if ($validator->fails()) {
-            $response = ObjectResponse::BadResponse('Error de validacion');
+            $alert_text = implode("<br>", $validator->messages()->all());
+            $response = ObjectResponse::BadResponse($alert_text);
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
@@ -869,10 +868,11 @@ class AlumnoController extends Controller
     {
         $rules = $this->rules;
         $rules['numero'] = 'required|integer|unique:alumnos,numero,' . $numero . ',numero';
-        $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules, $this->messages);
         if ($validator->fails()) {
             // dd(vars: $validator);
-            $response = ObjectResponse::BadResponse('Error de validacion');
+            $alert_text = implode("<br>", $validator->messages()->all());
+            $response = ObjectResponse::BadResponse($alert_text);
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
