@@ -162,7 +162,7 @@ class ClasesController extends Controller
                 ->leftJoin('profesores', 'clases.profesor', '=', 'profesores.numero')
                 ->leftJoin('materias', 'clases.materia', '=', 'materias.numero')
                 ->leftJoin('horarios', 'clases.grupo', '=', 'horarios.numero')
-                ->where('clases.baja', '')
+                ->where('clases.baja', '*')
                 ->get()
                 ->makeHidden(['created_at', 'updated_at']);
             $response = ObjectResponse::CorrectResponse();
