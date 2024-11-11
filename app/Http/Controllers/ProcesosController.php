@@ -138,7 +138,7 @@ class ProcesosController extends Controller
         $recibo = $request->recibo;
         $cobranza_diaria = DB::table('cobranza_diaria')
             ->where('recibo', '=', $recibo)
-            ->where('fecha_cobro', '<>', $fecha)
+            ->where('fecha_cobro', '=', $fecha)
             ->first();
         // Log::info($cobranza_diaria);
         if (!$cobranza_diaria) {
@@ -308,7 +308,7 @@ class ProcesosController extends Controller
     public function buscaTareasTrabajosPendientes(Request $request)
     {
         try {
-            
+
             $rules = [
                 'numero' => 'required',
                 'nombre' => 'required',
@@ -539,8 +539,8 @@ class ProcesosController extends Controller
             $response = ObjectResponse::CatchResponse($e->getMessage());
             return response()->json($response, $response['status_code']);
         }
-        
-        
+
+
 
     }
 
