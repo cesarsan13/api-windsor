@@ -146,6 +146,7 @@ class ClasesController extends Controller
             data_set($response, 'alert_text', 'Clase registrada.');
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
+            data_set($response, 'alert_text', $ex->getMessage());
         }
         return response()->json($response, $response['status_code']);
     }
