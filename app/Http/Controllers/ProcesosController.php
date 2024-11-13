@@ -51,7 +51,8 @@ class ProcesosController extends Controller
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'data', $cond_ant);
             data_set($response, 'message', 'peticion satisfactoria');
-            data_set($response, 'alert_title', 'EXITO!, Productos actualizados en documentos cobranza');
+            data_set($response, 'alert_text', 'Productos actualizados en documentos cobranza');
+            data_set($response, 'alert_title', '¡ÉXITO!');
             return response()->json($response, $response['status_code']);
         } catch (\Exception $e) {
             $response = ObjectResponse::CatchResponse($e->getMessage());
@@ -123,7 +124,8 @@ class ProcesosController extends Controller
             }
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'Petición satisfactoria');
-            data_set($response, 'alert_title', '¡ÉXITO! Cartera procesada');
+            data_set($response, 'alert_title', '¡ÉXITO!');
+            data_set($response, 'alert_text', 'Cartera procesada');
             return response()->json($response, $response['status_code']);
         } catch (\Exception $e) {
             $response = ObjectResponse::CatchResponse($e->getMessage());
