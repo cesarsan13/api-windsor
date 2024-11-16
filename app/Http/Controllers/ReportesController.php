@@ -340,7 +340,8 @@ class ReportesController extends Controller
             ->leftJoin('documentos_cobranza AS DC', 'DP.alumno', '=', 'DC.alumno')
             ->leftJoin(DB::raw('tipo_cobro AS TC1'), 'TC1.numero', '=', 'CD.tipo_pago_1')
             ->leftJoin(DB::raw('tipo_cobro AS TC2'), 'TC2.numero', '=', 'CD.tipo_pago_2')
-            ->where('importe_cobro', '>', 0);
+            ->where('importe_cobro', '>', 0)
+            ->where('PS.descripcion', '!=', null);
 
         if ($tomaFecha === true) {
             $query->whereBetween('CD.fecha_cobro', [$fecha_cobro_ini, $fecha_cobro_fin]);
@@ -400,7 +401,8 @@ class ReportesController extends Controller
             ->leftJoin('horarios AS H', 'A.horario_1', '=', 'H.numero' )
             ->leftJoin('cobranza_diaria AS CD', 'DP.recibo', '=', 'CD.recibo')
             ->leftJoin('documentos_cobranza AS DC', 'DP.alumno', '=', 'DC.alumno')
-            ->where('importe_cobro', '>', 0);
+            ->where('importe_cobro', '>', 0)
+            ->where('PS.descripcion', '!=', null);
 
         if ($tomaFecha === true) {
             $query->whereBetween('CD.fecha_cobro', [$fecha_cobro_ini, $fecha_cobro_fin]);
