@@ -202,6 +202,19 @@ class ProcesosController extends Controller
                     'referencia_2' => ' ',
                 ]);
 
+            db::table('cobranza_diaria')
+                ->where('recibo', '=', $recibo)
+                ->where('fecha_cobro', '=', $fecha)
+                ->update([
+                    'importe_cobro' => 0,
+                    'tipo_pago_1' => 0,
+                    'importe_pago_1' => 0,
+                    'referencia_1' => ' ',
+                    'tipo_pago_2' => 0,
+                    'importe_pago_2' => 0,
+                    'referencia_2' => ' ',
+                ]);
+
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'alert_title', 'Cancelación de Recibos');
             data_set($response, 'alert_text', 'Recibo cancelado correctamente');
