@@ -17,7 +17,7 @@ class RegisterController extends Controller
         'required' => 'El campo :attribute es obligatorio.',
         'max' => 'El campo :attribute no puede tener más de :max caracteres.',
         'min' => 'El campo :attribute debe tener al menos :min caracteres.',
-        'unique' => 'El  :attribute ya ha sido registrado anteriormente',
+        'unique' => 'El  :attribute ya ha sido registrado anteriormente.',
     ];
     protected $rules = [
         'name' => 'required|string|max:250|unique:users',
@@ -36,10 +36,11 @@ class RegisterController extends Controller
 
         $validatorUsuario = Validator::make($request->all(), $this->rules, $this->messages);
         if ($validatorUsuario->fails()) {
-            $response = ObjectResponse::CatchResponse($validatorUsuario->errors()->all());
-            data_set($response, 'alert_text', $validatorUsuario->errors()->all());
+            $errors = implode('<br>', $validatorUsuario->errors()->all());
+            $response = ObjectResponse::CatchResponse($errors);
+            data_set($response, 'alert_text', $errors);
             return response()->json($response, $response['status_code']);
-        }
+        }        
         try {
             $datosFiltradosUsuario = $request->only([
                 'name',
@@ -75,7 +76,7 @@ class RegisterController extends Controller
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'peticion satisfactoria | Usuario registrado.');
             data_set($resultado, 'messageMail', 'Peticion satisfactoria | Contraseña Enviada');
-            data_set($response, 'alert_text', 'Usuario registrado exitosamente. Se ha enviado un correo electrónico con su contraseña para acceder al sistema.');
+            data_set($response, 'alert_text', 'Usuario registrado exitosamente.<br>Se ha enviado un correo electrónico con su contraseña para acceder al sistema.');
         } catch (\Exception $e) {
             $response = ObjectResponse::CatchResponse($e->getMessage());
         }
