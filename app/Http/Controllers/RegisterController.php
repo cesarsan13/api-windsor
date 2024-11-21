@@ -21,7 +21,7 @@ class RegisterController extends Controller
     ];
     protected $rules = [
         'name' => 'required|string|max:250|unique:users',
-        'nombre'=>'required|string|max:50|unique:users',
+        'nombre' => 'required|string|max:50|unique:users',
         'email' => 'required|email|max:40|unique:users',
         //'password' => 'required|string|min:6',
         //'numero_prop' => 'required|integer',
@@ -66,21 +66,19 @@ class RegisterController extends Controller
                 "title2" => "Generación de Contraseña",
                 "body" => "Estimado/a {$datosFiltradosUsuario['nombre']}, su contraseña para el inicio de sesion es la siguiente: {$passwordgenerate}",
                 "view" => "mail-template",
-                "email" => $datosFiltradosUsuario['email'],         
+                "email" => $datosFiltradosUsuario['email'],
             ];
 
             $mailController = new MailController();
-            $resultado = $mailController->enviarNuevaContrasenaRegister($DataI); 
+            $resultado = $mailController->enviarNuevaContrasenaRegister($DataI);
 
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'peticion satisfactoria | Usuario registrado.');
             data_set($resultado, 'messageMail', 'Peticion satisfactoria | Contraseña Enviada');
-            data_set($response, 'alert_text', 'Usuario registrado exitosamente');
-
+            data_set($response, 'alert_text', 'Usuario registrado exitosamente. Se ha enviado un correo electrónico con su contraseña para acceder al sistema.');
         } catch (\Exception $e) {
             $response = ObjectResponse::CatchResponse($e->getMessage());
         }
         return response()->json($response, $response['status_code']);
     }
-
 }
