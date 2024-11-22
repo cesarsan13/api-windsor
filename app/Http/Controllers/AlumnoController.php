@@ -972,21 +972,31 @@ class AlumnoController extends Controller
         $alumno->escuela = $request->escuela ?? '';
         $alumno->grupo = $request->grupo ?? '';
         $alumno->baja = $request->baja ?? '';
+
         if ($request->hasFile('ruta_foto')) {
             $image = $request->file('ruta_foto');
             $destinationPath = "images/alumnos";
             $imageName = $image->getClientOriginalName();
-            $fullPath = $destinationPath . '/' . $imageName;
+            $fechaHoraSeg = now()->format('Ymd_His');
+            $fullPath = $destinationPath . '/' . $fechaHoraSeg .'_' .$imageName;
             $fullPath = $imageName;
+            if(trim($alumno->ruta_foto) != ""){
+                if (file_exists($destinationPath . '/' .$alumno->ruta_foto)) {
+                    unlink(public_path($destinationPath . '/' .$alumno->ruta_foto));
+                }
+            }
+            
             if (file_exists($fullPath)) {
                 $alumno->ruta_foto = $fullPath;
             } else {
-                $uploadSuccess = $image->move($destinationPath, $imageName);
-                $alumno->ruta_foto = $fullPath;
+                $uploadSuccess = $image->move($destinationPath, $fechaHoraSeg .'_'. $imageName);
+                // $alumno->ruta_foto = $fullPath;
+                $alumno->ruta_foto = $fechaHoraSeg .'_'. $imageName;
             }
             $alumno->save();
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'Petición satisfactoria | Alumno registrado.');
+            data_set($response, 'data', $alumno);
             data_set($response, 'alert_text', 'Alumno registrado');
             return response()->json($response, $response['status_code']);
         } else {
