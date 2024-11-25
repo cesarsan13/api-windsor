@@ -35,6 +35,7 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ConcentradoCalificacionesController;
+use App\Http\Controllers\MenusController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -271,6 +272,14 @@ Route::middleware('auth:sanctum')->controller(AccesosMenuController::class)->gro
     Route::put('/accesos-menu/update', 'update');
 });
 
+Route::middleware('auth:sanctum')->controller(MenusController::class)->group(function () {
+    Route::get('/menu/get', 'index');
+    Route::get('/menu/baja', 'indexBaja');
+    Route::get('/menu/siguiente', 'siguiente');
+    Route::post('/menu/save', 'save');
+    Route::put('/menu/update', 'update');
+});
+
 Route::middleware('auth:sanctum')->controller(CalificacionesController::class)->group(function () {
     Route::post('/calificaciones/materias', 'getMaterias');
     Route::post('/calificaciones', 'getCalificacionesMateria');
@@ -303,5 +312,3 @@ Route::middleware('auth:sanctum')->controller(Aplicacion1Controller::class)->gro
     Route::post('/aplicacion1/post', 'postAplicacion1');
     Route::post('/aplicacion1/update', 'updateAplicacion1');
 });
-
-
