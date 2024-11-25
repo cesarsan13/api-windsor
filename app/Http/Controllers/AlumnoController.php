@@ -980,13 +980,13 @@ class AlumnoController extends Controller
             $fechaHoraSeg = now()->format('Ymd_His');
             $fullPath = $destinationPath . '/' . $fechaHoraSeg .'_' .$imageName;
             $fullPath = $imageName;
-            if(trim($alumno->ruta_foto) != ""){
-                if (file_exists($destinationPath . '/' .$alumno->ruta_foto)) {
+            if(trim($alumno->ruta_foto) != ""){ 
+                if (file_exists(public_path($destinationPath . '/' .$alumno->ruta_foto))) { 
                     unlink(public_path($destinationPath . '/' .$alumno->ruta_foto));
                 }
             }
             
-            if (file_exists($fullPath)) {
+            if (file_exists(public_path($fullPath))) {
                 $alumno->ruta_foto = $fullPath;
             } else {
                 $uploadSuccess = $image->move($destinationPath, $fechaHoraSeg .'_'. $imageName);
