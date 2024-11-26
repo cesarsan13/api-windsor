@@ -1003,6 +1003,7 @@ class AlumnoController extends Controller
             $alumno->save();
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'Petición satisfactoria | Alumno registrado.');
+            data_set($response, 'data', $alumno);
             data_set($response, 'alert_text', 'Alumno registrado');
             return response()->json($response, $response['status_code']);
         }
