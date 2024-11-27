@@ -68,7 +68,7 @@ class AuthController extends Controller
                 $DataI = [
                     "title" => "Bienvenido/a {$user->nombre}",
                     "title2" => "Generación de Contraseña",
-                    "body" => "Estimado/a {$user->nombre}, su contraseña para el inicio de sesion es la siguiente: {$passwordgenerate}, puedes cambiar esta contraseña una ves entres en sistema.",
+                    "body" => "Estimado/a {$user->nombre}, su contraseña para el inicio de sesion es la siguiente: {$passwordgenerate}, puedes cambiar esta contraseña una vez entres en el sistema.",
                     "view" => "mail-template",
                     "email" => $email
                 ];
