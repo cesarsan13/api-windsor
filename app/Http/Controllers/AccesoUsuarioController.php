@@ -42,7 +42,7 @@ class AccesoUsuarioController extends Controller
                 $accesoUsuario->impresion = false;
                 $accesoUsuario->save();
             }
-            $accesos_usuarios = Acceso_Usuario::select('acceso_usuarios.*', 'accesos_menu.descripcion')
+            $accesos_usuarios = Acceso_Usuario::select('acceso_usuarios.*', 'accesos_menu.descripcion','accesos_menu.menu')
                 ->join('accesos_menu', 'accesos_menu.numero', '=', 'acceso_usuarios.id_punto_menu')
                 ->where('id_usuario', '=', $request->id_usuario)
                 ->orderBy('accesos_menu.menu')
@@ -51,7 +51,7 @@ class AccesoUsuarioController extends Controller
             data_set($response, 'message', 'Peticion satisfactoria');
             data_set($response, 'data', $accesos_usuarios);
         } else {
-            $accesos_usuarios = Acceso_Usuario::select('acceso_usuarios.*', 'accesos_menu.descripcion')
+            $accesos_usuarios = Acceso_Usuario::select('acceso_usuarios.*', 'accesos_menu.descripcion','accesos_menu.menu')
                 ->join('accesos_menu', 'accesos_menu.numero', '=', 'acceso_usuarios.id_punto_menu')
                 ->where('id_usuario', '=', $request->id_usuario)
                 ->orderBy('accesos_menu.menu')
