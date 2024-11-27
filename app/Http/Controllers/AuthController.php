@@ -63,7 +63,7 @@ class AuthController extends Controller
             
             if($user !== null){
                 $fechaHoraSeg = now()->format('Ymd_His');
-                $passwordgenerate = Str::random(10).$fechaHoraSeg;
+                $passwordgenerate = Str::random(10);
                 $email = $request->email;
                 $DataI = [
                     "title" => "Bienvenido/a {$user->nombre}",
