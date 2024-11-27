@@ -66,7 +66,7 @@ class AuthController extends Controller
                 $passwordgenerate = Str::random(10).$fechaHoraSeg;
                 $email = $request->email;
                 $DataI = [
-                    "title1" => "Bienvenido/a {$user->nombre}",
+                    "title" => "Bienvenido/a {$user->nombre}",
                     "title2" => "Generación de Contraseña",
                     "body" => "Estimado/a {$user->nombre}, su contraseña para el inicio de sesion es la siguiente: {$passwordgenerate}, puedes cambiar esta contraseña una ves entres en sistema.",
                     "view" => "mail-template",
