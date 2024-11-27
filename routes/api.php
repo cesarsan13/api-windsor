@@ -38,6 +38,7 @@ use App\Http\Controllers\ConcentradoCalificacionesController;
 use App\Http\Controllers\MenusController;
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/recuperacion', [AuthController::class, 'recuperaContra']);
 
 Route::middleware('auth:sanctum')->controller(TipoCobroController::class)->group(function () {
     Route::get("/tipo_cobro", "index");
