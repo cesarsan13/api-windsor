@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccesosMenuController;
+use App\Http\Controllers\AccesoUsuarioController;
 use App\Http\Controllers\ActCobranzaController;
 use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\AdeudosPendientesController;
@@ -311,4 +312,9 @@ Route::middleware('auth:sanctum')->controller(Aplicacion1Controller::class)->gro
     Route::get('/aplicacion1/siguiente', 'siguiente');
     Route::post('/aplicacion1/post', 'postAplicacion1');
     Route::post('/aplicacion1/update', 'updateAplicacion1');
+});
+
+Route::middleware('auth:sanctum')->controller(AccesoUsuarioController::class)->group(function () {
+    Route::post('/accesoUsuario','index');
+    Route::post('/accesoUsuario/update','update');
 });
