@@ -37,6 +37,7 @@ use App\Http\Controllers\MailController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ConcentradoCalificacionesController;
 use App\Http\Controllers\MenusController;
+use App\Http\Controllers\PropietarioController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/recuperacion', [AuthController::class, 'recuperaContra']);
@@ -318,4 +319,9 @@ Route::middleware('auth:sanctum')->controller(Aplicacion1Controller::class)->gro
 Route::middleware('auth:sanctum')->controller(AccesoUsuarioController::class)->group(function () {
     Route::post('/accesoUsuario','index');
     Route::post('/accesoUsuario/update','update');
+});
+
+Route::middleware('auth:sanctum')->controller(PropietarioController::class)->group(function () {
+    Route::get('/propietario', 'getPropietario');
+    Route::get('/propietario/configuracion', 'getConfiguracion');
 });
