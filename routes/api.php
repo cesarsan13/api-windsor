@@ -324,4 +324,7 @@ Route::middleware('auth:sanctum')->controller(AccesoUsuarioController::class)->g
 Route::middleware('auth:sanctum')->controller(PropietarioController::class)->group(function () {
     Route::get('/propietario', 'getPropietario');
     Route::get('/propietario/configuracion', 'getConfiguracion');
+    Route::put('/propietario/update', 'updatePropietario');
+    Route::put('/propietario/configuracion/update', 'updateConfiguracion');
+    Route::post('/propietario/configuracion/create', 'NuevaConfiguracion');
 });
