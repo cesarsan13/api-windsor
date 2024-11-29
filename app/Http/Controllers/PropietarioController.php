@@ -33,7 +33,7 @@ class PropietarioController extends Controller {
         'numero_configuracion' => 'required|integer',
         'descripcion_configuracion' => 'required|string|max:50',
         'valor_configuracion' => 'required|integer',
-        'texto_configuracion' => 'required|string|max:70'
+        'texto_configuracion' => 'nullable|string|max:70'
     ];
 
     public function getPropietario(){
@@ -113,7 +113,7 @@ class PropietarioController extends Controller {
                 "numero_configuracion" => $request->numero_configuracion,
                 "descripcion_configuracion" => $request->descripcion_configuracion,
                 "valor_configuracion" => $request->valor_configuracion,
-                "texto_configuracion" => $request->texto_configuracion
+                "texto_configuracion" => $request->texto_configuracion ?? ' '
             ]);
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'peticion satisfactoria | Configuracion actualizada');
@@ -125,7 +125,7 @@ class PropietarioController extends Controller {
         return response()->json($response, $response['status_code']);
     }
 
-    public function siguiente()
+    public function siguienteConfiguracion()
     {
         $response = ObjectResponse::DefaultResponse();
         try {
@@ -142,9 +142,6 @@ class PropietarioController extends Controller {
 
     public function NuevaConfiguracion(Request $request){
         try{
-            $ultima_configuracion = $this->siguiente();
-            $nueva_configuracion = intval($ultima_configuracion->getData()->data) +1;
-            $request->merge(['numero_configuracion' => $nueva_configuracion]);
             $validator = Validator::make($request->all(), $this->rulesConfiguracion, $this->messages);
             if($validator->fails()){
                $alert_text = implode(" ", $validator->messages()->all());
@@ -163,7 +160,7 @@ class PropietarioController extends Controller {
                 "numero_configuracion" => $datosFiltrados['numero_configuracion'],
                 "descripcion_configuracion" => $datosFiltrados['descripcion_configuracion'],
                 "valor_configuracion" => $datosFiltrados['valor_configuracion'],
-                "texto_configuracion" => $datosFiltrados['texto_configuracion'],
+                "texto_configuracion" => $datosFiltrados['texto_configuracion']?? ' ',
             ]);
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'peticion satisfactoria | Configuracion registrada');
