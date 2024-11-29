@@ -326,4 +326,5 @@ Route::middleware('auth:sanctum')->controller(PropietarioController::class)->gro
     Route::put('/propietario/update', 'updatePropietario');
     Route::put('/propietario/configuracion/update', 'updateConfiguracion');
     Route::post('/propietario/configuracion/create', 'NuevaConfiguracion');
+    Route::get('/propietario/configuracion/siguiente', 'siguienteConfiguracion');
 });
