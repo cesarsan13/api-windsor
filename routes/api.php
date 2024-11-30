@@ -40,6 +40,7 @@ use App\Http\Controllers\MenusController;
 use App\Http\Controllers\PropietarioController;
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/recuperacion', [AuthController::class, 'recuperaContra']);
 
 Route::middleware('auth:sanctum')->controller(TipoCobroController::class)->group(function () {
     Route::get("/tipo_cobro", "index");
@@ -160,6 +161,7 @@ Route::middleware('auth:sanctum')->controller(ReportesController::class)->group(
     Route::post("/reportes/rep_femac_10_anexo_2", "getEstadodeCuenta");
     Route::post("/reportes/rep_femac_9_anexo_4", "getRelaciondeFacturas");
     Route::get("/reportes/rep_inscritos", "getConsultasInscripcion");
+    Route::post("/reportes/rep_femac_4", "getCredencial");
 });
 
 Route::middleware('auth:sanctum')->controller(Pagos1Controller::class)->group(function () {

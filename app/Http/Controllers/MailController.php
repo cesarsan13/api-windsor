@@ -92,5 +92,4 @@ class MailController extends Controller
         data_set($response, 'message', 'Correo enviado exitosamente');
         return response()->json($response, $response['status_code']);
     }
-
 }

@@ -487,4 +487,103 @@ class ReportesController extends Controller
         data_set($response, 'data', $respuesta);
         return response()->json($response, $response['status_code']);
     }
+    public function getCredencial(Request $request){
+        $validator = Validator::make($request->all(), [
+            'numero' => 'required',
+        ], [
+            'numero.required' => 'El campo "Alumno" es obligatorio',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()], 422);
+        }
+        try {
+            $Horario_1 = "";
+            $Horario_2 = "";
+            $Horario_3 = "";
+            $Horario_4 = "";
+            $Cancha_1 = 0;
+            $Cancha_2 = 0;
+            $Cancha_3 = 0;
+            $Cancha_4 = 0;
+            $url_foto = "";
+            $alumno = Alumno::where('numero', $request->numero)
+                ->where('baja', "<>", "*")
+                ->first();
+            if($alumno !== null){
+                //Horario1
+                if($alumno->horario_1>0){
+                    $horarios = Horario::where('numero', $alumno->horario_1)
+                    ->where('baja', "<>", "*")
+                    ->first();
+                    if($horarios !== null){
+                        $Horario_1 = $horarios->dia . " " . $horarios->horario . "  (" . $horarios->cancha . ")";
+                        $Cancha_1 = $horarios->cancha;
+                    }else{
+                        $Horario_1 = "";
+                        $Cancha_1 = 0;
+                    }
+                }
+                //Horario2
+                if($alumno->horario_2>0){
+                    $horarios = Horario::where('numero', $alumno->horario_2)
+                    ->where('baja', "<>", "*")
+                    ->first();
+                    if($horarios !== null){
+                        $Horario_2 = $horarios->dia . " " . $horarios->horario . "  (" . $horarios->cancha . ")";
+                        $Cancha_2 = $horarios->cancha;
+                    }else{
+                        $Horario_2 = "";
+                        $Cancha_2 = 0;
+                    }
+                }
+                //Horario3
+                if($alumno->horario_3>0){
+                    $horarios = Horario::where('numero', $alumno->horario_3)
+                    ->where('baja', "<>", "*")
+                    ->first();
+                    if($horarios !== null){
+                        $Horario_3 = $horarios->dia . " " . $horarios->horario . "  (" . $horarios->cancha . ")";
+                        $Cancha_3 = $horarios->cancha;
+                    }else{
+                        $Horario_3 = "";
+                        $Cancha_3 = 0;
+                    }
+                }
+                //Horario4
+                if($alumno->horario_4>0){
+                    $horarios = Horario::where('numero', $alumno->horario_4)
+                    ->where('baja', "<>", "*")
+                    ->first();
+                    if($horarios !== null){
+                        $Horario_4 = $horarios->dia . " " . $horarios->horario . "  (" . $horarios->cancha . ")";
+                        $Cancha_4 = $horarios->cancha;
+                    }else{
+                        $Horario_4 = "";
+                        $Cancha_4 = 0;
+                    }
+                }
+                $resultados = [
+                    'alumno' => $alumno,
+                    'horario_1' => $Horario_1,
+                    'horario_2' => $Horario_2,
+                    'horario_3' => $Horario_3,
+                    'horario_4' => $Horario_4,
+                    'cancha_1' => $Cancha_1,
+                    'cancha_2' => $Cancha_2,
+                    'cancha_3' => $Cancha_3,
+                    'cancha_4' => $Cancha_4,
+                ];
+                $response = ObjectResponse::CorrectResponse();
+                data_set($response, 'message', 'Peticion satisfactoria | Credencial del Alumno');
+                data_set($response, 'data', $resultados);
+                return response()->json($response, $response['status_code']);
+            }else{
+                $response = ObjectResponse::CatchResponse("No se encuentra el alumno.");
+                return response()->json($response, 404);
+            }
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+            return response()->json($response, $response['status_code']);
+        }
+    }
 }
