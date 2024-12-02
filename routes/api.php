@@ -215,7 +215,9 @@ Route::middleware('auth:sanctum')->controller(GruposController::class)->group(fu
     Route::get('/grupos/index-baja', 'indexBaja');
 });
 
-Route::post('/documentosCobranza', [AdeudosPendientesController::class, 'getDetallePedidos'])->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->controller(AdeudosPendientesController::class)->group(function () {
+    Route::post('/documentosCobranza', 'getDetallePedidos');
+});
 
 Route::middleware('auth:sanctum')->controller(ClasesController::class)->group(function () {
     Route::post('/clase', 'postClases');
