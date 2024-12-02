@@ -255,50 +255,33 @@ class ReportesController extends Controller
     public function getBecas(Request $request)
     {
         $response = ObjectResponse::DefaultResponse();
-        $incBaja = $request->input('incBaja', 0);
-        $socio = $request->input('socio', [0, 0]);
-        $horarioFiltro = $request->input('horario', null);
-
-        $query = Alumno::where('id', '<>', '')
-            ->where('estatus', 'Activo')
-            ->where('descuento', '>', 0);
-
-        if ($incBaja == 1) {
-            $query->where('baja', '<>', '*');
-        }
-
-        if ((int)$socio[0] > 0 || (int)$socio[1] > 0) {
-            if ((int)$socio[1] === 0) {
-                $query->where('id', (int)$socio[0]);
+        $query = Alumno::select('*')->where('estatus','Activo')->where('descuento','>','0');
+        if ((int)$request->alumno1 || (int)$request->alumno2) {
+            if ((int)$request->alumno1 === 0) {
+                $query->where('numero', (int)$request->alumno1);
             } else {
-                $query->whereBetween('id', [(int)$socio[0], (int)$socio[1]]);
+                $query->whereBetween('numero', [(int)$request->alumno1, (int)$request->alumno2]);
             }
         }
-
-        if ($horarioFiltro !== null) {
-            $query->where('horario_1', $horarioFiltro);
-        }
-
         $alumnos = $query->orderBy('descuento', 'DESC')->get();
-
         $resultados = [];
         foreach ($alumnos as $alumno) {
             $horario = Horario::where('numero', $alumno->horario_1)->first();
-            $producto = Producto::where('id', $alumno->cond_1)->first();
+            $producto = Producto::where('numero', $alumno->cond_1)->first();
             $costoProd = $producto ? $producto->costo : 0;
 
             $twDescuento = $costoProd * ($alumno->descuento / 100);
             $costoFinal = $costoProd - $twDescuento;
 
             $resultados[] = [
-                'numero' => $alumno->id,
+                'numero' => $alumno->numero,
                 'alumno' => $alumno->nombre,
                 'grado' => $horario ? $horario->horario : null,
                 'colegiatura' => $costoProd,
                 'descuento' => $twDescuento,
                 'costo_final' => $costoFinal,
             ];
-        }
+        }        
 
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Peticion satisfactoria');
@@ -398,7 +381,7 @@ class ReportesController extends Controller
             )
             ->leftJoin('productos AS PS', 'DP.articulo', '=', 'PS.numero')
             ->leftJoin('alumnos AS A', 'DP.alumno', '=', 'A.numero')
-            ->leftJoin('horarios AS H', 'A.horario_1', '=', 'H.numero' )
+            ->leftJoin('horarios AS H', 'A.horario_1', '=', 'H.numero')
             ->leftJoin('cobranza_diaria AS CD', 'DP.recibo', '=', 'CD.recibo')
             ->leftJoin('documentos_cobranza AS DC', 'DP.alumno', '=', 'DC.alumno')
             ->where('importe_cobro', '>', 0)
@@ -487,7 +470,8 @@ class ReportesController extends Controller
         data_set($response, 'data', $respuesta);
         return response()->json($response, $response['status_code']);
     }
-    public function getCredencial(Request $request){
+    public function getCredencial(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'numero' => 'required',
         ], [
@@ -509,55 +493,55 @@ class ReportesController extends Controller
             $alumno = Alumno::where('numero', $request->numero)
                 ->where('baja', "<>", "*")
                 ->first();
-            if($alumno !== null){
+            if ($alumno !== null) {
                 //Horario1
-                if($alumno->horario_1>0){
+                if ($alumno->horario_1 > 0) {
                     $horarios = Horario::where('numero', $alumno->horario_1)
-                    ->where('baja', "<>", "*")
-                    ->first();
-                    if($horarios !== null){
+                        ->where('baja', "<>", "*")
+                        ->first();
+                    if ($horarios !== null) {
                         $Horario_1 = $horarios->dia . " " . $horarios->horario . "  (" . $horarios->cancha . ")";
                         $Cancha_1 = $horarios->cancha;
-                    }else{
+                    } else {
                         $Horario_1 = "";
                         $Cancha_1 = 0;
                     }
                 }
                 //Horario2
-                if($alumno->horario_2>0){
+                if ($alumno->horario_2 > 0) {
                     $horarios = Horario::where('numero', $alumno->horario_2)
-                    ->where('baja', "<>", "*")
-                    ->first();
-                    if($horarios !== null){
+                        ->where('baja', "<>", "*")
+                        ->first();
+                    if ($horarios !== null) {
                         $Horario_2 = $horarios->dia . " " . $horarios->horario . "  (" . $horarios->cancha . ")";
                         $Cancha_2 = $horarios->cancha;
-                    }else{
+                    } else {
                         $Horario_2 = "";
                         $Cancha_2 = 0;
                     }
                 }
                 //Horario3
-                if($alumno->horario_3>0){
+                if ($alumno->horario_3 > 0) {
                     $horarios = Horario::where('numero', $alumno->horario_3)
-                    ->where('baja', "<>", "*")
-                    ->first();
-                    if($horarios !== null){
+                        ->where('baja', "<>", "*")
+                        ->first();
+                    if ($horarios !== null) {
                         $Horario_3 = $horarios->dia . " " . $horarios->horario . "  (" . $horarios->cancha . ")";
                         $Cancha_3 = $horarios->cancha;
-                    }else{
+                    } else {
                         $Horario_3 = "";
                         $Cancha_3 = 0;
                     }
                 }
                 //Horario4
-                if($alumno->horario_4>0){
+                if ($alumno->horario_4 > 0) {
                     $horarios = Horario::where('numero', $alumno->horario_4)
-                    ->where('baja', "<>", "*")
-                    ->first();
-                    if($horarios !== null){
+                        ->where('baja', "<>", "*")
+                        ->first();
+                    if ($horarios !== null) {
                         $Horario_4 = $horarios->dia . " " . $horarios->horario . "  (" . $horarios->cancha . ")";
                         $Cancha_4 = $horarios->cancha;
-                    }else{
+                    } else {
                         $Horario_4 = "";
                         $Cancha_4 = 0;
                     }
@@ -577,7 +561,7 @@ class ReportesController extends Controller
                 data_set($response, 'message', 'Peticion satisfactoria | Credencial del Alumno');
                 data_set($response, 'data', $resultados);
                 return response()->json($response, $response['status_code']);
-            }else{
+            } else {
                 $response = ObjectResponse::CatchResponse("No se encuentra el alumno.");
                 return response()->json($response, 404);
             }
