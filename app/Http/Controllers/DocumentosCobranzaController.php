@@ -6,6 +6,7 @@ use App\Models\ObjectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Cobranza_Diaria;
+use App\Models\DocsCobranza;
 
 class DocumentosCobranzaController extends Controller
 {
@@ -79,6 +80,39 @@ class DocumentosCobranzaController extends Controller
             $response = ObjectResponse::BadResponse("error");
             data_set($response, 'message', 'No se encontró ningún documento para actualizar');
         }
+        return response()->json($response, $response['status_code']);
+    }
+    public function getCobranzaFiltrada(Request $request)
+    {
+        $fechaInicial = $request->input('fecha_inicial');
+        $alumnoIni = $request->input('alumno_ini');
+        $alumnoFin = $request->input('alumno_fin');
+        $sinDeudores = $request->input('sin_deudores', 0);
+        $docs = DocsCobranza::select(
+            'alumno',
+            'producto',
+            'fecha',
+            'importe',
+            'importe_pago',
+            'descuento',
+            DB::raw('((importe - importe_pago) - (importe * descuento / 100)) AS tw_saldo')
+        )
+            ->where('fecha', '<=', $fechaInicial)
+            ->whereRaw('((importe - importe_pago) - (importe * descuento / 100)) > 1')
+            ->where(function ($query) use ($alumnoIni, $alumnoFin) {
+                $query->whereBetween('alumno', [$alumnoIni, $alumnoFin])
+                    ->orWhere('alumno', '=', $alumnoIni);
+            })
+            ->when($sinDeudores, function ($query) {
+                $query->where('grupo', '<>', 'DEUDOR');
+            })
+            ->orderBy('alumno')
+            ->orderBy('producto')
+            ->orderBy('fecha')
+            ->get();
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'peticion satisfactoria | Lista de Docs. Cobranza');
+        data_set($response, 'data', $docs);
         return response()->json($response, $response['status_code']);
     }
 }
