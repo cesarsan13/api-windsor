@@ -13,14 +13,14 @@ class AccesoUsuarioController extends Controller
 {
     protected $rules = [
         'id_usuario' => 'required|integer',
-        'id_punto_menu' => 'required|integer',
-        't_a' => 'required|boolean',
-        'altas' => 'required|boolean',
-        'bajas' => 'required|boolean',
-        'cambios' => 'required|boolean',
-        'impresion' => 'required|boolean',
+        'id_punto_menu' => 'integer',
+        't_a' => 'boolean',
+        'altas' => 'boolean',
+        'bajas' => 'boolean',
+        'cambios' => 'boolean',
+        'impresion' => 'boolean',
     ];
-    protected   $messages = [
+    protected $messages = [
         'required' => 'El campo :attribute es obligatorio.',
         'max' => 'El campo :attribute no puede tener más de :max caracteres.',
         'unique' => 'El campo :attribute ya ha sido registrado',
@@ -42,7 +42,7 @@ class AccesoUsuarioController extends Controller
                 $accesoUsuario->impresion = false;
                 $accesoUsuario->save();
             }
-            $accesos_usuarios = Acceso_Usuario::select('acceso_usuarios.*', 'accesos_menu.descripcion','accesos_menu.menu')
+            $accesos_usuarios = Acceso_Usuario::select('acceso_usuarios.*', 'accesos_menu.descripcion', 'accesos_menu.menu')
                 ->join('accesos_menu', 'accesos_menu.numero', '=', 'acceso_usuarios.id_punto_menu')
                 ->where('id_usuario', '=', $request->id_usuario)
                 ->orderBy('accesos_menu.menu')
@@ -51,7 +51,7 @@ class AccesoUsuarioController extends Controller
             data_set($response, 'message', 'Peticion satisfactoria');
             data_set($response, 'data', $accesos_usuarios);
         } else {
-            $accesos_usuarios = Acceso_Usuario::select('acceso_usuarios.*', 'accesos_menu.descripcion','accesos_menu.menu')
+            $accesos_usuarios = Acceso_Usuario::select('acceso_usuarios.*', 'accesos_menu.descripcion', 'accesos_menu.menu')
                 ->join('accesos_menu', 'accesos_menu.numero', '=', 'acceso_usuarios.id_punto_menu')
                 ->where('id_usuario', '=', $request->id_usuario)
                 ->orderBy('accesos_menu.menu')
@@ -62,8 +62,40 @@ class AccesoUsuarioController extends Controller
         }
         return response()->json($response, $response['status_code']);
     }
+    public function actualizaTodo(Request $request)
+    {
+        $reglas = [
+            "id_usuario" => "required|integer",
+            "name" => "required|string",
+        ];
+        $validator = Validator::make($request->all(), $reglas, $this->messages);
+        if ($validator->fails()) {
+            $response = ObjectResponse::CatchResponse($validator->errors()->all());
+            return response()->json($response, $response['status_code']);
+        }
+        $response = ObjectResponse::DefaultResponse();
+        try {
+            $id_usuario = $request->id_usuario;
+            $opcion = $request->name;
+            Acceso_Usuario::where('id_usuario', $id_usuario)
+                ->update([
+                    "t_a" => $opcion === "si" ? 1 : 0,
+                    "altas" => $opcion === "si" ? 1 : 0,
+                    "bajas" => $opcion === "si" ? 1 : 0,
+                    "cambios" => $opcion === "si" ? 1 : 0,
+                    "impresion" => $opcion === "si" ? 1 : 0
+                ]);
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Petición satisfactoria');
+            data_set($response, 'alert_text', 'Acceso Usuario actualizado');
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response["status_code"]);
+    }
     public function update(Request $request)
     {
+
         $response = ObjectResponse::CorrectResponse();
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         if ($validator->fails()) {
