@@ -143,6 +143,7 @@ Route::controller(DocumentosCobranzaController::class)->group(function () {
     Route::get('/documentoscobranza/{fecha}/{grupo?}', 'imprimir')->middleware('auth:sanctum');
     Route::get('/documentoscobranza', 'get_Grupo_Cobranza')->middleware('auth:sanctum');
     Route::put('/documentoscobranza/grupo', 'poner_Grupo_Cobranza')->middleware('auth:sanctum');
+    Route::post('/documentoscobranza/all', 'getCobranzaFiltrada')->middleware('auth:sanctum');
 });
 Route::middleware('auth:sanctum')->controller(CobranzaProductosController::class)->group(function () {
     Route::get('/cobranzaProducto/{fecha1}/{fecha2}/{articulo?}/{artFin?}', 'infoDetallePedido');
