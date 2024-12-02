@@ -18,7 +18,7 @@ class AdeudosPendientesController extends Controller
         $resultados = $query->get();
 
         $queryAlumnos = DB::table('alumnos')
-        ->select('estatus','id');
+        ->select('estatus','numero');
         $resultadosAlumnos = $queryAlumnos->get();
         $data = [
             'documentos_cobranza'=>$resultados,
