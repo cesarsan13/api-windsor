@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
-
+use Illuminate\Support\Facades\Log;
 
 class ReportesController extends Controller
 {
@@ -257,13 +257,13 @@ class ReportesController extends Controller
         $response = ObjectResponse::DefaultResponse();
         $query = Alumno::select('*')->where('estatus','Activo')->where('descuento','>','0');
         if ((int)$request->alumno1 || (int)$request->alumno2) {
-            if ((int)$request->alumno1 === 0) {
+            if ((int)$request->alumno2 === 0) {                
                 $query->where('numero', (int)$request->alumno1);
             } else {
                 $query->whereBetween('numero', [(int)$request->alumno1, (int)$request->alumno2]);
             }
         }
-        $alumnos = $query->orderBy('descuento', 'DESC')->get();
+        $alumnos = $query->orderBy('descuento', 'DESC')->get();        
         $resultados = [];
         foreach ($alumnos as $alumno) {
             $horario = Horario::where('numero', $alumno->horario_1)->first();
