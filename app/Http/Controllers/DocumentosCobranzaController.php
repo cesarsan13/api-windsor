@@ -88,27 +88,32 @@ class DocumentosCobranzaController extends Controller
         $alumnoIni = $request->input('alumno_ini');
         $alumnoFin = $request->input('alumno_fin');
         $sinDeudores = $request->input('sin_deudores', 0);
-        $docs = DocsCobranza::select(
-            'alumno',
-            'producto',
-            'fecha',
-            'importe',
-            'importe_pago',
-            'descuento',
-            DB::raw('((importe - importe_pago) - (importe * descuento / 100)) AS tw_saldo')
-        )
-            ->where('fecha', '<=', $fechaInicial)
-            ->whereRaw('((importe - importe_pago) - (importe * descuento / 100)) > 1')
+        $docs = DocsCobranza::leftJoin('productos', 'documentos_cobranza.producto', '=', 'productos.numero')
+            ->leftJoin('alumnos', 'documentos_cobranza.alumno', '=', 'alumnos.numero')
+            ->select(
+                'documentos_cobranza.alumno',
+                'alumnos.nombre as alumno_nombre',
+                'documentos_cobranza.producto',
+                'productos.descripcion AS producto_descripcion',
+                'documentos_cobranza.numero_doc',
+                'documentos_cobranza.fecha',
+                'documentos_cobranza.importe',
+                'documentos_cobranza.importe_pago',
+                'documentos_cobranza.descuento',
+                DB::raw('((documentos_cobranza.importe - documentos_cobranza.importe_pago) - (documentos_cobranza.importe * documentos_cobranza.descuento / 100)) AS tw_saldo')
+            )
+            ->where('documentos_cobranza.fecha', '<=', $fechaInicial)
+            ->whereRaw('((documentos_cobranza.importe - documentos_cobranza.importe_pago) - (documentos_cobranza.importe * documentos_cobranza.descuento / 100)) > 1')
             ->where(function ($query) use ($alumnoIni, $alumnoFin) {
-                $query->whereBetween('alumno', [$alumnoIni, $alumnoFin])
-                    ->orWhere('alumno', '=', $alumnoIni);
+                $query->whereBetween('documentos_cobranza.alumno', [$alumnoIni, $alumnoFin])
+                    ->orWhere('documentos_cobranza.alumno', '=', $alumnoIni);
             })
             ->when($sinDeudores, function ($query) {
-                $query->where('grupo', '<>', 'DEUDOR');
+                $query->where('documentos_cobranza.grupo', '<>', 'DEUDOR');
             })
-            ->orderBy('alumno')
-            ->orderBy('producto')
-            ->orderBy('fecha')
+            ->orderBy('documentos_cobranza.alumno')
+            ->orderBy('documentos_cobranza.producto')
+            ->orderBy('documentos_cobranza.fecha')
             ->get();
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'peticion satisfactoria | Lista de Docs. Cobranza');
