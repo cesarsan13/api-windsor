@@ -467,8 +467,8 @@ class ReportesController extends Controller
             if($detalleEncontrado){
                 foreach ($detalleEncontrado as $detalle) {
                     $productoEncontrado = array_filter($productos, function($producto) use ($detalle) {
-                        // return $producto->ref === 'INS' &&
-                        return   $producto->numero === $detalle->articulo;
+                        return $producto->ref === 'INS' &&
+                         $producto->numero === $detalle->articulo;
                     });
                     // dd($productoEncontrado);
                     // array_push($productoEncontrado2,$productoEncontrado);
