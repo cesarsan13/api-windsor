@@ -161,6 +161,7 @@ Route::middleware('auth:sanctum')->controller(ReportesController::class)->group(
     Route::post("/reportes/rep_femac_10_anexo_2", "getEstadodeCuenta");
     Route::post("/reportes/rep_femac_9_anexo_4", "getRelaciondeFacturas");
     Route::get("/reportes/rep_inscritos", "getConsultasInscripcion");
+    Route::get("/reportes/rep_inscritos_mes", "getConsultasInscripcionMes");
     Route::post("/reportes/rep_femac_4", "getCredencial");
 });
 

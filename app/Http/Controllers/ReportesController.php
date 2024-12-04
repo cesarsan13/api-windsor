@@ -424,6 +424,71 @@ class ReportesController extends Controller
         return response()->json($response, $response['status_code']);
     }
 
+    public function getConsultasInscripcionMes(Request $request){
+        $alumnos_data = DB::table('alumnos')->where('estatus', '=', 'activo')->orderBy('numero', 'ASC')->get()->toArray();
+        $det_ped = DB::table('detalle_pedido')->get()->toArray();
+        $productos = DB::table('productos')->get()->toArray();
+        $horarios = DB::table('horarios')->get()->toArray();
+
+        $fechaActual = new \DateTime();
+
+        $primerDiaMes = clone $fechaActual;
+
+        // $primerDiaMes->modify('-1 month');
+        $primerDiaMes->modify('first day of this month');
+
+        $ultimoDiaMes = clone $fechaActual;
+        $ultimoDiaMes->modify('last day of this month');
+
+        $fechaPrimerDia = $primerDiaMes->format('Y/m/d'); // Año/Mes/01
+        $fechaUltimoDia = $ultimoDiaMes->format('Y/m/d'); // Año/Mes/Último día
+
+        $fecha_ini = $request->fecha_ini;
+        $fecha_fin = $request->fecha_fin;
+        $total_inscripcion = 0;
+        $alumnos = 0;
+        $si_inscrito = false;
+        foreach ($alumnos_data as $alumno) {
+            $det_inscripcion = 0;
+            $si_suma = false;
+            $fecha_inscripcion = "";
+            $detalleEncontrado = array_filter($det_ped, function($detalle) use ($alumno, $fechaPrimerDia, $fechaUltimoDia) {
+                return $detalle->alumno === $alumno->numero &&
+                       $detalle->fecha >= $fechaPrimerDia &&
+                       $detalle->fecha <= $fechaUltimoDia;
+            });
+            if($detalleEncontrado){
+                foreach ($detalleEncontrado as $detalle) {
+                    $productoEncontrado = array_filter($productos, function($producto) use ($detalle) {
+                        return $producto->ref === 'INS' &&
+                               $producto->numero === $detalle->articulo;
+                    });
+                    if($productoEncontrado){
+                        $si_inscrito = true;
+                        $si_suma = true;
+                        $det_inscripcion += $detalle->precio_unitario * $detalle->cantidad;
+                        $total_inscripcion += $detalle->precio_unitario * $detalle->cantidad;
+                    }else{
+
+                    }
+                    $fecha_inscripcion = $detalle->fecha;
+                }
+                if ($si_suma) {
+                    $alumnos += 1;
+                }
+                $det_inscripcion = 0;
+            }
+        }
+        $resultados[] = [
+            'alumnos' => $alumnos,
+            'importe' => $total_inscripcion,
+        ];
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'Peticion satisfactoria');
+        data_set($response, 'data', $resultados);
+
+        return response()->json($response, $response['status_code']);
+    }
 
     public function getRelaciondeFacturas(Request $request)
     {
