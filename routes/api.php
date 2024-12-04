@@ -322,7 +322,7 @@ Route::middleware('auth:sanctum')->controller(Aplicacion1Controller::class)->gro
 
 Route::middleware('auth:sanctum')->controller(AccesoUsuarioController::class)->group(function () {
     Route::post('/accesoUsuario','index');
-    Route::post('/accesoUsuario/update','update');
+    Route::post('/accesoUsuario/update','update');  
     Route::post('/accesoUsuario/actualizaTodo','actualizaTodo');
 });
 
