@@ -192,7 +192,8 @@ class ProductoController extends Controller
     {
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         if ($validator->fails()) {
-            $response = ObjectResponse::BadResponse($validator->errors());
+            $alert_text = implode("<br>",$validator->messages()->all());
+            $response = ObjectResponse::BadResponse($alert_text);
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
