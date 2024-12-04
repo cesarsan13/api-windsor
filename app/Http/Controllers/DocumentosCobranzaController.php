@@ -88,6 +88,7 @@ class DocumentosCobranzaController extends Controller
         $alumnoIni = $request->input('alumno_ini');
         $alumnoFin = $request->input('alumno_fin');
         $sinDeudores = $request->input('sin_deudores', 0);
+        $grupoAlumno = $request->input('grupo_alumno', 0);
         $docs = DocsCobranza::leftJoin('productos', 'documentos_cobranza.producto', '=', 'productos.numero')
             ->leftJoin('alumnos', 'documentos_cobranza.alumno', '=', 'alumnos.numero')
             ->select(
@@ -110,6 +111,10 @@ class DocumentosCobranzaController extends Controller
             })
             ->when($sinDeudores, function ($query) {
                 $query->where('documentos_cobranza.grupo', '<>', 'DEUDOR');
+            })
+            ->when($grupoAlumno, function ($query) {
+                $query->orderBy('documentos_cobranza.grupo')
+                    ->orderBy('documentos_cobranza.orden');
             })
             ->orderBy('documentos_cobranza.alumno')
             ->orderBy('documentos_cobranza.producto')
