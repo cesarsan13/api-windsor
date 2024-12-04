@@ -425,11 +425,6 @@ class ReportesController extends Controller
     }
 
     public function getConsultasInscripcionMes(Request $request){
-        $alumnos_data = DB::table('alumnos')->where('estatus', '=', 'activo')->orderBy('numero', 'ASC')->get()->toArray();
-        $det_ped = DB::table('detalle_pedido')->get()->toArray();
-        $productos = DB::table('productos')->get()->toArray();
-        $horarios = DB::table('horarios')->get()->toArray();
-
         $fechaActual = new \DateTime();
 
         $primerDiaMes = clone $fechaActual;
@@ -445,9 +440,19 @@ class ReportesController extends Controller
 
         $fecha_ini = $request->fecha_ini;
         $fecha_fin = $request->fecha_fin;
+
+        $alumnos_data = DB::table('alumnos')->where('estatus', '=', 'activo')->orderBy('numero', 'ASC')->get()->toArray();
+        $det_ped = DB::table('detalle_pedido')->whereBetween('fecha', [$fechaPrimerDia, $fechaUltimoDia])->get()->toArray();
+        $productos = DB::table('productos')->get()->toArray();
+        $horarios = DB::table('horarios')->get()->toArray();
+       
         $total_inscripcion = 0;
         $alumnos = 0;
         $si_inscrito = false;
+
+        $detalleEncontrado1 = [];
+        $productoEncontrado2 = [];
+        $alumnoEncontrado3 = [];
         foreach ($alumnos_data as $alumno) {
             $det_inscripcion = 0;
             $si_suma = false;
@@ -457,12 +462,16 @@ class ReportesController extends Controller
                        $detalle->fecha >= $fechaPrimerDia &&
                        $detalle->fecha <= $fechaUltimoDia;
             });
+            // dd($detalleEncontrado);
+            // array_push($detalleEncontrado1,$detalleEncontrado);
             if($detalleEncontrado){
                 foreach ($detalleEncontrado as $detalle) {
                     $productoEncontrado = array_filter($productos, function($producto) use ($detalle) {
                         return $producto->ref === 'INS' &&
-                               $producto->numero === $detalle->articulo;
+                         $producto->numero === $detalle->articulo;
                     });
+                    // dd($productoEncontrado);
+                    // array_push($productoEncontrado2,$productoEncontrado);
                     if($productoEncontrado){
                         $si_inscrito = true;
                         $si_suma = true;
@@ -486,6 +495,13 @@ class ReportesController extends Controller
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Peticion satisfactoria');
         data_set($response, 'data', $resultados);
+        // data_set($response, 'detalleEncontrado', $detalleEncontrado1);
+        // data_set($response, 'productoEncontrado', $productoEncontrado2);
+        data_set($response, 'count_alumnos', $alumnos);
+        data_set($response, 'data_alumnos', $alumnos_data);
+        data_set($response, 'data_detalle', $det_ped);
+        data_set($response, 'data_productos', $productos);
+        data_set($response, 'data_horarios', $horarios);
 
         return response()->json($response, $response['status_code']);
     }
