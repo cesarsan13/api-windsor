@@ -6,7 +6,7 @@ use App\Models\ObjectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Cobranza_Diaria;
-use App\Models\DocsCobranza;
+use Illuminate\Support\Facades\Log;
 
 class DocumentosCobranzaController extends Controller
 {
@@ -20,9 +20,11 @@ class DocumentosCobranzaController extends Controller
             ->where('descuento', '<', 100)
             ->select('documentos_cobranza.*', 'productos.descripcion');
 
-        if ($grupo === 1) {
+        if ((int)$grupo === 1) {
+            Log::info("por grupo");
             $documentosgrupos->orderBy('grupo')->orderBy('orden')->orderBy('alumno')->orderBy('producto')->orderBy('fecha');
         } else {
+            Log::info("por numero");
             $documentosgrupos->orderBy('alumno')->orderBy('producto')->orderBy('fecha');
         }
 
@@ -47,10 +49,12 @@ class DocumentosCobranzaController extends Controller
         return response()->json($response, $response['status_code']);
     }
     public function get_Grupo_Cobranza()
-    {
+    {        
         $alumnos = DB::table('alumnos')
             ->join('horarios', 'alumnos.horario_1', '=', 'horarios.numero')
+            ->join('documentos_cobranza','alumnos.numero','=','documentos_cobranza.alumno')
             ->select('alumnos.horario_1', 'alumnos.nombre', 'alumnos.baja', 'alumnos.numero', 'horarios.horario')
+            ->distinct()
             ->orderBy('horario_1')
             ->orderBy('nombre')
             ->get();
