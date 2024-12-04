@@ -20,7 +20,7 @@ class DocumentosCobranzaController extends Controller
             ->where('descuento', '<', 100)
             ->select('documentos_cobranza.*', 'productos.descripcion');
 
-        if ((int)$grupo === 1) {
+        if ((int) $grupo === 1) {
             Log::info("por grupo");
             $documentosgrupos->orderBy('grupo')->orderBy('orden')->orderBy('alumno')->orderBy('producto')->orderBy('fecha');
         } else {
@@ -49,10 +49,10 @@ class DocumentosCobranzaController extends Controller
         return response()->json($response, $response['status_code']);
     }
     public function get_Grupo_Cobranza()
-    {        
+    {
         $alumnos = DB::table('alumnos')
             ->join('horarios', 'alumnos.horario_1', '=', 'horarios.numero')
-            ->join('documentos_cobranza','alumnos.numero','=','documentos_cobranza.alumno')
+            ->join('documentos_cobranza', 'alumnos.numero', '=', 'documentos_cobranza.alumno')
             ->select('alumnos.horario_1', 'alumnos.nombre', 'alumnos.baja', 'alumnos.numero', 'horarios.horario')
             ->distinct()
             ->orderBy('horario_1')
@@ -93,7 +93,8 @@ class DocumentosCobranzaController extends Controller
         $alumnoFin = $request->input('alumno_fin');
         $sinDeudores = $request->input('sin_deudores', 0);
         $grupoAlumno = $request->input('grupo_alumno', 0);
-        $docs = DocsCobranza::leftJoin('productos', 'documentos_cobranza.producto', '=', 'productos.numero')
+        $docs = DB::table('documentos_cobranza')
+            ->leftJoin('productos', 'documentos_cobranza.producto', '=', 'productos.numero')
             ->leftJoin('alumnos', 'documentos_cobranza.alumno', '=', 'alumnos.numero')
             ->select(
                 'documentos_cobranza.alumno',
