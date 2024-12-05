@@ -18,8 +18,7 @@ return new class extends Migration
             $table->double('importe_movimiento'); 
             $table->string('referencia', 11)->nullable();  
             $table->string('fecha_referencia', 11)->nullable();
-            $table->timestamps();
-            $table->timestamps();
+            $table->timestamps();            
         });
     }
 

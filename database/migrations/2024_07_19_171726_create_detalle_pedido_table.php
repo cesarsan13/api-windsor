@@ -12,19 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('detalle_pedido', function (Blueprint $table) {
-            $table->integer('recibo')->primary()->default(0); //(11)
-            $table->integer('alumno')->primary()->default(0); //(11)
-            $table->integer('articulo')->primary()->default(0); //(20)
-            $table->integer('documento')->primary()->default(0); //(11)
+            $table->integer('recibo')->default(0); //(11)
+            $table->integer('alumno')->default(0); //(11)
+            $table->integer('articulo')->default(0); //(20)
+            $table->integer('documento')->default(0); //(11)
             $table->string('fecha',11);
             $table->integer('cantidad'); //(11)
             $table->float('precio_unitario');
             $table->float('descuento');
             $table->float('iva');
             $table->integer('numero_factura');
-            $table->foreign('alumno')->references('id')->on('alumnos');
-            $table->foreign('articulo')->references('id')->on('productos');
-            $table->foreign('alumno')->references('id')->on('alumnos');
+            $table->primary(['recibo', 'alumno', 'articulo','documento']);
+            // $table->foreign('alumno')->references('numero')->on('alumnos');
+            // $table->foreign('articulo')->references('numero')->on('productos');
             $table->timestamps();
         });
     }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->integer('numero_prop')->nullable(false);
-            $table->boolean('es_admin')->default('')->nullable(false);
+            $table->boolean('es_admin')->default(false)->nullable(false);
             $table->string('baja', 1)->default('')->nullable(false);
             $table->rememberToken();
             $table->timestamps();

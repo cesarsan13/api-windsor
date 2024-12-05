@@ -16,25 +16,34 @@ class UserSeeder extends Seeder
     {
 
 
-        
-            $registros=[
-                [
-                'id' => 1,
-                'name' => 'alfonso',
-                'email' => 'alfonso@gmail.com',
-                'numero_prop'=> 1,
-                'password'=>Hash::make('123'),
-                ],
+
+        $registros = [
             [
                 'id' => 2,
+                'name' => 'alfonso',
+                'email' => 'alfonso@gmail.com',
+                'numero_prop' => 1,
+                'password' => Hash::make('123'),
+            ],
+            [
+                'id' => 1,
+                'nombre'=>'Bernando Fernandez Fernandez',
+                'name' => 'Bernando',
+                'email' => 'bff@inter-op.com.mx',
+                'numero_prop' => 1,
+                'password' => Hash::make('B150958m'),
+                'es_admin' => true,
+            ],
+            [
+                'id' => 3,
                 'name' => 'martha',
                 'email' => 'martha@gmail.com',
-                'numero_prop'=> 1,
-                'password'=>Hash::make('madt'),
+                'numero_prop' => 1,
+                'password' => Hash::make('madt'),
             ],
-         
+
         ];
- foreach ($registros as $registro) {
+        foreach ($registros as $registro) {
             DB::table('users')->updateOrInsert(
                 ['id' => $registro['id']], // Condiciones para encontrar el registro
                 $registro // Datos que se actualizarán o insertarán
