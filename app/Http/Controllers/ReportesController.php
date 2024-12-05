@@ -365,28 +365,25 @@ class ReportesController extends Controller
         $alumno_ini = $request->input('alumno_ini');
         $alumno_fin = $request->input('alumno_fin');
 
-        $query = DB::table('detalle_pedido AS DP')
-            ->select(
-                'A.numero AS id_al',
-                'A.nombre AS nom_al',
-                'A.fecha_nac AS fecha_nac_al',
-                'A.fecha_inscripcion AS fecha_ins_al',
-                DB::raw("COALESCE(H.horario, '') AS horario_nom"),
-                'DP.articulo',
-                'PS.descripcion',
-                DB::raw("COALESCE(DC.numero_doc, '') AS numero_doc"),
-                'DP.fecha',
-                DB::raw('round((DP.cantidad * DP.precio_unitario) - ((DP.cantidad * DP.precio_unitario) * (DP.descuento / 100) ), 2) AS importe'),
-                'DP.recibo'
-            )
-            ->leftJoin('productos AS PS', 'DP.articulo', '=', 'PS.numero')
-            ->leftJoin('alumnos AS A', 'DP.alumno', '=', 'A.numero')
-            ->leftJoin('horarios AS H', 'A.horario_1', '=', 'H.numero')
-            ->leftJoin('cobranza_diaria AS CD', 'DP.recibo', '=', 'CD.recibo')
-            ->leftJoin('documentos_cobranza AS DC', 'DP.alumno', '=', 'DC.alumno')
-            ->where('importe_cobro', '>', 0)
-            ->where('PS.descripcion', '!=', null);
-
+        $query = DB::table('cobranza_diaria AS CD')
+        ->select(
+            'A.numero as id_al',
+            'A.nombre as nom_al',
+            'A.fecha_nac as fecha_nac_al',
+            'A.fecha_inscripcion as fecha_ins_al',
+            DB::raw('COALESCE(H.horario,"") as horario_nom'),
+            'DP.articulo as articulo',
+            DB::raw('COALESCE(P.descripcion,"") as descripcion'),
+            'DP.documento as numero_doc',
+            'DP.fecha as fecha',
+            'DP.precio_unitario as importe',
+            'DP.recibo as recibo'
+        )
+        ->leftJoin('detalle_pedido AS DP','CD.recibo','=','DP.recibo')
+        ->leftJoin('alumnos AS A','CD.alumno','=','A.numero')
+        ->leftJoin('horarios AS H','A.horario_1','=','H.numero')
+        ->leftJoin('productos AS P','P.numero','=','DP.articulo');
+        
         if ($tomaFecha === true) {
             $query->whereBetween('CD.fecha_cobro', [$fecha_cobro_ini, $fecha_cobro_fin]);
         }
