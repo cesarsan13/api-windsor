@@ -31,12 +31,10 @@ class AccesoUsuarioController extends Controller
         $accesos_usuarios = Acceso_Usuario::select('*')->where('id_usuario', '=', $request->id_usuario)->first();
 
         $numeroAccesosUsuarios = Acceso_Usuario::where('id_usuario', $request->id_usuario)
-            ->pluck('id_punto_menu')
-            ->toArray();
-
+        ->pluck('id_punto_menu')
+        ->toArray();
         $accesosFaltantes = AccesosMenu::whereNotIn('numero', $numeroAccesosUsuarios)
-            ->get(['numero']);
-
+        ->get(['numero']);
         $numerosFaltantes = $accesosFaltantes->pluck('numero')->toArray();
 
         if (!$accesos_usuarios) {
@@ -52,13 +50,12 @@ class AccesoUsuarioController extends Controller
                 $accesoUsuario->impresion = false;
                 $accesoUsuario->save();
             }
-
-        } else if (count($accesosFaltantes) > 0) {
-            foreach ($numerosFaltantes as $numero) {
-                echo $numero->numeroid;
+        } else if (count($accesosFaltantes) > 0) { 
+            foreach($numerosFaltantes as $numero => $value){
+                $numeroint = intval($value);
                 $accesoUsuario = new Acceso_Usuario();
                 $accesoUsuario->id_usuario = $request->id_usuario;
-                // $accesoUsuario->id_punto_menu = numeroid->numero;
+                $accesoUsuario->id_punto_menu = $numeroint;
                 $accesoUsuario->t_a = false;
                 $accesoUsuario->altas = false;
                 $accesoUsuario->bajas = false;
@@ -66,19 +63,20 @@ class AccesoUsuarioController extends Controller
                 $accesoUsuario->impresion = false;
                 $accesoUsuario->save();
             }
-        }
+        } 
 
-        $accesos_usuarios = Acceso_Usuario::select('acceso_usuarios.*', 'accesos_menu.descripcion', 'accesos_menu.menu')
+        $accesos_usuarios = Acceso_Usuario::select('acceso_usuarios.*', 'accesos_menu.descripcion','accesos_menu.menu')
             ->join('accesos_menu', 'accesos_menu.numero', '=', 'acceso_usuarios.id_punto_menu')
             ->where('id_usuario', '=', $request->id_usuario)
             ->orderBy('accesos_menu.menu')
             ->get();
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Peticion satisfactoria');
-        data_set($response, 'data', $numerosFaltantes);
-
+        data_set($response, 'data', $accesos_usuarios);
+        
         return response()->json($response, $response['status_code']);
     }
+
     public function actualizaTodo(Request $request)
     {
         $reglas = [
