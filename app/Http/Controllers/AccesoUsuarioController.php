@@ -29,6 +29,16 @@ class AccesoUsuarioController extends Controller
     {
         $response = ObjectResponse::DefaultResponse();
         $accesos_usuarios = Acceso_Usuario::select('*')->where('id_usuario', '=', $request->id_usuario)->first();
+
+        $numeroAccesosUsuarios = Acceso_Usuario::where('id_usuario', $request->id_usuario)
+        ->pluck('id_punto_menu')
+        ->toArray();
+
+        $accesosFaltantes = AccesosMenu::whereNotIn('numero', $numeroAccesosUsuarios)
+        ->get(['numero']);
+
+        $numerosFaltantes = $accesosFaltantes->pluck('numero')->toArray();
+
         if (!$accesos_usuarios) {
             $accesosMenu = AccesosMenu::select('*')->get();
             foreach ($accesosMenu as $acceso) {
@@ -42,24 +52,31 @@ class AccesoUsuarioController extends Controller
                 $accesoUsuario->impresion = false;
                 $accesoUsuario->save();
             }
-            $accesos_usuarios = Acceso_Usuario::select('acceso_usuarios.*', 'accesos_menu.descripcion', 'accesos_menu.menu')
+            
+        } else if (count($accesosFaltantes) > 0) { 
+            foreach($numerosFaltantes as $numero){
+                echo $numero->numeroid;
+                $accesoUsuario = new Acceso_Usuario();
+                $accesoUsuario->id_usuario = $request->id_usuario;
+                $accesoUsuario->id_punto_menu = numeroid->numero;
+                $accesoUsuario->t_a = false;
+                $accesoUsuario->altas = false;
+                $accesoUsuario->bajas = false;
+                $accesoUsuario->cambios = false;
+                $accesoUsuario->impresion = false;
+                $accesoUsuario->save();
+            }
+        } 
+
+        $accesos_usuarios = Acceso_Usuario::select('acceso_usuarios.*', 'accesos_menu.descripcion','accesos_menu.menu')
                 ->join('accesos_menu', 'accesos_menu.numero', '=', 'acceso_usuarios.id_punto_menu')
                 ->where('id_usuario', '=', $request->id_usuario)
                 ->orderBy('accesos_menu.menu')
                 ->get();
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'Peticion satisfactoria');
-            data_set($response, 'data', $accesos_usuarios);
-        } else {
-            $accesos_usuarios = Acceso_Usuario::select('acceso_usuarios.*', 'accesos_menu.descripcion', 'accesos_menu.menu')
-                ->join('accesos_menu', 'accesos_menu.numero', '=', 'acceso_usuarios.id_punto_menu')
-                ->where('id_usuario', '=', $request->id_usuario)
-                ->orderBy('accesos_menu.menu')
-                ->get();
-            $response = ObjectResponse::CorrectResponse();
-            data_set($response, 'message', 'Peticion satisfactoria');
-            data_set($response, 'data', $accesos_usuarios);
-        }
+            data_set($response, 'data', $numerosFaltantes);
+        
         return response()->json($response, $response['status_code']);
     }
     public function actualizaTodo(Request $request)
