@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tipo_cobro', function (Blueprint $table) {
-            $table->unsignedBigInteger('id')->primary(); //(11)
+            $table->unsignedBigInteger('numero')->primary(); //(11)
             $table->string("descripcion",50)->default('')->nullable(false); 
             $table->float("comision")->default(0)->nullable(false); //double
             $table->string("aplicacion",30)->default('')->nullable(false); 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tipo_cobros');
+        Schema::dropIfExists('tipo_cobro');
     }
 };
