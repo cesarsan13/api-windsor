@@ -363,7 +363,7 @@ class AlumnoController extends Controller
             );
 
         if ($baja === true) {
-            $query->where('al.baja', '=', '*');
+            $query->where('al.nombre', '<>', ' ');
         } else {
             $query->where('al.baja', '<>', '*');
         }
@@ -372,9 +372,7 @@ class AlumnoController extends Controller
             if ($alumnos2 == 0) {
                 $query->where('al.numero', '=', $alumnos1);
             } else {
-                if ($baja === false) {
-                    $query->whereBetween('al.numero', [$alumnos1, $alumnos2]);
-                }
+                $query->whereBetween('al.numero', [$alumnos1, $alumnos2]);
             }
         }
 
