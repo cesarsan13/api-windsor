@@ -363,7 +363,7 @@ class AlumnoController extends Controller
             );
 
         if ($baja === true) {
-            $query->where('al.nombre', '<>', '');
+            $query->where('al.baja', '=', '*');
         } else {
             $query->where('al.baja', '<>', '*');
         }
