@@ -86,7 +86,7 @@ class ProcesosController extends Controller
                     $cond_ant = $producto->cond_1;
                     $alumnos = DB::table('alumnos')
                         ->where('cond_1', '=', $cond_1)
-                        ->where('cond_2', '=', $cond_1)
+                        ->orWhere('cond_2', '=', $cond_1)
                         ->where('baja', '<>', '*')
                         ->get();
                     // Log::info($alumnos);
