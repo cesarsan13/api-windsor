@@ -129,6 +129,7 @@ class Pagos1Controller extends Controller
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Petición Satisfactoria');
         data_set($response, 'alert_text', 'Exito!, datos guardados');
+        data_set($response, 'data', $Doc);
         return response()->json($response, $response['status_code']);
     }
 
