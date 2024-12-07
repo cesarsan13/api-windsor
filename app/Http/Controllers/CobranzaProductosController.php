@@ -40,13 +40,12 @@ class CobranzaProductosController extends Controller
     }
 
 
-    public function infoDetallePedido($fecha1, $fecha2, $articulo = '', $artFin = '')
+    public function infoDetallePedido($fecha1, $fecha2, $articulo , $artFin )
     {
         DB::table('trab_rep_cobr')->delete();
         $fecha1 = $this->formatFechaString($fecha1);
         $fecha2 = $this->formatFechaString($fecha2);
-        Log::info($fecha1);
-        Log::info($fecha2);
+
         $Tsql = DB::table('detalle_pedido')
             ->join('alumnos', 'detalle_pedido.articulo', '=', 'alumnos.numero')
             ->whereBetween('fecha', [$fecha1, $fecha2]);
@@ -62,8 +61,6 @@ class CobranzaProductosController extends Controller
     }
     public function insertTrabRepCobr(Request $request)
     {
-
-        // dd("AAAAAAAAAAAAAAAAAAAAA");
         $validator = Validator::make($request->all(), $this->rules);
         $response = ObjectResponse::DefaultResponse();
         if ($validator->fails()) {
@@ -74,7 +71,6 @@ class CobranzaProductosController extends Controller
             return response()->json($response, $response['status_code']);
         }
         $trabrepcobr = new TrabRepCobr();
-        // dd($trabrepcobr);
         $trabrepcobr->recibo = $request->recibo;
         $trabrepcobr->fecha = $request->fecha;
         $trabrepcobr->articulo = $request->articulo;
