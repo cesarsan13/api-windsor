@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ObjectResponse;
 use App\Models\Alumno;
+use App\Models\DetallePedido;
+use App\Models\Cobranza_Diaria;
+use App\Models\Encab_Pedido;
+use App\Models\DocsCobranza;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
@@ -817,9 +821,32 @@ class AlumnoController extends Controller
             data_set($response, 'errors', ['numero' => ['Alumno ya existe, cambie a otro numero.']]);
             return response()->json($response, $response['status_code']);
         }
+        // detalle_pedido
+        // cobranza_diaria
+        // encab_pedido
+        // documentos_cobranza
+        // socio_paquete
+
         $alumno2 = Alumno::find($request->numero_ant);
         $alumno2->numero = $request->numero_nuev ?? '';
         $alumno2->save();
+
+        DB::table('detalle_pedido')
+            ->where('alumno', $request->numero_ant)
+            ->update(['alumno' => $request->numero_nuev ?? '']);
+
+        DB::table('cobranza_diaria')
+            ->where('alumno', $request->numero_ant)
+            ->update(['alumno' => $request->numero_nuev ?? '']);
+
+        DB::table('encab_pedido')
+            ->where('alumno', $request->numero_ant)
+            ->update(['alumno' => $request->numero_nuev ?? '']);
+        
+        DB::table('documentos_cobranza')
+            ->where('alumno', $request->numero_ant)
+            ->update(['alumno' => $request->numero_nuev ?? '']);
+        
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Petición satisfactoria | Se actualizo el numero.');
         data_set($response, 'alert_text', 'Se actualizo el numero del alumno');
