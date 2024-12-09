@@ -20,7 +20,7 @@ class AccesosMenuSeeder extends Seeder
                 'ruta' => '/alumnos',
                 'descripcion' => 'Alumnos',
                 'icono' => '',
-                'menu' => 'Catalogos',
+                'menu' => 'Catálogos',
                 'baja' => ''
             ],
             [
@@ -28,7 +28,7 @@ class AccesosMenuSeeder extends Seeder
                 'ruta' => '/productos',
                 'descripcion' => 'Productos',
                 'icono' => '',
-                'menu' => 'Catalogos',
+                'menu' => 'Catálogos',
                 'baja' => ''
             ],
             [
@@ -36,7 +36,7 @@ class AccesosMenuSeeder extends Seeder
                 'ruta' => '/comentarios',
                 'descripcion' => 'Comentarios',
                 'icono' => '',
-                'menu' => 'Catalogos',
+                'menu' => 'Catálogos',
                 'baja' => ''
             ],
             [
@@ -44,7 +44,7 @@ class AccesosMenuSeeder extends Seeder
                 'ruta' => '/cajeros',
                 'descripcion' => 'Cajeros',
                 'icono' => '',
-                'menu' => 'Catalogos',
+                'menu' => 'Catálogos',
                 'baja' => ''
             ],
             [
@@ -52,7 +52,7 @@ class AccesosMenuSeeder extends Seeder
                 'ruta' => '/horarios',
                 'descripcion' => 'Horarios',
                 'icono' => '',
-                'menu' => 'Catalogos',
+                'menu' => 'Catálogos',
                 'baja' => ''
             ],
             [
@@ -60,7 +60,7 @@ class AccesosMenuSeeder extends Seeder
                 'ruta' => '/formapago',
                 'descripcion' => 'Forma Pago',
                 'icono' => '',
-                'menu' => 'Catalogos',
+                'menu' => 'Catálogos',
                 'baja' => ''
             ],
             [
@@ -68,7 +68,7 @@ class AccesosMenuSeeder extends Seeder
                 'ruta' => '/formfact',
                 'descripcion' => 'Formato Variable',
                 'icono' => '',
-                'menu' => 'Catalogos',
+                'menu' => 'Catálogos',
                 'baja' => ''
             ],
             [
@@ -76,7 +76,7 @@ class AccesosMenuSeeder extends Seeder
                 'ruta' => '/profesores',
                 'descripcion' => 'Profesores',
                 'icono' => '',
-                'menu' => 'Catalogos',
+                'menu' => 'Catálogos',
                 'baja' => ''
             ],
             [
@@ -84,7 +84,7 @@ class AccesosMenuSeeder extends Seeder
                 'ruta' => '/asignaturas',
                 'descripcion' => 'Asignatura',
                 'icono' => '',
-                'menu' => 'Catalogos',
+                'menu' => 'Catálogos',
                 'baja' => ''
             ],
             [
@@ -92,7 +92,7 @@ class AccesosMenuSeeder extends Seeder
                 'ruta' => '/actividades',
                 'descripcion' => 'Actividades',
                 'icono' => '',
-                'menu' => 'Catalogos',
+                'menu' => 'Catálogos',
                 'baja' => ''
             ],
             //Procesos
@@ -379,9 +379,9 @@ class AccesosMenuSeeder extends Seeder
                 'baja' => ''
             ],
         ];
-        foreach ($registros as $registro){
+        foreach ($registros as $registro) {
             DB::table('accesos_menu')->updateOrInsert(
-                ['numero'=>$registro['numero']],
+                ['numero' => $registro['numero']],
                 $registro
             );
         }

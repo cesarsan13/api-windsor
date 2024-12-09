@@ -21,7 +21,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -30,7 +30,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -39,7 +39,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -48,7 +48,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -57,7 +57,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -66,7 +66,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -75,7 +75,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -84,7 +84,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -93,7 +93,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -102,7 +102,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -111,7 +111,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -120,7 +120,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -129,7 +129,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -138,7 +138,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -147,7 +147,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -156,7 +156,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -165,7 +165,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -174,7 +174,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -183,7 +183,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -192,7 +192,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -201,7 +201,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -210,7 +210,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -219,7 +219,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -228,7 +228,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -237,7 +237,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -246,7 +246,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -255,7 +255,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -264,7 +264,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -273,7 +273,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -282,7 +282,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -291,7 +291,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -300,7 +300,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -309,7 +309,7 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -318,39 +318,43 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
-            ],[
+                'impresion' => 1
+            ],
+            [
                 'id_usuario' => 1,
                 'id_punto_menu' => 35,
                 't_a' => 1,
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
-            ],[
+                'impresion' => 1
+            ],
+            [
                 'id_usuario' => 1,
                 'id_punto_menu' => 36,
                 't_a' => 1,
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
-            ],[
+                'impresion' => 1
+            ],
+            [
                 'id_usuario' => 1,
                 'id_punto_menu' => 37,
                 't_a' => 1,
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
-            ],[
+                'impresion' => 1
+            ],
+            [
                 'id_usuario' => 1,
                 'id_punto_menu' => 38,
                 't_a' => 1,
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ],
             [
                 'id_usuario' => 1,
@@ -359,60 +363,66 @@ class AccesoUsuarioSeeder extends Seeder
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
-            ],[
+                'impresion' => 1
+            ],
+            [
                 'id_usuario' => 1,
                 'id_punto_menu' => 40,
                 't_a' => 1,
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
-            ],[
+                'impresion' => 1
+            ],
+            [
                 'id_usuario' => 1,
                 'id_punto_menu' => 41,
                 't_a' => 1,
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
-            ],[
+                'impresion' => 1
+            ],
+            [
                 'id_usuario' => 1,
                 'id_punto_menu' => 42,
                 't_a' => 1,
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
-            ],[
+                'impresion' => 1
+            ],
+            [
                 'id_usuario' => 1,
                 'id_punto_menu' => 43,
                 't_a' => 1,
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
-            ],[
+                'impresion' => 1
+            ],
+            [
                 'id_usuario' => 1,
                 'id_punto_menu' => 44,
                 't_a' => 1,
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
-            ],[
+                'impresion' => 1
+            ],
+            [
                 'id_usuario' => 1,
                 'id_punto_menu' => 45,
                 't_a' => 1,
                 'altas' => 1,
                 'bajas' => 1,
                 'cambios' => 1,
-                'impresion' => 1 
+                'impresion' => 1
             ]
         ];
 
-        foreach($registros as $registro){
-            DB::table('acceso_usuario')->updateOrInsert(
+        foreach ($registros as $registro) {
+            DB::table('acceso_usuarios')->updateOrInsert(
                 [
                     'id_usuario' => $registro['id_usuario'],
                     'id_punto_menu' => $registro['id_punto_menu'],
@@ -420,8 +430,9 @@ class AccesoUsuarioSeeder extends Seeder
                     'altas' => $registro['altas'],
                     'bajas' => $registro['bajas'],
                     'cambios' => $registro['cambios'],
-                    'impresion' => $registro['impresion']],
-                    $registro
+                    'impresion' => $registro['impresion']
+                ],
+                $registro
             );
         }
 
