@@ -121,6 +121,7 @@ class HorarioController extends Controller
             ]);
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'Petición satisfactoria : Datos insertados correctamente');
+            data_set($response, 'alert_text', 'Horario registrado');
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
