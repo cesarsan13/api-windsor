@@ -10,7 +10,7 @@ class Comentarios extends Model
     use HasFactory;
     public $timestamps = false;
 
-    protected $table = 'comentario';
+    protected $table = 'comentarios';
 
     protected $fillable = [
         'numero',
