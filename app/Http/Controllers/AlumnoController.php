@@ -826,31 +826,40 @@ class AlumnoController extends Controller
         // encab_pedido
         // documentos_cobranza
         // socio_paquete
-
-        $alumno2 = Alumno::find($request->numero_ant);
-        $alumno2->numero = $request->numero_nuev ?? '';
-        $alumno2->save();
-
-        DB::table('detalle_pedido')
-            ->where('alumno', $request->numero_ant)
-            ->update(['alumno' => $request->numero_nuev ?? '']);
-
-        DB::table('cobranza_diaria')
-            ->where('alumno', $request->numero_ant)
-            ->update(['alumno' => $request->numero_nuev ?? '']);
-
-        DB::table('encab_pedido')
-            ->where('alumno', $request->numero_ant)
-            ->update(['alumno' => $request->numero_nuev ?? '']);
-        
-        DB::table('documentos_cobranza')
-            ->where('alumno', $request->numero_ant)
-            ->update(['alumno' => $request->numero_nuev ?? '']);
-        
-        $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'Petición satisfactoria | Se actualizo el numero.');
-        data_set($response, 'alert_text', 'Se actualizo el numero del alumno');
-        return response()->json($response, $response['status_code']);
+        try {
+            $alumno2 = Alumno::find($request->numero_ant);
+            $alumno2->numero = $request->numero_nuev ?? '';
+            $alumno2->save();
+    
+            DB::table('detalle_pedido')
+                ->where('alumno', $request->numero_ant)
+                ->update(['alumno' => $request->numero_nuev ?? '']);
+    
+            DB::table('cobranza_diaria')
+                ->where('alumno', $request->numero_ant)
+                ->update(['alumno' => $request->numero_nuev ?? '']);
+    
+            DB::table('encab_pedido')
+                ->where('alumno', $request->numero_ant)
+                ->update(['alumno' => $request->numero_nuev ?? '']);
+            
+            DB::table('documentos_cobranza')
+                ->where('alumno', $request->numero_ant)
+                ->update(['alumno' => $request->numero_nuev ?? '']);
+            
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Petición satisfactoria | Se actualizo el numero.');
+            data_set($response, 'alert_text', 'Se actualizo el numero del alumno');
+            return response()->json($response, $response['status_code']);
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+            data_set($response, 'message', 'Peticion fallida | Actualizacion de Numero de Alumno');
+            data_set($response, 'alert_text', $ex);
+            data_set($response, 'alert_icon', 'error');
+            data_set($response, 'data', $ex);
+            return response()->json($response, $response['status_code']);
+        }
+       
     }
     public function cambiarCicloAlumnos(Request $request)
     {
