@@ -578,7 +578,7 @@ class ReportesController extends Controller
                         ->where('baja', "<>", "*")
                         ->first();
                     if ($horarios !== null) {
-                        $Horario_1 = $horarios->dia . " " . $horarios->horario . "  (" . $horarios->cancha . ")";
+                        $Horario_1 = $horarios->dia . " " . $horarios->horario . " (" . $horarios->cancha . ")";
                         $Cancha_1 = $horarios->cancha;
                     } else {
                         $Horario_1 = "";
@@ -591,7 +591,7 @@ class ReportesController extends Controller
                         ->where('baja', "<>", "*")
                         ->first();
                     if ($horarios !== null) {
-                        $Horario_2 = $horarios->dia . " " . $horarios->horario . "  (" . $horarios->cancha . ")";
+                        $Horario_2 = $horarios->dia . " " . $horarios->horario . " (" . $horarios->cancha . ")";
                         $Cancha_2 = $horarios->cancha;
                     } else {
                         $Horario_2 = "";
@@ -604,7 +604,7 @@ class ReportesController extends Controller
                         ->where('baja', "<>", "*")
                         ->first();
                     if ($horarios !== null) {
-                        $Horario_3 = $horarios->dia . " " . $horarios->horario . "  (" . $horarios->cancha . ")";
+                        $Horario_3 = $horarios->dia . " " . $horarios->horario . " (" . $horarios->cancha . ")";
                         $Cancha_3 = $horarios->cancha;
                     } else {
                         $Horario_3 = "";
@@ -617,7 +617,7 @@ class ReportesController extends Controller
                         ->where('baja', "<>", "*")
                         ->first();
                     if ($horarios !== null) {
-                        $Horario_4 = $horarios->dia . " " . $horarios->horario . "  (" . $horarios->cancha . ")";
+                        $Horario_4 = $horarios->dia . " " . $horarios->horario . " (" . $horarios->cancha . ")";
                         $Cancha_4 = $horarios->cancha;
                     } else {
                         $Horario_4 = "";
