@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('encab_pedidos', function (Blueprint $table) { //encab_pedido
+        Schema::create('encab_pedido', function (Blueprint $table) { //encab_pedido
             $table->bigInteger('recibo')->primary()->default(0); //(11)
             $table->string('fecha', 15);
             $table->foreignId('alumno')->constrined('alumnos', 'id'); //(11)
@@ -38,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('encab_pedidos');
+        Schema::dropIfExists('encab_pedido');
     }
 };
