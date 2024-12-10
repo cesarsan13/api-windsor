@@ -17,8 +17,8 @@ class ComentariosController extends Controller
     protected $rules = [
         'numero' => 'required|integer',
         'comentario_1' => 'required|string|max:50',
-        'comentario_2' => 'required|string|max:50',
-        'comentario_3' => 'required|string|max:50',
+        'comentario_2' => 'nullable|string|max:50',
+        'comentario_3' => 'nullable|string|max:50',
         'generales' => 'nullable|integer|max:1',
         'baja' => 'nullable|string|max:1',
 
@@ -95,8 +95,8 @@ class ComentariosController extends Controller
             $nuevoCobro = Comentarios::create([
                 "numero" => $datosFiltrados['numero'],
                 "comentario_1" => $datosFiltrados['comentario_1'],
-                "comentario_2" => $datosFiltrados['comentario_2'],
-                "comentario_3" => $datosFiltrados['comentario_3'],
+                "comentario_2" => $datosFiltrados['comentario_2'] ?? '',
+                "comentario_3" => $datosFiltrados['comentario_3'] ?? '',
                 "generales" => $datosFiltrados['generales'],
                 "baja" => $datosFiltrados['baja'] ?? '',
 
@@ -127,8 +127,8 @@ class ComentariosController extends Controller
             $tipo_cobro = Comentarios::where('numero', $request->numero)
                 ->update([
                     "comentario_1" => $request->comentario_1,
-                    "comentario_2" => $request->comentario_2,
-                    "comentario_3" => $request->comentario_3,
+                    "comentario_2" => $request->comentario_2 ?? '',
+                    "comentario_3" => $request->comentario_3 ?? '',
                     "generales" => $request->generales,
                     "baja" => $request->baja ?? '',
 
