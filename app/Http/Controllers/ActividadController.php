@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Actividad;
+use App\Models\Asignaturas;
 use App\Models\ObjectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -69,9 +70,11 @@ class ActividadController extends Controller
             'baja',
             'evaluaciones',
         ]);
+        $asignatura = Asignaturas::find($dataFiltrados['materia']);
         $nuevaActividad = Actividad::create([
             'materia' => $dataFiltrados['materia'],
             'secuencia' => $dataFiltrados['secuencia'],
+            'matDescripcion' => $asignatura->descripcion ?? '',
             'descripcion' => $dataFiltrados['descripcion'],
             'evaluaciones' => $dataFiltrados['evaluaciones'] ?? 0,
             'EB1' => $dataFiltrados['EB1'],

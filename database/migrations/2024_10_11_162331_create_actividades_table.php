@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('actividades', function (Blueprint $table) {
             $table->integer('materia')->default(0);
+            $table->string('matDescripcion', 100)->nullable(false)->default('');
             $table->integer('secuencia')->default(0);
             $table->string('descripcion',30)->default('');
             $table->integer('evaluaciones')->default(0);
