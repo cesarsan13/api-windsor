@@ -12,6 +12,7 @@ class Actividad extends Model
     protected $fillable = [
         'materia',
         'secuencia',
+        'matDescripcion',
         'descripcion',
         'evaluaciones',
         'EB1',
