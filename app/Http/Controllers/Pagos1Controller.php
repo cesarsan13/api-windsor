@@ -12,6 +12,7 @@ use App\Models\CobranzaDiaria;
 use App\Models\Encab_Pedido;
 use App\Models\Propietario;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class Pagos1Controller extends Controller
 {
@@ -203,20 +204,19 @@ class Pagos1Controller extends Controller
 
         $documento = $request->documento;
         if ($documento > 0) {
-            $total_general = $request->total_general;
-            DB::table('documentos_cobranza')
-                ->where('alumno', $request->alumno)
+            $total_general = (float)$request->total_general;
+            DocsCobranza::where('alumno', $request->alumno)
                 ->where('producto', $request->articulo)
-                ->where('numero_doc', $request->numero_doc)
+                ->where('numero_doc', $request->documento)
                 ->update([
                     'fecha_cobro' => $request->fecha,
-                    'importe_pago' => DB::raw('importe_pago + ' . $total_general)
+                    'importe_pago' => DB::raw('COALESCE(importe_pago, 0) + ' . $total_general)
                 ]);
         }
 
         $doc_cob = DB::table('documentos_cobranza')
             ->where('producto', '=', $request->articulo)
-            ->where('numero_doc', '=', $request->numero_doc)
+            ->where('numero_doc', '=', $request->documento)
             ->where('alumno', '=', $request->alumno)
             ->first();
 
@@ -227,7 +227,7 @@ class Pagos1Controller extends Controller
                 DB::table('documentos_cobranza')
                     ->where('alumno', $request->alumno)
                     ->where('producto', $request->articulo)
-                    ->where('numero_doc', $request->numero_doc)
+                    ->where('numero_doc', $request->documento)
                     ->update([
                         'descuento' => $request->descuento,
                     ]);
@@ -322,6 +322,7 @@ class Pagos1Controller extends Controller
             )
             ->where('dc.alumno', $request->alumno)
             ->whereRaw('ROUND(dc.importe - dc.importe_pago, 2) > 0')
+            ->orderBy('dc.numero_doc', 'ASC')
             ->get();
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Petición Satisfactoria');
