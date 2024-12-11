@@ -98,9 +98,11 @@ class ActividadController extends Controller
             data_set($response, 'message', 'Informacion no valida');
             return response()->json($response, $response['status_code']);
         }
+        $asignatura = Asignaturas::find($request->materia);
         $actividad = Actividad::where('materia', $request->materia)
             ->where('secuencia', $request->secuencia)
             ->update([
+                'matDescripcion' => $asignatura->descripcion ?? '',
                 'descripcion' => $request->descripcion,
                 'evaluaciones' => $request->evaluaciones ?? 0,
                 'EB1' => $request->EB1,
