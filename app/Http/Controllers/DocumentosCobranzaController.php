@@ -13,9 +13,10 @@ class DocumentosCobranzaController extends Controller
     public function imprimir($fecha, $grupo = 0)
     {
         $response = ObjectResponse::DefaultResponse();
+        $formatFecha = str_replace("-","/",$fecha);        
         $documentosgrupos = DB::table('documentos_cobranza')
             ->join('productos', 'documentos_cobranza.producto', '=', 'productos.numero')
-            ->where('fecha', '<=', $fecha)
+            ->where('fecha', '<=', $formatFecha)
             ->where('importe_pago', '=', 0)
             ->where('descuento', '<', 100)
             ->select('documentos_cobranza.*', 'productos.descripcion');
