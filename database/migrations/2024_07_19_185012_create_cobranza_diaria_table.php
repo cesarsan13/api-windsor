@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('cobranza_diaria', function (Blueprint $table) {
             $table->integer('recibo'); //(11)
-            $table->date('fecha_cobro'); //(11)
+            $table->string('fecha_cobro', 11); //(11)
             $table->time('hora'); //(13)
             $table->integer('alumno'); //(11)
             $table->decimal('importe_cobro', 8, 2); //double

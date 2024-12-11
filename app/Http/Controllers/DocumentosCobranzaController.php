@@ -13,14 +13,13 @@ class DocumentosCobranzaController extends Controller
     public function imprimir($fecha, $grupo = 0)
     {
         $response = ObjectResponse::DefaultResponse();
-        $formatFecha = str_replace("-","/",$fecha);        
+        $formatFecha = str_replace("-", "/", $fecha);
         $documentosgrupos = DB::table('documentos_cobranza')
             ->join('productos', 'documentos_cobranza.producto', '=', 'productos.numero')
             ->where('fecha', '<=', $formatFecha)
             ->where('importe_pago', '=', 0)
             ->where('descuento', '<', 100)
             ->select('documentos_cobranza.*', 'productos.descripcion');
-
         if ((int) $grupo === 1) {
             Log::info("por grupo");
             $documentosgrupos->orderBy('grupo')->orderBy('orden')->orderBy('alumno')->orderBy('producto')->orderBy('fecha');
@@ -29,7 +28,8 @@ class DocumentosCobranzaController extends Controller
             $documentosgrupos->orderBy('alumno')->orderBy('producto')->orderBy('fecha');
         }
 
-        $documentos = $documentosgrupos->get();        
+        $documentos = $documentosgrupos->get();
+        // dd($documentos);
         $documentosAlumnosIncides = DB::table('documentos_cobranza')
             ->select('Alumno', DB::raw('COUNT(*) as Incide'))
             ->where('Fecha', '<=', $formatFecha)
@@ -44,7 +44,7 @@ class DocumentosCobranzaController extends Controller
             "indeces" => $documentosAlumnosIncides,
             "alumnos" => $alumnos,
         ];
-        
+
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'peticion satisfactoria | lista de Horarios');
         data_set($response, 'data', $data);
