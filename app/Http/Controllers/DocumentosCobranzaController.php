@@ -29,10 +29,10 @@ class DocumentosCobranzaController extends Controller
             $documentosgrupos->orderBy('alumno')->orderBy('producto')->orderBy('fecha');
         }
 
-        $documentos = $documentosgrupos->get();
+        $documentos = $documentosgrupos->get();        
         $documentosAlumnosIncides = DB::table('documentos_cobranza')
             ->select('Alumno', DB::raw('COUNT(*) as Incide'))
-            ->where('Fecha', '<=', $fecha)
+            ->where('Fecha', '<=', $formatFecha)
             ->where('Importe_Pago', 0)
             ->whereRaw('(Importe - (Importe * Descuento/100)) > 1')
             ->groupBy('Alumno')
@@ -44,6 +44,7 @@ class DocumentosCobranzaController extends Controller
             "indeces" => $documentosAlumnosIncides,
             "alumnos" => $alumnos,
         ];
+        
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'peticion satisfactoria | lista de Horarios');
         data_set($response, 'data', $data);
