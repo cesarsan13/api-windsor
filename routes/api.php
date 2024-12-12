@@ -38,6 +38,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ConcentradoCalificacionesController;
 use App\Http\Controllers\MenusController;
 use App\Http\Controllers\PropietarioController;
+use App\Http\Controllers\ReferenciaController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/recuperacion', [AuthController::class, 'recuperaContra']);
@@ -334,4 +335,12 @@ Route::middleware('auth:sanctum')->controller(PropietarioController::class)->gro
     Route::put('/propietario/configuracion/update', 'updateConfiguracion');
     Route::post('/propietario/configuracion/create', 'NuevaConfiguracion');
     Route::get('/propietario/configuracion/siguiente', 'siguienteConfiguracion');
+});
+
+Route::middleware('auth:sanctum')->controller(ReferenciaController::class)->group(function () {
+    Route::get('/referencia', 'index');
+    Route::get('/referencia/baja', 'indexBaja');
+    Route::post('/referencia/post', 'save');
+    Route::post('/referencia/update', 'update');
+    Route::get('/referencia/ultimo', 'siguiente');    
 });
