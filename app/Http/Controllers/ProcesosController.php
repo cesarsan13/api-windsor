@@ -33,17 +33,9 @@ class ProcesosController extends Controller
             $productos = DB::table('productos')->where('baja', '<>', '*')->get();
 
             foreach ($productos as $producto) {
-                $existeDocumento = DB::table('documentos_cobranza')
-                    ->where('ref', $producto->ref)
-                    ->exists();
-                if ($existeDocumento) {
-                    Log::info("Documento con ref: {$producto->ref} ya existe.");
-                    continue;
-                }
                 DB::table('documentos_cobranza')->where('producto', '=', $producto->numero)->update(
                     ['ref' => $producto->ref]
                 );
-
                 $cond_ant = $producto->numero;
             }
 
