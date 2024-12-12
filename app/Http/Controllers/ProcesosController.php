@@ -40,9 +40,8 @@ class ProcesosController extends Controller
                     Log::info("Documento con ref: {$producto->ref} ya existe.");
                     continue;
                 }
-                DB::table('documentos_cobranza')->update(
-                    ['ref' => $producto->ref],
-                    ['producto' => $producto->numero]
+                DB::table('documentos_cobranza')->where('producto', '=', $producto->numero)->update(
+                    ['ref' => $producto->ref]
                 );
 
                 $cond_ant = $producto->numero;
@@ -92,12 +91,12 @@ class ProcesosController extends Controller
                     // Log::info($alumnos);
                     foreach ($alumnos as $alumno) {
                         try {
-                            if (strtolower($alumno->estatus) === 'activo') {
+                            if (strtolower($alumno->estatus) === "activo") {
                                 $documentoExistente = DB::table('documentos_cobranza')
                                     ->where('alumno', '=', $alumno->numero)
                                     ->where('producto', '=', $producto->numero)
                                     ->where('numero_doc', '=', $periodo)
-                                    ->first();
+                                    ->exists();
                                 // Log::info($documentoExistente);
                                 if (!$documentoExistente) {
                                     $insertdoc = DB::table('documentos_cobranza')->insert([
