@@ -40,22 +40,24 @@ class CobranzaProductosController extends Controller
     }
 
 
-    public function infoDetallePedido($fecha1, $fecha2, $articulo , $artFin )
+    public function infoDetallePedido($fecha1, $fecha2, $articulo, $artFin)
     {
         DB::table('trab_rep_cobr')->delete();
         $fecha1 = $this->formatFechaString($fecha1);
         $fecha2 = $this->formatFechaString($fecha2);
-
+        // Log::info($fecha1);
+        // Log::info($fecha2);
         $Tsql = DB::table('detalle_pedido')
-            ->join('alumnos', 'detalle_pedido.articulo', '=', 'alumnos.numero')
+            ->leftJoin('alumnos', 'detalle_pedido.articulo', '=', 'alumnos.numero')
             ->whereBetween('fecha', [$fecha1, $fecha2]);
-        if (trim($articulo) !== '' || trim($artFin) !== '') {
+        if (trim($articulo) !== '' && trim($artFin) !== '') {
+            // Log::info("Entro");
             $Tsql->whereBetween('articulo', [$articulo, $artFin]);
         }
-        $Tsql->select('detalle_pedido.*', 'alumnos.nombre')->get();
-        $result = $Tsql->get();
+        $result = $Tsql->select('detalle_pedido.*', 'alumnos.nombre')->get();
+        // Log::info($result);
         $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'peticion satisfactoria | lista');
+        data_set($response, 'message', 'peticion satisfactoria');
         data_set($response, 'data', $result);
         return response()->json($response, $response['status_code']);
     }
@@ -93,7 +95,7 @@ class CobranzaProductosController extends Controller
         } else {
             $query->orderBy('articulo')->orderBy('alumno');
         }
-        $query->join('productos', 'trab_rep_cobr.articulo', '=', 'productos.numero');
+        $query->leftJoin('productos', 'trab_rep_cobr.articulo', '=', 'productos.numero');
         $query->select('trab_rep_cobr.*', 'productos.descripcion');
         $results = $query->get();
         // dd($query);
