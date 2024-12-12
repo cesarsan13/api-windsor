@@ -52,11 +52,10 @@ class ActCobranzaController extends Controller
             return response()->json($response, $response['status_code']);
         }
         if ($validator->fails()) {
-            Log::info('no valido');
-            $alert_text = "Ingrese bien los datos, no estas ingresando completamente todos los campos (no campos vacios).";
+            $alert_text = implode("<br>", $validator->messages()->all());
             $response = ObjectResponse::BadResponse($alert_text);
-            data_set($response, 'message', 'Informacion no valida');
-            data_set($response, 'data', $validator->errors()->all());
+            data_set($response, 'errors', $validator->errors());
+            data_set($response, 'alert_icon', 'error');
             return response()->json($response, $response['status_code']);
         }
         $datosFiltrados = $request->only([
@@ -84,10 +83,10 @@ class ActCobranzaController extends Controller
         $response = ObjectResponse::DefaultResponse();
         if ($validator->fails()) {
             Log::info('no valido');
-            $alert_text = "Ingrese bien los datos, no estas ingresando completamente todos los campos (no campos vacios).";
+            $alert_text = implode("<br>", $validator->messages()->all());
             $response = ObjectResponse::BadResponse($alert_text);
-            data_set($response, 'message', 'Informacion no valida');
-            data_set($response, 'data', $validator->errors()->all());
+            data_set($response, 'errors', $validator->errors());
+            data_set($response, 'alert_icon', 'error');
             return response()->json($response, $response['status_code']);
         }
         $actCobranza = DocsCobranza::where('alumno',$request->alumno)
