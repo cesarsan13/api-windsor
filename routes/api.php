@@ -42,6 +42,13 @@ use App\Http\Controllers\ReferenciaController;
 use App\Http\Middleware\SetDatabaseConnection;
 
 
+Route::controller(ProyectosController::class)->group(function () {
+    Route::post('/Cajero', 'PostCajeros');
+    Route::post('/Cajero/UpdateCajeros', 'UpdateCajeros');
+    Route::get('/Cajero/baja', 'indexBaja');
+    Route::get("/Cajero", "index");
+    Route::get("/Cajero/siguiente", "siguiente");
+});
 
 Route::get('/proyectos', function () {
     return response()->json([
