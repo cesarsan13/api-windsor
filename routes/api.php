@@ -158,13 +158,13 @@ Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(Al
     Route::post('/AlumnosPC/Lista', 'getListaHorario');
 });
 
-Route::post('/cobranza', [CobranzaController::class, 'PDF'])->middleware('auth:sanctum');
+Route::post('/cobranza', [CobranzaController::class, 'PDF'])->middleware([SetDatabaseConnection::class, 'auth:sanctum']);
 
 Route::controller(DocumentosCobranzaController::class)->group(function () {
-    Route::get('/documentoscobranza/{fecha}/{grupo?}', 'imprimir')->middleware(middleware: 'auth:sanctum');
-    Route::get('/documentoscobranza', 'get_Grupo_Cobranza')->middleware('auth:sanctum');
-    Route::put('/documentoscobranza/grupo', 'poner_Grupo_Cobranza')->middleware('auth:sanctum');
-    Route::post('/documentoscobranza/all', 'getCobranzaFiltrada')->middleware('auth:sanctum');
+    Route::get('/documentoscobranza/{fecha}/{grupo?}', 'imprimir')->middleware([SetDatabaseConnection::class, 'auth:sanctum']);
+    Route::get('/documentoscobranza', 'get_Grupo_Cobranza')->middleware([SetDatabaseConnection::class, 'auth:sanctum']);
+    Route::put('/documentoscobranza/grupo', 'poner_Grupo_Cobranza')->middleware([SetDatabaseConnection::class, 'auth:sanctum']);
+    Route::post('/documentoscobranza/all', 'getCobranzaFiltrada')->middleware([SetDatabaseConnection::class, 'auth:sanctum']);
 });
 Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(CobranzaProductosController::class)->group(function () {
     Route::get('/cobranzaProducto/{fecha1}/{fecha2}/{articulo?}/{artFin?}', 'infoDetallePedido');
@@ -278,7 +278,7 @@ Route::controller(MailController::class)->group(function () {
     Route::post('send-mail', 'index');
 });
 Route::post("/register", [RegisterController::class, 'register']);
-Route::middleware('auth:sanctum')->controller(CalificacionesController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(CalificacionesController::class)->group(function () {
     Route::post('/calificaciones/materias', 'getMaterias');
     Route::post('/calificaciones', 'getCalificacionesMateria');
 });
