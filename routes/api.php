@@ -65,7 +65,7 @@ Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(Ti
 });
 
 //Cajeros
-Route::middleware('auth:sanctum')->controller(CajeroController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(CajeroController::class)->group(function () {
     Route::post('/Cajero', 'PostCajeros');
     Route::post('/Cajero/UpdateCajeros', 'UpdateCajeros');
     Route::get('/Cajero/baja', 'indexBaja');
@@ -74,7 +74,7 @@ Route::middleware('auth:sanctum')->controller(CajeroController::class)->group(fu
 });
 
 //FormFact
-Route::middleware('auth:sanctum')->controller(FormFactController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(FormFactController::class)->group(function () {
     Route::post('/FormFact', 'PostFormFact');
     Route::post('/FormFact/UpdateFormFact', 'UpdateFormFact');
     Route::get('/FormFact/baja', 'indexBaja');
@@ -83,7 +83,7 @@ Route::middleware('auth:sanctum')->controller(FormFactController::class)->group(
 });
 
 //Asignaturas
-Route::middleware('auth:sanctum')->controller(AsignaturasController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(AsignaturasController::class)->group(function () {
     Route::get('/subject/filter/{type}/{value}', 'subjectFilter');
     Route::get('/subject', 'showSubject');
     Route::get('/subject/caso-otro', 'showSubjectCasoEvaluarOtro');
@@ -98,7 +98,7 @@ Route::middleware('auth:sanctum')->controller(AsignaturasController::class)->gro
 //     Route::get("/RepDosSel/siguiente", "siguiente");
 // });
 
-Route::middleware('auth:sanctum')->controller(ProductoController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(ProductoController::class)->group(function () {
     Route::get('/product', 'showProduct');
     Route::get('/product/filter/{type}/{value}', 'productFilter');
     Route::get('/product/last', 'lastProduct');
@@ -107,7 +107,7 @@ Route::middleware('auth:sanctum')->controller(ProductoController::class)->group(
     Route::put('/product/update/{numero}', 'updateProduct');
 });
 
-Route::middleware('auth:sanctum')->controller(AlumnoController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(AlumnoController::class)->group(function () {
     Route::get('/students/datasex/', 'dataAlumSex');
     Route::get('/students/imagen/{imagen}', 'showImageStudents');
     Route::get('/students', 'showAlumn');
@@ -123,19 +123,19 @@ Route::middleware('auth:sanctum')->controller(AlumnoController::class)->group(fu
     Route::get('/students/cicloEscolar', 'getCicloAlumnos');
 });
 
-Route::middleware('auth:sanctum')->controller(ComentariosController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(ComentariosController::class)->group(function () {
     Route::get("/comentarios", "index");
     Route::get("/comentarios/baja", "indexBaja");
     Route::get("/comentarios/siguiente", "siguiente");
     Route::post('/comentarios', 'store');
     Route::post('/comentarios/update', 'update');
 });
-Route::middleware('auth:sanctum')->controller(FacturasFormatoController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(FacturasFormatoController::class)->group(function () {
     Route::get("/facturasformato/{id}", "index");
     Route::post("/facturasformato/update", "updateFormato");
 });
 
-Route::middleware('auth:sanctum')->controller(HorarioController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(HorarioController::class)->group(function () {
     Route::get('/horarios', 'getHorarios');
     Route::get('/horarios/baja', 'getHorariosBaja');
     Route::post('/horarios/post', 'postHorario');
@@ -144,7 +144,7 @@ Route::middleware('auth:sanctum')->controller(HorarioController::class)->group(f
     Route::get('/horarios/alumnosxhorario', 'getAlumnosXHorario');
 });
 
-Route::middleware('auth:sanctum')->controller(AlumnosPorClaseController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(AlumnosPorClaseController::class)->group(function () {
     Route::get('/AlumnosPC/HorariosAPC', 'getHorariosAPC');
     Route::get('/AlumnosPC/Lista/{idHorario1}/{idHorario2}/{orden}', 'UpdateRepDosSel');
     Route::get('/AlumnosPC/Lista/{idHorario}/{orden}', 'getListaHorariosAPC');
@@ -159,14 +159,14 @@ Route::controller(DocumentosCobranzaController::class)->group(function () {
     Route::put('/documentoscobranza/grupo', 'poner_Grupo_Cobranza')->middleware('auth:sanctum');
     Route::post('/documentoscobranza/all', 'getCobranzaFiltrada')->middleware('auth:sanctum');
 });
-Route::middleware('auth:sanctum')->controller(CobranzaProductosController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(CobranzaProductosController::class)->group(function () {
     Route::get('/cobranzaProducto/{fecha1}/{fecha2}/{articulo?}/{artFin?}', 'infoDetallePedido');
     Route::get('/cobranzaProductos/{porNombre?}', 'infoTrabRepCobr');
     Route::post('/cobranzaProducto/insert', 'insertTrabRepCobr');
 });
 
 
-Route::middleware('auth:sanctum')->controller(ReportesController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(ReportesController::class)->group(function () {
     Route::post("/reportes/rep_femac_13", "getAlumnosPorClaseSemanal");
     Route::post("/reportes/rep_femac_8_anexo_1", "getRelaciondeRecibos");
     Route::post("/reportes/rep_femac_2", "getAlumnosPorClase");
@@ -180,7 +180,7 @@ Route::middleware('auth:sanctum')->controller(ReportesController::class)->group(
     Route::post("/reportes/rep_femac_4", "getCredencial");
 });
 
-Route::middleware('auth:sanctum')->controller(Pagos1Controller::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(Pagos1Controller::class)->group(function () {
     Route::post("/pagos1/validar-clave-cajero", "validarClaveCajero");
     Route::post("/pagos1/buscar-articulo", "buscarArticulo");
     Route::post("/pagos1/busca-documentos", "buscaDocumentosCobranza");
@@ -191,12 +191,12 @@ Route::middleware('auth:sanctum')->controller(Pagos1Controller::class)->group(fu
     Route::post("/pagos1/busca-doc-cobranza", "obtenerDocumentosCobranza");
 });
 
-Route::middleware('auth:sanctum')->controller(EstadisticasController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(EstadisticasController::class)->group(function () {
     Route::get('/estadisticas-total-home', 'obtenerEstadisticas');
     Route::get('/estadisticas-cajero-mes-home', 'mesActualCajeros');
 });
 
-Route::middleware('auth:sanctum')->controller(ProcesosController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(ProcesosController::class)->group(function () {
     Route::post('/cartera/proceso', 'procesoCartera');
     Route::get('/cartera/actualizar', 'actualizarDocumentoCartera');
     Route::post('/cancelacion-recibo', 'cancelarRecibo');
@@ -218,7 +218,7 @@ Route::middleware('auth:sanctum')->controller(ProcesosController::class)->group(
     Route::post('/proceso/datos-por-grupo', 'getDatosPorGrupo');
 });
 
-Route::middleware('auth:sanctum')->controller(ProfesoresController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(ProfesoresController::class)->group(function () {
     Route::get('/profesores/index', 'index');
     Route::get('/profesores/index-baja', 'indexBaja');
     Route::get('/profesores/siguiente', 'siguiente');
@@ -226,23 +226,23 @@ Route::middleware('auth:sanctum')->controller(ProfesoresController::class)->grou
     Route::post('/profesores/save', 'save');
 });
 
-Route::middleware('auth:sanctum')->controller(GruposController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(GruposController::class)->group(function () {
     Route::get('/grupos/index', 'index');
     Route::get('/grupos/index-baja', 'indexBaja');
 });
 
-Route::middleware('auth:sanctum')->controller(AdeudosPendientesController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(AdeudosPendientesController::class)->group(function () {
     Route::post('/documentosCobranza', 'getDetallePedidos');
 });
 
-Route::middleware('auth:sanctum')->controller(ClasesController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(ClasesController::class)->group(function () {
     Route::post('/clase', 'postClases');
     Route::post('/clase/updateClases', 'updateClases');
     Route::get('/clase/baja', 'indexBaja');
     Route::get("/clase", "index");
 });
 
-Route::middleware('auth:sanctum')->controller(ActividadController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(ActividadController::class)->group(function () {
     Route::get('/actividades/get', 'getActividades');
     Route::get('/actividades/baja', 'getActividadesBaja');
     Route::post('/actividades/post', 'postActividad');
@@ -250,14 +250,14 @@ Route::middleware('auth:sanctum')->controller(ActividadController::class)->group
     Route::post('/actividades/ultimaSecuencia', 'ultimaSecuencia');
 });
 
-Route::middleware('auth:sanctum')->controller(ActCobranzaController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(ActCobranzaController::class)->group(function () {
     Route::post('/act-cobranza/doc-alumno', 'getDocumentosAlumno');
     Route::post('/act-cobranza/post', 'postActCobranza');
     Route::post('/act-cobranza/update', 'updateActCobranza');
     Route::post('/act-cobranza/delete', 'deleteActCobranza');
 });
 
-Route::middleware('auth:sanctum')->controller(UsuarioController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(UsuarioController::class)->group(function () {
     Route::get('/usuario/get', 'GetUsuarios');
     Route::get('/usuario/baja', 'GetUsuariosBaja');
     Route::post('/usuario/update', 'update');
@@ -276,7 +276,7 @@ Route::middleware('auth:sanctum')->controller(CalificacionesController::class)->
     Route::post('/calificaciones', 'getCalificacionesMateria');
 });
 
-Route::middleware('auth:sanctum')->controller(ConcentradoCalificacionesController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(ConcentradoCalificacionesController::class)->group(function () {
     Route::get('/concentradoCalificaciones/ActividadesReg', 'getActividadesReg');
     //Route::get('/concentradoCalificaciones/MateriasReg', 'getMateriasReg');
     Route::get('/concentradoCalificaciones/MateriasReg/{idHorario}', 'getMateriasReg');
@@ -286,7 +286,7 @@ Route::middleware('auth:sanctum')->controller(ConcentradoCalificacionesControlle
     Route::get('/concentradoCalificaciones/detallesGrupoGeneral/{idHorario}/{idBimestre}', 'getInfoActividadesXGrupo');
     Route::get('/concentradoCalificaciones/actividadesMateria/{idMateria}', 'getActividadesPorMateria');
 });
-Route::middleware('auth:sanctum')->controller(AccesosMenuController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(AccesosMenuController::class)->group(function () {
     Route::get('/accesos-menu/get', 'index');
     Route::get('/accesos-menu/baja', 'indexBaja');
     Route::get('/accesos-menu/siguiente', 'siguiente');
@@ -294,7 +294,7 @@ Route::middleware('auth:sanctum')->controller(AccesosMenuController::class)->gro
     Route::put('/accesos-menu/update', 'update');
 });
 
-Route::middleware('auth:sanctum')->controller(MenusController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(MenusController::class)->group(function () {
     Route::get('/menu/get', 'index');
     Route::get('/menu/baja', 'indexBaja');
     Route::get('/menu/siguiente', 'siguiente');
@@ -302,13 +302,13 @@ Route::middleware('auth:sanctum')->controller(MenusController::class)->group(fun
     Route::put('/menu/update', 'update');
 });
 
-Route::middleware('auth:sanctum')->controller(CalificacionesController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(CalificacionesController::class)->group(function () {
     Route::post('/calificaciones/materias', 'getMaterias');
     Route::post('/calificaciones', 'getCalificacionesMateria');
     Route::post('/calificaciones/new', 'getNewCalificacionesMateria');
     Route::post('/calificaciones/alumnosArea1', 'getCalificacionesAlumnosArea1');
 });
-Route::middleware('auth:sanctum')->controller(AccesosMenuController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(AccesosMenuController::class)->group(function () {
     Route::get('/accesos-menu/get', 'index');
     Route::get('/accesos-menu/baja', 'indexBaja');
     Route::get('/accesos-menu/siguiente', 'siguiente');
@@ -316,32 +316,32 @@ Route::middleware('auth:sanctum')->controller(AccesosMenuController::class)->gro
     Route::put('/accesos-menu/update', 'update');
 });
 
-Route::middleware('auth:sanctum')->controller(CalificacionesController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(CalificacionesController::class)->group(function () {
     Route::post('/calificaciones/materias', 'getMaterias');
     Route::post('/calificaciones', 'getCalificacionesMateria');
     Route::post('/calificaciones/new', 'getNewCalificacionesMateria');
     Route::post('/calificaciones/alumnosArea1', 'getCalificacionesAlumnosArea1');
 });
 
-Route::middleware('auth:sanctum')->controller(CobranzaController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(CobranzaController::class)->group(function () {
     Route::post('/cobranzaDiaria', 'getCobranza');
     Route::post('/cobranzaDiaria/update', 'updateCobranza');
 });
 
-Route::middleware('auth:sanctum')->controller(Aplicacion1Controller::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(Aplicacion1Controller::class)->group(function () {
     Route::get('/aplicacion1', 'index');
     Route::get('/aplicacion1/siguiente', 'siguiente');
     Route::post('/aplicacion1/post', 'postAplicacion1');
     Route::post('/aplicacion1/update', 'updateAplicacion1');
 });
 
-Route::middleware('auth:sanctum')->controller(AccesoUsuarioController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(AccesoUsuarioController::class)->group(function () {
     Route::post('/accesoUsuario', 'index');
     Route::post('/accesoUsuario/update', 'update');
     Route::post('/accesoUsuario/actualizaTodo', 'actualizaTodo');
 });
 
-Route::middleware('auth:sanctum')->controller(PropietarioController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(PropietarioController::class)->group(function () {
     Route::get('/propietario', 'getPropietario');
     Route::get('/propietario/configuracion', 'getConfiguracion');
     Route::put('/propietario/update', 'updatePropietario');
@@ -350,7 +350,7 @@ Route::middleware('auth:sanctum')->controller(PropietarioController::class)->gro
     Route::get('/propietario/configuracion/siguiente', 'siguienteConfiguracion');
 });
 
-Route::middleware('auth:sanctum')->controller(ReferenciaController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(ReferenciaController::class)->group(function () {
     Route::get('/referencia', 'index');
     Route::get('/referencia/baja', 'indexBaja');
     Route::post('/referencia/post', 'save');
