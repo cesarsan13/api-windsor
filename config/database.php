@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'sqlite'),
+    'default' => env('DB_CONNECTION', 'mysql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -30,15 +30,6 @@ return [
     */
 
     'connections' => [
-
-        'sqlite' => [
-            'driver' => 'sqlite',
-            'url' => env('DB_URL'),
-            'database' => env('DB_DATABASE', database_path('database.sqlite')),
-            'prefix' => '',
-            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
-        ],
-
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),
@@ -58,6 +49,52 @@ return [
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
+        'GKPIFG>@FE' => [
+            'driver' => 'mysql',
+            'url' => env('DB_URL_1'),
+            'host' => env('DB_HOST_1', '127.0.0.1'),
+            'port' => env('DB_PORT_1', '3306'),
+            'database' => env('DB_DATABASE_1', 'laravel'),
+            'username' => env('DB_USERNAME_1', 'root'),
+            'password' => env('DB_PASSWORD_1', ''),
+            'unix_socket' => env('DB_SOCKET_1', ''),
+            'charset' => env('DB_CHARSET_1', 'utf8mb4'),
+            'collation' => env('DB_COLLATION_1', 'utf8mb4_unicode_ci'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+        'GIPIKHCDGE' => [
+            'driver' => 'mysql',
+            'url' => env('DB_URL_2'),
+            'host' => env('DB_HOST_2', '127.0.0.1'),
+            'port' => env('DB_PORT_2', '3306'),
+            'database' => env('DB_DATABASE_2', 'laravel'),
+            'username' => env('DB_USERNAME_2', 'root'),
+            'password' => env('DB_PASSWORD_2', ''),
+            'unix_socket' => env('DB_SOCKET_2', ''),
+            'charset' => env('DB_CHARSET_2', 'utf8mb4'),
+            'collation' => env('DB_COLLATION_2', 'utf8mb4_unicode_ci'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+        'sqlite' => [
+            'driver' => 'sqlite',
+            'url' => env('DB_URL'),
+            'database' => env('DB_DATABASE', database_path('database.sqlite')),
+            'prefix' => '',
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+        ],
+
 
         'mariadb' => [
             'driver' => 'mariadb',
@@ -144,7 +181,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
         ],
 
         'default' => [

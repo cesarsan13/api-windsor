@@ -161,7 +161,7 @@ Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(Al
 Route::post('/cobranza', [CobranzaController::class, 'PDF'])->middleware('auth:sanctum');
 
 Route::controller(DocumentosCobranzaController::class)->group(function () {
-    Route::get('/documentoscobranza/{fecha}/{grupo?}', 'imprimir')->middleware('auth:sanctum');
+    Route::get('/documentoscobranza/{fecha}/{grupo?}', 'imprimir')->middleware(middleware: 'auth:sanctum');
     Route::get('/documentoscobranza', 'get_Grupo_Cobranza')->middleware('auth:sanctum');
     Route::put('/documentoscobranza/grupo', 'poner_Grupo_Cobranza')->middleware('auth:sanctum');
     Route::post('/documentoscobranza/all', 'getCobranzaFiltrada')->middleware('auth:sanctum');

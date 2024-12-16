@@ -42,6 +42,7 @@ class AuthController extends Controller
                 $response = ObjectResponse::CatchResponse("Credenciales incorrectas");
                 return response()->json($response, 404);
             }
+            session(['escuela' => $request->xEscuela]);
             $token = $user->createToken($request->email, ['user'])->plainTextToken;
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'peticion satisfactoria | usuario logueado');
