@@ -25,6 +25,7 @@ class SetDatabaseConnection
         if (!isset($connections[$escuela])) {
             return response()->json(['error' => 'Configuración de la base de datos no encontrada'], 404);
         }
+        $conexion =[];
         // Establece la conexión
         Config::set('database.default', $escuela);
         DB::purge(); // Limpia conexiones previas para evitar conflictos
