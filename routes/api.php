@@ -19,6 +19,7 @@ use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ComentariosController;
 use App\Http\Controllers\AlumnosPorClaseController;
 use App\Http\Controllers\Aplicacion1Controller;
+use App\Http\Controllers\BasesDatosController;
 use App\Http\Controllers\CalificacionesController;
 use App\Http\Controllers\ClasesController;
 use App\Http\Controllers\CobranzaController;
@@ -343,4 +344,10 @@ Route::middleware('auth:sanctum')->controller(ReferenciaController::class)->grou
     Route::post('/referencia/post', 'save');
     Route::post('/referencia/update', 'update');
     Route::get('/referencia/ultimo', 'siguiente');    
+});
+
+Route::controller(BasesDatosController::class)->group(function (){
+    Route::get('/basesDatos','index');
+    Route::post('/basesDatos/post','save');
+    Route::post('/basesDatos/update','update');
 });
