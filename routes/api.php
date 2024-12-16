@@ -39,6 +39,7 @@ use App\Http\Controllers\ConcentradoCalificacionesController;
 use App\Http\Controllers\MenusController;
 use App\Http\Controllers\PropietarioController;
 use App\Http\Controllers\ReferenciaController;
+use App\Http\Middleware\SetDatabaseConnection;
 
 
 
@@ -49,10 +50,13 @@ Route::get('/proyectos', function () {
     ]);
 });
 
-Route::post('/login', [AuthController::class, 'login']);
+Route::middleware([SetDatabaseConnection::class])->controller(AuthController::class)->group(function () {
+    Route::post('/login', 'login');
+});
+
 Route::post('/recuperacion', [AuthController::class, 'recuperaContra']);
 
-Route::middleware('auth:sanctum')->controller(TipoCobroController::class)->group(function () {
+Route::middleware([SetDatabaseConnection::class, 'auth:sanctum'])->controller(TipoCobroController::class)->group(function () {
     Route::get("/tipo_cobro", "index");
     Route::get("/tipo_cobro/baja", "indexBaja");
     Route::get("/tipo_cobro/siguiente", "siguiente");
