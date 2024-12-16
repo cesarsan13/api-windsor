@@ -91,6 +91,7 @@ class DocumentosCobranzaController extends Controller
     public function getCobranzaFiltrada(Request $request)
     {
         $fechaInicial = $request->input('fecha_inicial');
+        $formatFecha = str_replace("-", "/", $fechaInicial);
         $alumnoIni = $request->input('alumno_ini');
         $alumnoFin = $request->input('alumno_fin');
         $sinDeudores = $request->input('sin_deudores', 0);
@@ -110,7 +111,7 @@ class DocumentosCobranzaController extends Controller
                 'documentos_cobranza.descuento',
                 DB::raw('((documentos_cobranza.importe - documentos_cobranza.importe_pago) - (documentos_cobranza.importe * documentos_cobranza.descuento / 100)) AS tw_saldo')
             )
-            ->where('documentos_cobranza.fecha', '<=', $fechaInicial)
+            ->where('documentos_cobranza.fecha', '<=', $formatFecha)
             ->whereRaw('((documentos_cobranza.importe - documentos_cobranza.importe_pago) - (documentos_cobranza.importe * documentos_cobranza.descuento / 100)) > 1')
             ->where(function ($query) use ($alumnoIni, $alumnoFin) {
                 $query->whereBetween('documentos_cobranza.alumno', [$alumnoIni, $alumnoFin])

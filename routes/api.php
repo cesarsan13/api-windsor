@@ -40,6 +40,15 @@ use App\Http\Controllers\MenusController;
 use App\Http\Controllers\PropietarioController;
 use App\Http\Controllers\ReferenciaController;
 
+
+
+Route::get('/proyectos', function () {
+    return response()->json([
+        ['id' => 'GKPIFG>@FE', 'nombre' => 'Escuela Local'],
+        ['id' => 'GIPIKHCDGE', 'nombre' => 'COLEGIO NUEVA VISION'],
+    ]);
+});
+
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/recuperacion', [AuthController::class, 'recuperaContra']);
 
@@ -323,9 +332,9 @@ Route::middleware('auth:sanctum')->controller(Aplicacion1Controller::class)->gro
 });
 
 Route::middleware('auth:sanctum')->controller(AccesoUsuarioController::class)->group(function () {
-    Route::post('/accesoUsuario','index');
-    Route::post('/accesoUsuario/update','update');  
-    Route::post('/accesoUsuario/actualizaTodo','actualizaTodo');
+    Route::post('/accesoUsuario', 'index');
+    Route::post('/accesoUsuario/update', 'update');
+    Route::post('/accesoUsuario/actualizaTodo', 'actualizaTodo');
 });
 
 Route::middleware('auth:sanctum')->controller(PropietarioController::class)->group(function () {
@@ -342,5 +351,5 @@ Route::middleware('auth:sanctum')->controller(ReferenciaController::class)->grou
     Route::get('/referencia/baja', 'indexBaja');
     Route::post('/referencia/post', 'save');
     Route::post('/referencia/update', 'update');
-    Route::get('/referencia/ultimo', 'siguiente');    
+    Route::get('/referencia/ultimo', 'siguiente');
 });
