@@ -30,6 +30,25 @@ return [
     */
 
     'connections' => [
+        'dynamic' => [
+            'driver' => 'mysql',
+            'url' => env('DB_URL'),
+            'host' => env('DB_HOST'),
+            'port' => env('DB_PORT'),
+            'database' => env('DB_DATABASE'),
+            'username' => env('DB_USERNAME'),
+            'password' => env('DB_PASSWORD'),
+            'unix_socket' => env('DB_SOCKET'),
+            'charset' => env('DB_CHARSET'),
+            'collation' => env('DB_COLLATION'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),
@@ -41,25 +60,6 @@ return [
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => env('DB_CHARSET', 'utf8mb4'),
             'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
-            'prefix' => '',
-            'prefix_indexes' => true,
-            'strict' => true,
-            'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
-        ],
-        'GKPIFG>@FE' => [
-            'driver' => 'mysql',
-            'url' => env('DB_URL_1'),
-            'host' => env('DB_HOST_1', '127.0.0.1'),
-            'port' => env('DB_PORT_1', '3306'),
-            'database' => env('DB_DATABASE_1', 'laravel'),
-            'username' => env('DB_USERNAME_1', 'root'),
-            'password' => env('DB_PASSWORD_1', ''),
-            'unix_socket' => env('DB_SOCKET_1', ''),
-            'charset' => env('DB_CHARSET_1', 'utf8mb4'),
-            'collation' => env('DB_COLLATION_1', 'utf8mb4_unicode_ci'),
             'prefix' => '',
             'prefix_indexes' => true,
             'strict' => true,
