@@ -21,11 +21,11 @@ class AuthController extends Controller
             $validator = Validator::make($request->all(), [
                 'email' => 'required',
                 'password' => 'required',
-                'xEscuela' => 'required',
+                'xescuela' => 'required',
             ], [
                 'email.required' => 'El campo "Nombre" es obligatorio',
                 'password.required' => 'El campo "Contraseña" es obligatorio',
-                'xEscuela.required' => 'Es obligatorio seleccionar una escuela',
+                'xescuela.required' => 'Es obligatorio seleccionar una escuela',
             ]);
 
             if ($validator->fails()) {

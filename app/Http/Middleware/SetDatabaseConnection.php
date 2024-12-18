@@ -18,9 +18,10 @@ class SetDatabaseConnection
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $escuela = $request->xEscuela ?? session("xEscuela");
+
+        $escuela = (int) $request->xescuela === 0 ? (int) $request->header('xescuela') : (int) $request->xescuela;
         if (!$escuela) {
-            return response()->json(["error" => "Escuela no Seleccionda"]);
+            return response()->json(["error" => "Escuela no Seleccionduca"]);
         }
         try {
             DB::purge('dynamic');
@@ -41,7 +42,7 @@ class SetDatabaseConnection
                 ]);
                 Config::set('database.default', 'dynamic');
                 DB::reconnect('dynamic');
-                session(['xEscuela' => $escuela]);
+
             }
         } catch (\Exception $ex) {
             return response()->json([
