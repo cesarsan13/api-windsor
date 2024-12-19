@@ -62,8 +62,13 @@ Route::middleware([SetDatabaseConnection::class])->controller(AuthController::cl
     Route::post('/login', 'login');
 });
 
-Route::post('/recuperacion', [AuthController::class, 'recuperaContra']);
 
+Route::middleware([SetDatabaseConnection::class])->controller(AuthController::class)->group(function () {
+    Route::post('/login', 'login');
+    Route::post('/recuperacion', 'recuperaContra');
+});
+
+//Route::post('/recuperacion', [AuthController::class, 'recuperaContra']);
 
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(TipoCobroController::class)->group(function () {
     Route::get("/tipo_cobro", "index");
@@ -279,7 +284,9 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
 Route::controller(MailController::class)->group(function () {
     Route::post('send-mail', 'index');
 });
+
 Route::post("/register", [RegisterController::class, 'register']);
+
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(CalificacionesController::class)->group(function () {
     Route::post('/calificaciones/materias', 'getMaterias');
     Route::post('/calificaciones', 'getCalificacionesMateria');
