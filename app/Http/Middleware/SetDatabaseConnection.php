@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 use App\Models\BasesDatos;
 class SetDatabaseConnection
 {
@@ -27,7 +28,21 @@ class SetDatabaseConnection
             DB::purge('dynamic');
             Config::set('database.default', 'mysql');
             DB::reconnect('mysql');
-            $configuracion = BasesDatos::where('id', $escuela)->where('proyecto', 'control_escolar')->first();
+            $apiUrl = env("API_PROYECTOS_URL");
+            $response = Http::get($apiUrl ."api/basesDatos/{$escuela}/control_escolar");
+            // $configuracion = BasesDatos::where('id', $escuela)->where('proyecto', 'control_escolar')->first();
+            
+            if ($response->successful()) {
+                $data = $response->json(); 
+                if (isset($data['data'][0])) {
+                    $configuracion = (object) $data['data'][0]; // Convierte el primer elemento a un objeto
+                } else {
+                    return response()->json(["error" => "Datos de configuración no encontrados"], 500);
+                }
+            } else {
+                Log::error('Error al llamar a la API 8001', ['status' => $response->status()]);
+                
+            }
             if ($configuracion) {
                 DB::purge('dynamic');
                 Config::set("database.connections.dynamic", [
@@ -42,7 +57,7 @@ class SetDatabaseConnection
                 ]);
                 Config::set('database.default', 'dynamic');
                 DB::reconnect('dynamic');
-
+                
             }
         } catch (\Exception $ex) {
             return response()->json([
