@@ -62,6 +62,12 @@ Route::middleware([SetDatabaseConnection::class])->controller(AuthController::cl
     Route::post('/login', 'login');
 });
 
+Route::middleware([SetDatabaseConnection::class])->controller(RegisterController::class)->group(function () {
+    Route::post('/register', 'register');
+});
+
+// Route::post("/register", [RegisterController::class, 'register']);
+
 Route::post('/recuperacion', [AuthController::class, 'recuperaContra']);
 
 
@@ -279,7 +285,6 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
 Route::controller(MailController::class)->group(function () {
     Route::post('send-mail', 'index');
 });
-Route::post("/register", [RegisterController::class, 'register']);
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(CalificacionesController::class)->group(function () {
     Route::post('/calificaciones/materias', 'getMaterias');
     Route::post('/calificaciones', 'getCalificacionesMateria');
@@ -366,4 +371,3 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::post('/referencia/update', 'update');
     Route::get('/referencia/ultimo', 'siguiente');
 });
-
