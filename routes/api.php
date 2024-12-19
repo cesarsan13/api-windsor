@@ -62,14 +62,15 @@ Route::middleware([SetDatabaseConnection::class])->controller(AuthController::cl
     Route::post('/login', 'login');
 });
 
+
 Route::middleware([SetDatabaseConnection::class])->controller(RegisterController::class)->group(function () {
     Route::post('/register', 'register');
 });
 
-// Route::post("/register", [RegisterController::class, 'register']);
-
-Route::post('/recuperacion', [AuthController::class, 'recuperaContra']);
-
+Route::middleware([SetDatabaseConnection::class])->controller(AuthController::class)->group(function () {
+    Route::post('/login', 'login');
+    Route::post('/recuperacion', 'recuperaContra');
+});
 
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(TipoCobroController::class)->group(function () {
     Route::get("/tipo_cobro", "index");
