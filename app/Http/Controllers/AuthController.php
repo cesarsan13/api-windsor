@@ -34,14 +34,12 @@ class AuthController extends Controller
             $user = User::where('email', $request->email)
                 ->where('baja', "<>", "*")
                 ->first();
-            $access = Acceso_Usuario::where('id_usuario', '=', $user->id)->get();
-            // Log::info($access);
-            $user->permissions = $access;
-            // Log::info($user);
             if (!$user || !Hash::check($request->password, $user->password)) {
                 $response = ObjectResponse::CatchResponse("Credenciales incorrectas");
                 return response()->json($response, 404);
             }
+            $access = Acceso_Usuario::where('id_usuario', '=', $user->id)->get();
+            $user->permissions = $access;
             session(['escuela' => $request->xEscuela]);
             $token = $user->createToken($request->email, ['user'])->plainTextToken;
             $response = ObjectResponse::CorrectResponse();
@@ -50,6 +48,7 @@ class AuthController extends Controller
             data_set($response, 'data', $user);
             return response()->json($response, $response['status_code']);
         } catch (\Exception $ex) {
+            dd($ex->getMessage());
             $response = ObjectResponse::CatchResponse($ex);
             return response()->json($response, $response['status_code']);
             //throw $th;
