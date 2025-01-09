@@ -43,6 +43,7 @@ use App\Http\Controllers\MenusController;
 use App\Http\Controllers\PropietarioController;
 use App\Http\Controllers\ReferenciaController;
 use App\Http\Middleware\SetDatabaseConnection;
+use App\Http\Controllers\EstructurasController;
 
 
 
@@ -52,6 +53,13 @@ use App\Http\Middleware\SetDatabaseConnection;
 //         ['id' => 'GIPIKHCDGE', 'nombre' => 'COLEGIO NUEVA VISION'],
 //     ]);
 // });
+
+
+Route::controller(EstructurasController::class)->group(function () {
+    Route::post('/runMigrations', 'runMigrations');
+
+});
+
 Route::middleware(SetDefaultConnection::class)->controller(BasesDatosController::class)->group(function () {
     Route::get('/basesDatos', 'index');
     Route::post('/basesDatos/post', 'save');

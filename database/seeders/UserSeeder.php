@@ -18,29 +18,17 @@ class UserSeeder extends Seeder
 
 
         $registros = [
-            [
-                'id' => 2,
-                'name' => 'alfonso',
-                'email' => 'alfonso@gmail.com',
-                'numero_prop' => 1,
-                'password' => Hash::make('123'),
-            ],
+
             [
                 'id' => 1,
-                'nombre'=>'Bernando Fernandez Fernandez',
+                'nombre' => 'Bernando Fernandez Fernandez',
                 'name' => 'Bernando',
                 'email' => 'bff@inter-op.com.mx',
                 'numero_prop' => 1,
                 'password' => Hash::make('B150958m'),
                 'es_admin' => true,
             ],
-            [
-                'id' => 3,
-                'name' => 'martha',
-                'email' => 'martha@gmail.com',
-                'numero_prop' => 1,
-                'password' => Hash::make('madt'),
-            ],
+
 
         ];
         foreach ($registros as $registro) {

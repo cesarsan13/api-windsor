@@ -830,23 +830,23 @@ class AlumnoController extends Controller
             $alumno2 = Alumno::find($request->numero_ant);
             $alumno2->numero = $request->numero_nuev ?? '';
             $alumno2->save();
-    
+
             DB::table('detalle_pedido')
                 ->where('alumno', $request->numero_ant)
                 ->update(['alumno' => $request->numero_nuev ?? '']);
-    
+
             DB::table('cobranza_diaria')
                 ->where('alumno', $request->numero_ant)
                 ->update(['alumno' => $request->numero_nuev ?? '']);
-    
+
             DB::table('encab_pedido')
                 ->where('alumno', $request->numero_ant)
                 ->update(['alumno' => $request->numero_nuev ?? '']);
-            
+
             DB::table('documentos_cobranza')
                 ->where('alumno', $request->numero_ant)
                 ->update(['alumno' => $request->numero_nuev ?? '']);
-            
+
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'Petición satisfactoria | Se actualizo el numero.');
             data_set($response, 'alert_text', 'Se actualizo el numero del alumno');
@@ -859,7 +859,7 @@ class AlumnoController extends Controller
             data_set($response, 'data', $ex);
             return response()->json($response, $response['status_code']);
         }
-       
+
     }
     public function cambiarCicloAlumnos(Request $request)
     {
@@ -883,7 +883,7 @@ class AlumnoController extends Controller
     {
         $ciclo = Alumno::select('ciclo_escolar')->first();
         $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'data', $ciclo);
+        data_set($response, 'data', $ciclo ?? 0);
         data_set($response, 'message', 'Petición satisfactoria | Cumpleañeros del mes.');
         return response()->json($response, $response['status_code']);
     }
@@ -1012,20 +1012,20 @@ class AlumnoController extends Controller
             $destinationPath = "images/alumnos";
             $imageName = $image->getClientOriginalName();
             $fechaHoraSeg = now()->format('Ymd_His');
-            $fullPath = $destinationPath . '/' . $fechaHoraSeg .'_' .$imageName;
+            $fullPath = $destinationPath . '/' . $fechaHoraSeg . '_' . $imageName;
             $fullPath = $imageName;
-            if(trim($alumno->ruta_foto) != ""){ 
-                if (file_exists(public_path($destinationPath . '/' .$alumno->ruta_foto))) { 
-                    unlink(public_path($destinationPath . '/' .$alumno->ruta_foto));
+            if (trim($alumno->ruta_foto) != "") {
+                if (file_exists(public_path($destinationPath . '/' . $alumno->ruta_foto))) {
+                    unlink(public_path($destinationPath . '/' . $alumno->ruta_foto));
                 }
             }
-            
+
             if (file_exists(public_path($fullPath))) {
                 $alumno->ruta_foto = $fullPath;
             } else {
-                $uploadSuccess = $image->move($destinationPath, $fechaHoraSeg .'_'. $imageName);
+                $uploadSuccess = $image->move($destinationPath, $fechaHoraSeg . '_' . $imageName);
                 // $alumno->ruta_foto = $fullPath;
-                $alumno->ruta_foto = $fechaHoraSeg .'_'. $imageName;
+                $alumno->ruta_foto = $fechaHoraSeg . '_' . $imageName;
             }
             $alumno->save();
             $response = ObjectResponse::CorrectResponse();
