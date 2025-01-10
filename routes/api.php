@@ -90,7 +90,7 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
 
 //Cajeros
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(CajeroController::class)->group(function () {
-    Route::post('/Cajero', 'PostCajeros');
+    Route::post('/Cajero/store', 'PostCajeros');
     Route::post('/Cajero/UpdateCajeros', 'UpdateCajeros');
     Route::get('/Cajero/baja', 'indexBaja');
     Route::get("/Cajero", "index");

@@ -2,15 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\ObjectResponse;
 use App\Models\Cajeros;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash; 
+// use Illuminate\Support\Facades\DB;
+// use Illuminate\Support\Facades\Hash; 
 
 class CajeroController extends Controller
 {
+    protected $rules = [
+            'numero'=> 'required|integer',
+            'nombre'=>'required|string|max:50',
+            'direccion'=>'required|string|max:50',
+            'colonia'=>'required|string|max:50',
+            'estado'=>'required|string|max:50',
+            'telefono'=>'required|string|max:20',
+            'fax'=>'required|string|max:50',
+            'mail'=>'required|string|max:50',
+            'baja'=>'nullable|string|max:1',
+            'clave_cajero'=>'required|string|max:50',
+        ];
+    protected   $messages=[
+            'required' => 'El campo :attribute es obligatorio.',
+            'max' => 'El campo :attribute no puede tener más de :max caracteres.',
+            'unique' => 'El campo :attribute ya ha sido registrado',
+        ];
+
     public function index() {
         $response = ObjectResponse::DefaultResponse();
         try{
@@ -71,24 +89,8 @@ class CajeroController extends Controller
         return response()->json($response,$response['status_code']);
     }
 
-    protected $rules = [
-        'numero'=> 'required|integer',
-        'nombre'=>'required|string|max:50',
-        'direccion'=>'required|string|max:50',
-        'colonia'=>'required|string|max:50',
-        'estado'=>'required|string|max:50',
-        'telefono'=>'required|string|max:20',
-        'fax'=>'required|string|max:50',
-        'mail'=>'required|string|max:50',
-        'baja'=>'nullable|string|max:1',
-        'clave_cajero'=>'required|string|max:50',
-                ];
-    protected   $messages=[
-            'required' => 'El campo :attribute es obligatorio.',
-            'max' => 'El campo :attribute no puede tener más de :max caracteres.',
-            'unique' => 'El campo :attribute ya ha sido registrado',
-                ];
     public function PostCajeros(Request $request){
+        // dd($request->all());
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         $response = ObjectResponse::DefaultResponse();
         if ($validator->fails()) {
