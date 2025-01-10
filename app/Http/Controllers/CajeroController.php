@@ -80,7 +80,7 @@ class CajeroController extends Controller
                         ]);
             $response = ObjectResponse::CorrectResponse();
             data_set($response,'message','peticion satisfactoria | Cajero actualizado');
-            data_set($response,'alert_text','Cajero actualizado');
+            data_set($response,'alert_text','Cajero actualizado.');
         } catch (\Exception $ex) {
                 $response = ObjectResponse::CatchResponse($ex->getMessage());
                 data_set($response, 'message', 'Peticion fallida | Actualizacion de Cajero');
@@ -126,6 +126,7 @@ class CajeroController extends Controller
                 ]);
         $response = ObjectResponse::CorrectResponse();
         data_set($response,'message','peticion satisfactoria | Cajero registrado.');
+        data_set($response, 'alert_text', 'Cajero registrado.');
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
