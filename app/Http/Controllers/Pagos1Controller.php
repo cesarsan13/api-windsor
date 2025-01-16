@@ -239,6 +239,78 @@ class Pagos1Controller extends Controller
         data_set($response, 'alert_text', 'Exito!, datos guardados');
         return response()->json($response, $response['status_code']);
     }
+    public function guardarDetallePedidoC ($data)
+    {
+        $Tw_Base_Iva = 0;
+        $producto = DB::table('productos')
+            ->where('numero', '=', $data->articulo)
+            ->first();
+
+        $iva = $producto->iva;
+        if ($iva) {
+            $Tw_Base_Iva =  $iva;
+        } else {
+            $Tw_Base_Iva =  0;
+        }
+
+        $detalleExistente = DetallePedido::where('recibo', $data->recibo)
+            ->where('alumno', $data->alumno)
+            ->where('articulo', $data->articulo)
+            ->where('documento', $data->documento)
+            ->first();
+        if (!$detalleExistente) {
+            $detalle = new DetallePedido();
+            $detalle->recibo = $data->recibo;
+            $detalle->alumno = $data->alumno;
+            $detalle->fecha = $data->fecha;
+            $detalle->articulo = $data->articulo;
+            $detalle->cantidad = $data->cantidad;
+            $detalle->precio_unitario = $data->precio_unitario;
+            $detalle->descuento = $data->descuento;
+            $detalle->iva = $Tw_Base_Iva;
+            $detalle->documento = $data->documento;
+            //agregar defaults a los campos que no tienen por defecto
+            $detalle->numero_factura = 0;
+            $detalle->save();
+        }
+
+        $documento = $data->documento;
+        if ($documento > 0) {
+            $total_general = (float)$data->total_general;
+            DocsCobranza::where('alumno', $data->alumno)
+                ->where('producto', $data->articulo)
+                ->where('numero_doc', $data->documento)
+                ->update([
+                    'fecha_cobro' => $data->fecha,
+                    'importe_pago' => DB::raw('COALESCE(importe_pago, 0) + ' . $total_general)
+                ]);
+        }
+
+        $doc_cob = DB::table('documentos_cobranza')
+            ->where('producto', '=', $data->articulo)
+            ->where('numero_doc', '=', $data->documento)
+            ->where('alumno', '=', $data->alumno)
+            ->first();
+
+        if ($doc_cob) {
+            $descuento = $data->descuento;
+            $descuentoP = $doc_cob->descuento;
+            if ($descuentoP != $descuento) {
+                DB::table('documentos_cobranza')
+                    ->where('alumno', $data->alumno)
+                    ->where('producto', $data->articulo)
+                    ->where('numero_doc', $data->documento)
+                    ->update([
+                        'descuento' => $data->descuento,
+                    ]);
+            }
+        }
+
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'Petición Satisfactoria');
+        data_set($response, 'alert_text', 'Exito!, datos guardados');
+        return response()->json($response, $response['status_code']);
+    }
 
     public function guardaEcabYCobrD(Request $request)
     {
@@ -345,4 +417,5 @@ class Pagos1Controller extends Controller
             $fechaHoy = $pedido->fecha_recibo;
         }
     }
+
 }
