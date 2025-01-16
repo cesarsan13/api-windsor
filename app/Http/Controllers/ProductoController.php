@@ -158,14 +158,14 @@ class ProductoController extends Controller
     {
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         if ($validator->fails()) {
-            $alert_text = implode("<br>",$validator->messages()->all());
+            $alert_text = implode("<br>", $validator->messages()->all());
             $response = ObjectResponse::BadResponse($alert_text);
             data_set($response, 'message', 'Informacion no valida');
             return response()->json($response, $response['status_code']);
         }
         $producto = Producto::find($request->numero);
         if ($producto) {
-            $response = ObjectResponse::BadResponse('El producto ya existe','Registro ya existente');
+            $response = ObjectResponse::BadResponse('El producto ya existe', 'Registro ya existente');
             data_set($response, 'errors', ['numero' => ['Producto ya existe']]);
             return response()->json($response, $response['status_code']);
         }
@@ -192,7 +192,7 @@ class ProductoController extends Controller
     {
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         if ($validator->fails()) {
-            $alert_text = implode("<br>",$validator->messages()->all());
+            $alert_text = implode("<br>", $validator->messages()->all());
             $response = ObjectResponse::BadResponse($alert_text);
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
@@ -217,6 +217,53 @@ class ProductoController extends Controller
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'peticion satisfactoria | Producto actualizado.');
         data_set($response, 'alert_text', 'Producto actualizado.');
+        return response()->json($response, $response['status_code']);
+    }
+    
+    public function storeBatchProduct(Request $request)
+    {
+        $data = $request->all();
+        $validatedDataInsert = [];
+        $validatedDataUpdate = [];
+        foreach ($data as $item) {
+            $validated = Validator::make($item, [
+                'numero' => 'required|integer',
+                'descripcion' => 'required|string|max:255',
+                'costo' => 'required|numeric',
+                'frecuencia' => 'required|string|max:20',
+                'por_recargo' => 'required|numeric',
+                'aplicacion' => 'required|string|max:25',
+                'iva' => 'required|numeric',
+                'cond_1' => 'required|integer',
+                'cam_precio' => 'required|boolean',
+                'ref' => 'required|string|max:20',
+                'baja' => 'nullable|string|max:1',
+            ]);
+            if ($validated->fails()) {
+                Log::info($validated->messages()->all());
+                continue;
+            }
+            $exists = Producto::where('numero', '=', $item['numero'])->exists();
+            if (!$exists) {
+                $validatedDataInsert[] = $validated->validated();
+            } else {
+                $validatedDataUpdate[] = $validated->validated();
+            }
+        }
+        // Log::info("Datos listos", ["data" => $validatedData]);
+        if (!empty($validatedDataInsert)) {
+            Producto::insert($validatedDataInsert);
+        }
+
+        if (!empty($validatedDataUpdate)) {
+            foreach ($validatedDataUpdate as $updateItem) {
+                Producto::where('numero', $updateItem['numero'])->update($updateItem);
+            }
+        }
+        // Log::info("que a pasao", ["resultados" => $result]);
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'Lista de Productos insertados correctamente.');
+        data_set($response, 'alert_text', 'Producto insertados.');
         return response()->json($response, $response['status_code']);
     }
 }
