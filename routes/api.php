@@ -129,6 +129,7 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::get('/product/bajas', 'bajaProduct');
     Route::post('/product/save', 'storeProduct');
     Route::put('/product/update/{numero}', 'updateProduct');
+    Route::post('/product/batch', 'storeBatchProduct');
 });
 
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(AlumnoController::class)->group(function () {

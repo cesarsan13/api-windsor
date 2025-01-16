@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('cond_1')->nullable(false)->default(0); //(11)
             $table->integer('cam_precio')->nullable(false)->default(0);  //(1)
             $table->string('ref', 20)->nullable(false)->default(0);  //(3)
-            $table->string('baja', 1)->nullable(false)->default('');  //(no hay, pero hay un trial987)
+            $table->string('baja', 1)->nullable(true)->default('');  //(no hay, pero hay un trial987)
             $table->timestamps();
         });
     }
