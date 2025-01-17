@@ -116,6 +116,7 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::post('/subject/save', 'storeSubject');
     Route::get('/subject/bajas', 'bajaSubject');
     Route::put('/subject/update/{numero}', 'updateSubject');
+    Route::post('/subject/Batch', 'storeBatchAsignatura');
 });
 
 // Route::middleware(CustomSanctum::class)->controller(RepDosSelController::class)->group(function () {
