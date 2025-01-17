@@ -147,6 +147,7 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::get('/students/cumpleanos-mes', 'cumpleanerosDelMes');
     Route::put('/students/cambio-ciclo', 'cambiarCicloAlumnos');
     Route::get('/students/cicloEscolar', 'getCicloAlumnos');
+    Route::post('/students/batch', 'storeBatchStudents');
 });
 
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(ComentariosController::class)->group(function () {
