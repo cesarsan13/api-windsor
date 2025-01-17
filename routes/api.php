@@ -57,7 +57,6 @@ use App\Http\Controllers\EstructurasController;
 
 Route::controller(EstructurasController::class)->group(function () {
     Route::post('/runMigrations', 'runMigrations');
-
 });
 
 Route::middleware(SetDefaultConnection::class)->controller(BasesDatosController::class)->group(function () {
@@ -105,6 +104,7 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::get('/FormFact/baja', 'indexBaja');
     Route::get("/FormFact", "index");
     Route::get("/FormFact/siguiente", "siguiente");
+    Route::post('/FormFact/batch', 'storeBatchFormFact');
 });
 
 //Asignaturas
