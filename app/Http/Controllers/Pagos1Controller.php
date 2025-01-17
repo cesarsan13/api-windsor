@@ -11,6 +11,7 @@ use App\Models\DetallePedido;
 use App\Models\CobranzaDiaria;
 use App\Models\Encab_Pedido;
 use App\Models\Propietario;
+use App\Models\Producto;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -239,78 +240,6 @@ class Pagos1Controller extends Controller
         data_set($response, 'alert_text', 'Exito!, datos guardados');
         return response()->json($response, $response['status_code']);
     }
-    public function guardarDetallePedidoC ($data)
-    {
-        $Tw_Base_Iva = 0;
-        $producto = DB::table('productos')
-            ->where('numero', '=', $data->articulo)
-            ->first();
-
-        $iva = $producto->iva;
-        if ($iva) {
-            $Tw_Base_Iva =  $iva;
-        } else {
-            $Tw_Base_Iva =  0;
-        }
-
-        $detalleExistente = DetallePedido::where('recibo', $data->recibo)
-            ->where('alumno', $data->alumno)
-            ->where('articulo', $data->articulo)
-            ->where('documento', $data->documento)
-            ->first();
-        if (!$detalleExistente) {
-            $detalle = new DetallePedido();
-            $detalle->recibo = $data->recibo;
-            $detalle->alumno = $data->alumno;
-            $detalle->fecha = $data->fecha;
-            $detalle->articulo = $data->articulo;
-            $detalle->cantidad = $data->cantidad;
-            $detalle->precio_unitario = $data->precio_unitario;
-            $detalle->descuento = $data->descuento;
-            $detalle->iva = $Tw_Base_Iva;
-            $detalle->documento = $data->documento;
-            //agregar defaults a los campos que no tienen por defecto
-            $detalle->numero_factura = 0;
-            $detalle->save();
-        }
-
-        $documento = $data->documento;
-        if ($documento > 0) {
-            $total_general = (float)$data->total_general;
-            DocsCobranza::where('alumno', $data->alumno)
-                ->where('producto', $data->articulo)
-                ->where('numero_doc', $data->documento)
-                ->update([
-                    'fecha_cobro' => $data->fecha,
-                    'importe_pago' => DB::raw('COALESCE(importe_pago, 0) + ' . $total_general)
-                ]);
-        }
-
-        $doc_cob = DB::table('documentos_cobranza')
-            ->where('producto', '=', $data->articulo)
-            ->where('numero_doc', '=', $data->documento)
-            ->where('alumno', '=', $data->alumno)
-            ->first();
-
-        if ($doc_cob) {
-            $descuento = $data->descuento;
-            $descuentoP = $doc_cob->descuento;
-            if ($descuentoP != $descuento) {
-                DB::table('documentos_cobranza')
-                    ->where('alumno', $data->alumno)
-                    ->where('producto', $data->articulo)
-                    ->where('numero_doc', $data->documento)
-                    ->update([
-                        'descuento' => $data->descuento,
-                    ]);
-            }
-        }
-
-        $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'Petición Satisfactoria');
-        data_set($response, 'alert_text', 'Exito!, datos guardados');
-        return response()->json($response, $response['status_code']);
-    }
 
     public function guardaEcabYCobrD(Request $request)
     {
@@ -416,6 +345,105 @@ class Pagos1Controller extends Controller
                 ->get();
             $fechaHoy = $pedido->fecha_recibo;
         }
+    }
+
+    public function storeBatchDetallePedido(Request $request)
+    {
+        $data = $request->all();
+        $validatedDataInsert = [];
+        $Tw_Base_Iva = 0;
+
+        foreach($data as $item){    
+
+            $validator = Validator::make($item, [
+                 'recibo' => 'required',
+                 'alumno' => 'required',
+                 'articulo' => 'required',
+                 'documento' => 'required',
+                 'fecha' => 'required',
+                 'cantidad' => 'required',
+                 'precio_unitario' => 'required',
+                 'descuento' => 'required',
+                 'iva' => 'required',
+                 'numero_factura' => 'required'
+             ]);
+             
+             if ($validator->fails()) {
+                Log::info($validator->messages()->all());
+                continue;
+             }
+
+             $validated = $validator->validated();
+
+            //Verifica que el producto existas, y asigna el iva 
+            $producto = Producto::where('numero', '=', $validated['articulo'])->first();
+            
+            $Tw_Base_Iva = $producto->iva ?? 0;
+            
+            //Verifica si existe ya el registro
+            $detalleExistente = DetallePedido::where('recibo', $validated['recibo'])
+                ->where('alumno', $validated['alumno'])
+                ->where('articulo', $validated['articulo'])
+                ->where('documento', $validated['documento'])
+                ->first();
+             
+            if(!$detalleExistente){
+                $validatedDataInsert[] = [
+                    'recibo' => $validated['recibo'],
+                    'alumno' => $validated['alumno'],
+                    'fecha' => $validated['fecha'],
+                    'articulo' => $validated['articulo'],
+                    'cantidad' => $validated['cantidad'],
+                    'precio_unitario' => $validated['precio_unitario'],
+                    'descuento' => $validated['descuento'],
+                    'iva' => $Tw_Base_Iva,
+                    'documento' => $validated['documento'],
+                    'numero_factura' => $validated['numero_factura'], // Valor por defecto
+                ];
+            }
+        }
+
+        if (!empty($validatedDataInsert)) {
+            DetallePedido::insert($validatedDataInsert);
+        }
+
+        //foreach($validatedDataInsert as $validate){
+        //    $documento = $validate['documento'];
+        //    if ($documento > 0) {
+        //        $total_general = (float)$validate['total_general'];
+        //        DocsCobranza::where('alumno', $validate['alumno'])
+        //            ->where('producto', $validate['articulo'])
+        //            ->where('numero_doc', $validate['documento'])
+        //            ->update([
+        //                'fecha_cobro' => $validate['fecha'],
+        //                'importe_pago' => DB::raw('COALESCE(importe_pago, 0) + ' . $total_general)
+        //            ]);
+        //    }
+    //
+        //    $doc_cob = DocsCobranza::where('producto', '=', $validate['articulo']) //DB::table('documentos_cobranza')
+        //        ->where('numero_doc', '=', $validate['documento'])
+        //        ->where('alumno', '=', $validate['alumno'])
+        //        ->first();
+    //
+        //    if ($doc_cob) {
+        //        $descuento = $validate['descuento'];
+        //        $descuentoP = $doc_cob->descuento;
+        //        if ($descuentoP != $descuento) {
+        //            //DB::table('documentos_cobranza')
+        //            DocsCobranza::where('alumno', $validate['alumno'])
+        //                ->where('producto', $validate['articulo'])
+        //                ->where('numero_doc', $validate['documento'])
+        //                ->update([
+        //                    'descuento' => $validate['descuento'],
+        //                ]);
+        //        }
+        //    }
+        //}
+
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'Lista de Detalle Pedido insertados correctamente.');
+        data_set($response, 'alert_text', 'Producto insertados.');
+        return response()->json($response, $response['status_code']);
     }
 
 }
