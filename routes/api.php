@@ -95,6 +95,7 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::get('/Cajero/baja', 'indexBaja');
     Route::get("/Cajero", "index");
     Route::get("/Cajero/siguiente", "siguiente");
+    Route::post('/Cajero/batch', 'storeBatchCajero');
 });
 
 //FormFact
