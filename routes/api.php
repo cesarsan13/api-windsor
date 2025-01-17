@@ -57,7 +57,6 @@ use App\Http\Controllers\EstructurasController;
 
 Route::controller(EstructurasController::class)->group(function () {
     Route::post('/runMigrations', 'runMigrations');
-
 });
 
 Route::middleware(SetDefaultConnection::class)->controller(BasesDatosController::class)->group(function () {
@@ -95,6 +94,7 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::get('/Cajero/baja', 'indexBaja');
     Route::get("/Cajero", "index");
     Route::get("/Cajero/siguiente", "siguiente");
+    Route::post('/Cajero/batch', 'storeBatchCajero');
 });
 
 //FormFact
@@ -104,6 +104,7 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::get('/FormFact/baja', 'indexBaja');
     Route::get("/FormFact", "index");
     Route::get("/FormFact/siguiente", "siguiente");
+    Route::post('/FormFact/batch', 'storeBatchFormFact');
 });
 
 //Asignaturas
@@ -146,6 +147,7 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::get('/students/cumpleanos-mes', 'cumpleanerosDelMes');
     Route::put('/students/cambio-ciclo', 'cambiarCicloAlumnos');
     Route::get('/students/cicloEscolar', 'getCicloAlumnos');
+    Route::post('/students/batch', 'storeBatchStudents');
 });
 
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(ComentariosController::class)->group(function () {

@@ -8,6 +8,7 @@ use App\Models\FormFact;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class FormFactController extends Controller
 {
@@ -15,7 +16,7 @@ class FormFactController extends Controller
     {
         $response = ObjectResponse::DefaultResponse();
         try {
-            $formfact = FormFact::select('*')->where('baja', '')
+            $formfact = FormFact::where('baja', '<>', '*')
                 ->get()
                 ->makeHidden(['created_at', 'updated_at']);
             $response = ObjectResponse::CorrectResponse();
@@ -118,5 +119,45 @@ class FormFactController extends Controller
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response, $response["status_code"]);
+    }
+
+    public function storeBatchFormFact(Request $request)
+    {
+        $data = $request->all();
+        $validatedDataInsert = [];
+        $validatedDataUpdate = [];
+        foreach ($data as $item) {
+            $validated = Validator::make($item, [
+                'numero_forma' => 'required|integer',
+                'nombre_forma' => 'required|string|max:50',
+                'longitud' => 'required|numeric',
+                'baja' => 'nullable|string|max:1',
+            ]);
+            if ($validated->fails()) {
+                Log::info($validated->messages()->all());
+                continue;
+            }
+            $exists = FormFact::where('numero_forma', '=', $item['numero_forma'])->exists();
+            if (!$exists) {
+                $validatedDataInsert[] = $validated->validated();
+            } else {
+                $validatedDataUpdate[] = $validated->validated();
+            }
+        }
+        // Log::info("Datos listos", ["data" => $validatedData]);
+        if (!empty($validatedDataInsert)) {
+            FormFact::insert($validatedDataInsert);
+        }
+
+        if (!empty($validatedDataUpdate)) {
+            foreach ($validatedDataUpdate as $updateItem) {
+                FormFact::where('numero_forma', $updateItem['numero_forma'])->update($updateItem);
+            }
+        }
+        // Log::info("que a pasao", ["resultados" => $result]);
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'Lista de Productos insertados correctamente.');
+        data_set($response, 'alert_text', 'Producto insertados.');
+        return response()->json($response, $response['status_code']);
     }
 }
