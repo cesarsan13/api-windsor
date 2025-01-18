@@ -171,4 +171,8 @@ class ProfesoresController extends Controller
         data_set($response, 'alert_icon', 'success');
         return response()->json($response, $response['status_code']);
     }
+
+    public function storeBatchProfesores (Request $request){
+
+    }
 }

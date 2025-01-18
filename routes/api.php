@@ -252,6 +252,7 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::get('/profesores/siguiente', 'siguiente');
     Route::post('/profesores/update', 'update');
     Route::post('/profesores/save', 'save');
+    Route::post('/profesores/Batch', 'storeBatchProfesores');
 });
 
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(GruposController::class)->group(function () {
