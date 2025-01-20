@@ -44,8 +44,7 @@ use App\Http\Controllers\PropietarioController;
 use App\Http\Controllers\ReferenciaController;
 use App\Http\Middleware\SetDatabaseConnection;
 use App\Http\Controllers\EstructurasController;
-
-
+use App\Http\Controllers\GlobalController;
 
 // Route::get('/proyectos', function () {
 //     return response()->json([
@@ -133,6 +132,9 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::put('/product/update/{numero}', 'updateProduct');
     Route::post('/product/batch', 'storeBatchProduct');
 });
+Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(GlobalController::class)->group(function () {
+    Route::delete('/global', 'delete');
+});
 
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(AlumnoController::class)->group(function () {
     Route::get('/students/datasex/', 'dataAlumSex');
@@ -170,6 +172,7 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::post('/horarios/update', 'updateHorario');
     Route::get('/horarios/ultimo', 'ultimoHorario');
     Route::get('/horarios/alumnosxhorario', 'getAlumnosXHorario');
+    Route::post('/horarios/batch', 'storeBatchHorario');
 });
 
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(AlumnosPorClaseController::class)->group(function () {

@@ -125,7 +125,7 @@ class FormFactController extends Controller
     {
         $data = $request->all();
         $validatedDataInsert = [];
-        $validatedDataUpdate = [];
+        // $validatedDataUpdate = [];
         foreach ($data as $item) {
             $validated = Validator::make($item, [
                 'numero_forma' => 'required|integer',
@@ -137,23 +137,24 @@ class FormFactController extends Controller
                 Log::info($validated->messages()->all());
                 continue;
             }
-            $exists = FormFact::where('numero_forma', '=', $item['numero_forma'])->exists();
-            if (!$exists) {
-                $validatedDataInsert[] = $validated->validated();
-            } else {
-                $validatedDataUpdate[] = $validated->validated();
-            }
+            // $exists = FormFact::where('numero_forma', '=', $item['numero_forma'])->exists();
+            // if (!$exists) {
+            $validatedDataInsert[] = $validated->validated();
+            // } 
+            // else {
+            //     $validatedDataUpdate[] = $validated->validated();
+            // }
         }
         // Log::info("Datos listos", ["data" => $validatedData]);
         if (!empty($validatedDataInsert)) {
             FormFact::insert($validatedDataInsert);
         }
 
-        if (!empty($validatedDataUpdate)) {
-            foreach ($validatedDataUpdate as $updateItem) {
-                FormFact::where('numero_forma', $updateItem['numero_forma'])->update($updateItem);
-            }
-        }
+        // if (!empty($validatedDataUpdate)) {
+        //     foreach ($validatedDataUpdate as $updateItem) {
+        //         FormFact::where('numero_forma', $updateItem['numero_forma'])->update($updateItem);
+        //     }
+        // }
         // Log::info("que a pasao", ["resultados" => $result]);
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Lista de Productos insertados correctamente.');
