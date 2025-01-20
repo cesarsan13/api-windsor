@@ -217,20 +217,21 @@ class ProfesoresController extends Controller
         }
 
         if(!empty($validatedDataInsert)){
-            foreach($validatedDataInsert as $insertItem){
+            foreach($validatedDataInsert as &$insertItem){
                 if(isset($insertItem['contraseña'])){
                     $insertItem['contraseña'] = bcrypt($insertItem['contraseña']);
+                    
                 }
             }
             Profesores::insert($validatedDataInsert);
         }
         if(!empty($validatedDataUpdate)){
-            foreach($validatedDataUpdate as $updateItem){
+            foreach($validatedDataUpdate as &$updateItem){
                 if(isset($updateItem['contraseña'])){
                     $updateItem['contraseña'] = bcrypt($updateItem['contraseña']);
                 }
-                Profesores::where('numero', $updateItem['numero'])->update($updateItem);
             }
+            Profesores::where('numero', $updateItem['numero'])->update($updateItem);
         }
 
         $response = ObjectResponse::CorrectResponse();

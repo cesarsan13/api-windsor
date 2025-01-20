@@ -159,6 +159,7 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::get("/comentarios/siguiente", "siguiente");
     Route::post('/comentarios', 'store');
     Route::post('/comentarios/update', 'update');
+    Route::post('/comentarios/Batch', 'storeBatchComentarios');
 });
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(FacturasFormatoController::class)->group(function () {
     Route::get("/facturasformato/{id}", "index");

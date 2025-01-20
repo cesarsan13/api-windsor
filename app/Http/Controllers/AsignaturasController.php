@@ -256,8 +256,8 @@ class AsignaturasController extends Controller
         }
 
         $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'Lista de Productos insertados correctamente.');
-        data_set($response, 'alert_text', 'Producto insertados.');
+        data_set($response, 'message', 'Lista de Asignaturas insertadas correctamente.');
+        data_set($response, 'alert_text', 'Asignaturas insertadas.');
         return response()->json($response, $response['status_code']);
     }
 }

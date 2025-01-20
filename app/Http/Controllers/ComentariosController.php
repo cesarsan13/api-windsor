@@ -144,4 +144,47 @@ class ComentariosController extends Controller
         }
         return response()->json($response, $response['status_code']);
     }
+
+    public function storeBatchComentarios (Request $request){
+        $data = $request->all();
+        $validatedDataInsert = [];
+        $validatedDataUpdate = [];
+
+        foreach($data as $item){
+            $validated = Validator::make($item,[
+                'numero' => 'required|integer',
+                'comentario_1' => 'required|string|max:50',
+                'comentario_2' => 'nullable|string|max:50',
+                'comentario_3' => 'nullable|string|max:50',
+                'generales' => 'nullable|integer|max:1',
+                'baja' => 'nullable|string|max:1',
+            ]);
+
+            if ($validated->fails()) {
+                Log::info($validated->messages()->all());
+                continue;
+            }
+
+            $exists = Comentarios::where('numero', '=', $item['numero'])->exists();
+
+            if (!$exists) {
+                $validatedDataInsert[] = $validated->validated();
+            } else {
+                $validatedDataUpdate[] = $validated->validated();
+            }
+        }
+
+        if(!empty($validatedDataInsert)){
+            Comentarios::insert($validatedDataInsert);
+        }
+
+        if(!empty($validatedDataUpdate)){
+            Comentarios::where('numero', $updateItem['numero'])->update($updateItem);
+        }
+
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'Lista de Comentarios insertados correctamente.');
+        data_set($response, 'alert_text', 'Comentarios insertados.');
+        return response()->json($response, $response['status_code']);
+    }
 }
