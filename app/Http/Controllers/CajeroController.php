@@ -185,8 +185,8 @@ class CajeroController extends Controller
             }
         }
         $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'Lista de Productos insertados correctamente.');
-        data_set($response, 'alert_text', 'Producto insertados.');
+        data_set($response, 'message', 'Lista de Cajeros insertados correctamente.');
+        data_set($response, 'alert_text', 'Cajero insertados.');
         return response()->json($response, $response['status_code']);
     }
 }

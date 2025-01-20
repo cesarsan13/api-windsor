@@ -170,6 +170,7 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::post('/horarios/update', 'updateHorario');
     Route::get('/horarios/ultimo', 'ultimoHorario');
     Route::get('/horarios/alumnosxhorario', 'getAlumnosXHorario');
+    Route::post('/horarios/batch', 'storeBatchHorario');
 });
 
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(AlumnosPorClaseController::class)->group(function () {
