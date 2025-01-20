@@ -167,7 +167,7 @@ class HorarioController extends Controller
     public function storeBatchHorario(Request $request) {
         $data = $request->all();
         $validatedDataInsert = [];
-        $validatedDataUpdate = [];
+        // $validatedDataUpdate = [];
         foreach ($data as $item) {
             $validated = Validator::make($item, [
                 'numero' => 'required|integer',
@@ -185,22 +185,22 @@ class HorarioController extends Controller
                 Log::info($validated->messages()->all());
                 continue;
             }
-            $exists = Horario::where('numero', '=', $item['numero'])->exists();
-            if (!$exists) {
+            // $exists = Horario::where('numero', '=', $item['numero'])->exists();
+            // if (!$exists) {
                 $validatedDataInsert[] = $validated->validated();
-            } else {
-                $validatedDataUpdate[] = $validated->validated();
-            }
+        //     } else {
+        //         $validatedDataUpdate[] = $validated->validated();
+        //     }
         }
         if (!empty($validatedDataInsert)) {
-            Cajeros::insert($validatedDataInsert);
+            Horario::insert($validatedDataInsert);
         }
 
-        if (!empty($validatedDataUpdate)) {
-            foreach ($validatedDataUpdate as $updateItem) {
-                Cajeros::where('numero', $updateItem['numero'])->update($updateItem);
-            }
-        }
+        // if (!empty($validatedDataUpdate)) {
+        //     foreach ($validatedDataUpdate as $updateItem) {
+        //         Cajeros::where('numero', $updateItem['numero'])->update($updateItem);
+        //     }
+        // }
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Lista de Horarios insertados correctamente.');
         data_set($response, 'alert_text', 'Horario insertados.');
