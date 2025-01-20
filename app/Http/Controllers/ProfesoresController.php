@@ -7,6 +7,7 @@ use App\Models\ObjectResponse;
 use App\Models\Profesores;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProfesoresController extends Controller
 {
@@ -33,6 +34,7 @@ class ProfesoresController extends Controller
         'email' => 'nullable|string|max:80',
         'contraseña' => 'nullable|string|max:12',
     ];
+
     public function index()
     {
         $response = ObjectResponse::CorrectResponse();
@@ -173,6 +175,67 @@ class ProfesoresController extends Controller
     }
 
     public function storeBatchProfesores (Request $request){
+        $data = $request->all();
+        $validatedDataInsert = [];
+        $validatedDataUpdate = [];
+        
+        foreach($data as $item) {
+            //$validator = Validator::make($data, $this->rules, $this->messages);
 
+            $validated = Validator::make($item, [
+                'numero' => 'required|integer',
+                'nombre' => 'required|string|max:50',
+                'ap_paterno' => 'required|string|max:50',
+                'ap_materno' => 'required|string|max:50',
+                'direccion' => 'required|string|max:50',
+                'colonia' => 'required|string|max:50',
+                'ciudad' => 'required|string|max:50',
+                'estado' => 'required|string|max:20',
+                'cp' => 'nullable|string|max:06',
+                'pais' => 'nullable|string|max:50',
+                'rfc' => 'nullable|string|max:20',
+                'telefono_1' => 'nullable|string|max:20',
+                'telefono_2' => 'nullable|string|max:20',
+                'fax' => 'nullable|string|max:20',
+                'celular' => 'nullable|string|max:20',
+                'email' => 'nullable|string|max:80',
+                'contraseña' => 'nullable|string|max:12',
+            ]);
+
+            if ($validated->fails()) {
+                Log::info($validated->messages()->all());
+                continue;
+            }
+
+            $exists = Profesores::where('numero', '=', $item['numero'])->exists();
+
+            if (!$exists) {
+                $validatedDataInsert[] = $validated->validated();
+            } else {
+                $validatedDataUpdate[] = $validated->validated();
+            }
+        }
+
+        if(!empty($validatedDataInsert)){
+            foreach($validatedDataInsert as $insertItem){
+                if(isset($insertItem['contraseña'])){
+                    $insertItem['contraseña'] = bcrypt($insertItem['contraseña']);
+                }
+            }
+            Profesores::insert($validatedDataInsert);
+        }
+        if(!empty($validatedDataUpdate)){
+            foreach($validatedDataUpdate as $updateItem){
+                if(isset($updateItem['contraseña'])){
+                    $updateItem['contraseña'] = bcrypt($updateItem['contraseña']);
+                }
+                Profesores::where('numero', $updateItem['numero'])->update($updateItem);
+            }
+        }
+
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'Lista de Profesores insertados correctamente.');
+        data_set($response, 'alert_text', 'Profesores insertados.');
+        return response()->json($response, $response['status_code']);
     }
 }

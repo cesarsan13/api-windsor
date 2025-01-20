@@ -263,7 +263,7 @@ class ProductoController extends Controller
         // Log::info("que a pasao", ["resultados" => $result]);
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Lista de Productos insertados correctamente.');
-        data_set($response, 'alert_text', 'Producto insertados.');
+        data_set($response, 'alert_text', 'Productos insertados.');
         return response()->json($response, $response['status_code']);
     }
 }
