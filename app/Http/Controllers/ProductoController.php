@@ -219,12 +219,12 @@ class ProductoController extends Controller
         data_set($response, 'alert_text', 'Producto actualizado.');
         return response()->json($response, $response['status_code']);
     }
-    
+
     public function storeBatchProduct(Request $request)
     {
         $data = $request->all();
         $validatedDataInsert = [];
-        $validatedDataUpdate = [];
+        // $validatedDataUpdate = [];
         foreach ($data as $item) {
             $validated = Validator::make($item, [
                 'numero' => 'required|integer',
@@ -243,24 +243,22 @@ class ProductoController extends Controller
                 Log::info($validated->messages()->all());
                 continue;
             }
-            $exists = Producto::where('numero', '=', $item['numero'])->exists();
-            if (!$exists) {
-                $validatedDataInsert[] = $validated->validated();
-            } else {
-                $validatedDataUpdate[] = $validated->validated();
-            }
+            // $exists = Producto::where('numero', '=', $item['numero'])->exists();
+            // if (!$exists) {
+            $validatedDataInsert[] = $validated->validated();
+            // }
+            // else {
+            //     $validatedDataUpdate[] = $validated->validated();
+            // }
         }
-        // Log::info("Datos listos", ["data" => $validatedData]);
         if (!empty($validatedDataInsert)) {
             Producto::insert($validatedDataInsert);
         }
-
-        if (!empty($validatedDataUpdate)) {
-            foreach ($validatedDataUpdate as $updateItem) {
-                Producto::where('numero', $updateItem['numero'])->update($updateItem);
-            }
-        }
-        // Log::info("que a pasao", ["resultados" => $result]);
+        // if (!empty($validatedDataUpdate)) {
+        //     foreach ($validatedDataUpdate as $updateItem) {
+        //         Producto::where('numero', $updateItem['numero'])->update($updateItem);
+        //     }
+        // }
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Lista de Productos insertados correctamente.');
         data_set($response, 'alert_text', 'Producto insertados.');

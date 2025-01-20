@@ -1046,7 +1046,7 @@ class AlumnoController extends Controller
     {
         $data = $request->all();
         $validatedDataInsert = [];
-        $validatedDataUpdate = [];
+        // $validatedDataUpdate = [];
         foreach ($data as $item) {
             $validated = Validator::make($item, [
                 'numero' => 'required|numeric',
@@ -1144,23 +1144,24 @@ class AlumnoController extends Controller
                 Log::info($validated->messages()->all());
                 continue;
             }
-            $exists = Alumno::where('numero', '=', $item['numero'])->exists();
-            if (!$exists) {
-                $validatedDataInsert[] = $validated->validated();
-            } else {
-                $validatedDataUpdate[] = $validated->validated();
-            }
+            // $exists = Alumno::where('numero', '=', $item['numero'])->exists();
+            // if (!$exists) {
+            $validatedDataInsert[] = $validated->validated();
+            // } 
+            // else {
+            //     $validatedDataUpdate[] = $validated->validated();
+            // }
         }
         // Log::info("Datos listos", ["data" => $validatedData]);
         if (!empty($validatedDataInsert)) {
             Alumno::insert($validatedDataInsert);
         }
 
-        if (!empty($validatedDataUpdate)) {
-            foreach ($validatedDataUpdate as $updateItem) {
-                Alumno::where('numero', $updateItem['numero'])->update($updateItem);
-            }
-        }
+        // if (!empty($validatedDataUpdate)) {
+        //     foreach ($validatedDataUpdate as $updateItem) {
+        //         Alumno::where('numero', $updateItem['numero'])->update($updateItem);
+        //     }
+        // }
         // Log::info("que a pasao", ["resultados" => $result]);
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Lista de Productos insertados correctamente.');

@@ -44,8 +44,7 @@ use App\Http\Controllers\PropietarioController;
 use App\Http\Controllers\ReferenciaController;
 use App\Http\Middleware\SetDatabaseConnection;
 use App\Http\Controllers\EstructurasController;
-
-
+use App\Http\Controllers\GlobalController;
 
 // Route::get('/proyectos', function () {
 //     return response()->json([
@@ -132,6 +131,9 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::post('/product/save', 'storeProduct');
     Route::put('/product/update/{numero}', 'updateProduct');
     Route::post('/product/batch', 'storeBatchProduct');
+});
+Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(GlobalController::class)->group(function () {
+    Route::delete('/global', 'delete');
 });
 
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(AlumnoController::class)->group(function () {
