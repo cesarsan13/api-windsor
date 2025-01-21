@@ -214,15 +214,11 @@ class AsignaturasController extends Controller
     public function storeBatchAsignatura(Request $request){
         $data = $request->all();
         $validatedDataInsert = [];
-        $validatedDataUpdate = [];
 
         foreach($data as $item){
             $validated = Validator::make($item, [
                 'numero' => 'required|numeric',
                 'descripcion' => 'required|string|max:100',
-                //'fecha_seg' => 'nullable|string|max:10',
-                //'hora_seg' => 'nullable|string|max:10',
-                //'cve_seg' => 'nullable|string|max:10',
                 'baja' => 'nullable|string|max:1',
                 'evaluaciones' => 'required|integer',
                 'actividad' => 'required|string|max:10',
@@ -236,23 +232,11 @@ class AsignaturasController extends Controller
                 Log::info($validated->messages()->all());
                 continue;
             }
-
-            $exists = Asignaturas::where('numero', '=', $item['numero'])->exists();
-            if (!$exists) {
-                $validatedDataInsert[] = $validated->validated();
-            } else {
-                $validatedDataUpdate[] = $validated->validated();
-            }
+            $validatedDataInsert[] = $validated->validated();
         }
 
         if(!empty($validatedDataInsert)){
             Asignaturas::insert($validatedDataInsert);
-        }
-
-        if(!empty($validatedDataUpdate)){
-            foreach($validatedDataUpdate as $updateItem){
-                Asignaturas::where('numero', $updateItem['numero'])->update($updateItem);
-            }
         }
 
         $response = ObjectResponse::CorrectResponse();
