@@ -179,7 +179,9 @@ class ComentariosController extends Controller
         }
 
         if(!empty($validatedDataUpdate)){
-            Comentarios::where('numero', $updateItem['numero'])->update($updateItem);
+            foreach ($validatedDataUpdate as $updateItem) {
+                Comentarios::where('numero', $updateItem['numero'])->update($updateItem);
+            }
         }
 
         $response = ObjectResponse::CorrectResponse();
