@@ -23,9 +23,12 @@ class GlobalService
                 $errors[] = "Error de validación: Número " . $item[$numero] . ": " . $formattedMessage;
                 continue;
             }
-            $exists = $Model::where('numero', '=', $item[$numero])->exists();
-            $arrayToUse = $exists ? $validatedDataUpdate : $validatedDataInsert;
-            $arrayToUse[] = $validated->validated();
+            $exists = $Model::where($numero, '=', $item[$numero])->exists();
+            if ($exists) {
+                $validatedDataUpdate[] = $validated->validated();
+            } else {
+                $validatedDataInsert[] = $validated->validated();
+            }
         }
         $alert_text .= implode("<br><br>", $errors);
         return true;
