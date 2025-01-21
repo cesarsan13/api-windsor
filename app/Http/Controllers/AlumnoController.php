@@ -12,18 +12,24 @@ use App\Models\DocsCobranza;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use App\Services\GlobalService;
 
 class AlumnoController extends Controller
 {
+    protected $validationService;
+    public function __construct(GlobalService $validationService)
+    {
+        $this->validationService = $validationService;
+    }
     protected $messages = [
-        'required' => 'El campo :attribute es obligatorio.',
-        'max' => 'El campo :attribute no puede tener más de :max caracteres.',
-        'min' => 'El campo :attribute debe tener al menos :min caracteres.',
+        'required' => 'El campo :attribute es obligatorio',
+        'max' => 'El campo :attribute no puede tener más de :max caracteres',
+        'min' => 'El campo :attribute debe tener al menos :min caracteres',
         'unique' => 'El  :attribute ya ha sido registrado anteriormente',
-        'numeric' => 'El campo :attribute debe ser un número decimal.',
-        'string' => 'El campo :attribute debe ser una cadena.',
-        'integer' => 'El campo :attribute debe ser un número.',
-        'boolean' => 'El campo :attribute debe ser un valor booleano.',
+        'numeric' => 'El campo :attribute debe ser un número decimal',
+        'string' => 'El campo :attribute debe ser una cadena',
+        'integer' => 'El campo :attribute debe ser un número',
+        'boolean' => 'El campo :attribute debe ser un valor booleano',
     ];
     protected $rules2 = [
         'numero_ant' => 'required|integer',
@@ -48,16 +54,16 @@ class AlumnoController extends Controller
         'ciudad' => 'required|string|max:100',
         'estado' => 'required|string|max:100',
         'cp' => 'required|string|max:10',
-        'email' => 'required|string|email',
+        'email' => 'required|string|email|max:255',
         'ruta_foto' => 'nullable',
         'dia_1' => 'nullable|string|max:20',
         'dia_2' => 'nullable|string|max:20',
         'dia_3' => 'nullable|string|max:20',
         'dia_4' => 'nullable|string|max:20',
-        'hora_1' => 'nullable|string|max:30',
-        'hora_2' => 'nullable|string|max:30',
-        'hora_3' => 'nullable|string|max:30',
-        'hora_4' => 'nullable|string|max:30',
+        'hora_1' => 'nullable|integer|max:30',
+        'hora_2' => 'nullable|integer|max:30',
+        'hora_3' => 'nullable|integer|max:30',
+        'hora_4' => 'nullable|integer|max:30',
         'cancha_1' => 'nullable',
         'cancha_2' => 'nullable',
         'cancha_3' => 'nullable',
@@ -1046,126 +1052,33 @@ class AlumnoController extends Controller
     {
         $data = $request->all();
         $validatedDataInsert = [];
-        // $validatedDataUpdate = [];
-        foreach ($data as $item) {
-            $validated = Validator::make($item, [
-                'numero' => 'required|numeric',
-                'nombre' => 'required|string|max:50',
-                'a_paterno' => 'required|string|max:50',
-                'a_materno' => 'required|string|max:50',
-                'a_nombre' => 'nullable|string|max:50',
-                'fecha_nac' => 'required',
-                'fecha_inscripcion' => 'required',
-                'fecha_baja' => 'nullable',
-                'sexo' => 'required|string|max:15',
-                'telefono1' => 'required|string|max:15',
-                'telefono2' => 'nullable|string|max:15',
-                'celular' => 'required|string|max:15',
-                'codigo_barras' => 'nullable|string|max:50',
-                'direccion' => 'required|string',
-                'colonia' => 'required|string|max:100',
-                'ciudad' => 'required|string|max:100',
-                'estado' => 'required|string|max:100',
-                'cp' => 'required|string|max:10',
-                'email' => 'required|string|email|max:255',
-                'ruta_foto' => 'nullable',
-                'dia_1' => 'nullable|string|max:20',
-                'dia_2' => 'nullable|string|max:20',
-                'dia_3' => 'nullable|string|max:20',
-                'dia_4' => 'nullable|string|max:20',
-                'hora_1' => 'nullable|integer|max:30',
-                'hora_2' => 'nullable|integer|max:30',
-                'hora_3' => 'nullable|integer|max:30',
-                'hora_4' => 'nullable|integer|max:30',
-                'cancha_1' => 'nullable',
-                'cancha_2' => 'nullable',
-                'cancha_3' => 'nullable',
-                'cancha_4' => 'nullable',
-                'horario_1' => 'nullable',
-                'horario_2' => 'nullable',
-                'horario_3' => 'nullable',
-                'horario_4' => 'nullable',
-                'horario_5' => 'nullable',
-                'horario_6' => 'nullable',
-                'horario_7' => 'nullable',
-                'horario_8' => 'nullable',
-                'horario_9' => 'nullable',
-                'horario_10' => 'nullable',
-                'horario_11' => 'nullable',
-                'horario_12' => 'nullable',
-                'horario_13' => 'nullable',
-                'horario_14' => 'nullable',
-                'horario_15' => 'nullable',
-                'horario_16' => 'nullable',
-                'horario_17' => 'nullable',
-                'horario_18' => 'nullable',
-                'horario_19' => 'nullable',
-                'horario_20' => 'nullable',
-                'cond_1' => 'nullable',
-                'cond_2' => 'nullable',
-                'cond_3' => 'nullable',
-                'nom_pediatra' => 'nullable|string|max:50',
-                'tel_p_1' => 'nullable|string|max:15',
-                'tel_p_2' => 'nullable|string|max:15',
-                'cel_p_1' => 'nullable|string|max:15',
-                'tipo_sangre' => 'nullable|string|max:20',
-                'alergia' => 'nullable|string|max:50',
-                'aseguradora' => 'nullable|string|max:100',
-                'poliza' => 'nullable|string|max:30',
-                'tel_ase_1' => 'nullable|string|max:15',
-                'tel_ase_2' => 'nullable|string|max:15',
-                'razon_social' => 'nullable|string|max:30',
-                'raz_direccion' => 'nullable|string',
-                'raz_colonia' => 'nullable|string|max:100',
-                'raz_ciudad' => 'nullable|string|max:100',
-                'raz_estado' => 'nullable|string|max:100',
-                'raz_cp' => 'nullable|string|max:10',
-                'nom_padre' => 'nullable|string|max:50',
-                'tel_pad_1' => 'nullable|string|max:15',
-                'tel_pad_2' => 'nullable|string|max:15',
-                'cel_pad' => 'nullable|string|max:15',
-                'nom_madre' => 'nullable|string|max:50',
-                'tel_mad_1' => 'nullable|string|max:15',
-                'tel_mad_2' => 'nullable|string|max:15',
-                'cel_mad' => 'nullable|string|max:15',
-                'nom_avi' => 'nullable|string|max:50',
-                'tel_avi_1' => 'nullable|string|max:15',
-                'tel_avi_2' => 'nullable|string|max:15',
-                'cel_avi' => 'nullable|string|max:15',
-                'ciclo_escolar' => 'nullable|string|max:50',
-                'descuento' => 'nullable|numeric',
-                'rfc_factura' => 'nullable|string|max:50',
-                'estatus' => 'required|string|max:20',
-                'escuela' => 'nullable|string|max:50',
-                'grupo' => 'nullable|string|max:15',
-                'baja' => 'nullable|string|max:1',
-            ]);
-            if ($validated->fails()) {
-                Log::info($validated->messages()->all());
-                continue;
-            }
-            // $exists = Alumno::where('numero', '=', $item['numero'])->exists();
-            // if (!$exists) {
-            $validatedDataInsert[] = $validated->validated();
-            // } 
-            // else {
-            //     $validatedDataUpdate[] = $validated->validated();
-            // }
-        }
-        // Log::info("Datos listos", ["data" => $validatedData]);
+        $alert_text = "";
+        $validatedDataUpdate = [];
+        $this->validationService->validateAndProcessData(
+            "numero",
+            $data,
+            $this->rules,
+            $this->messages,
+            $alert_text,
+            Alumno::class,
+            $validatedDataInsert,
+            $validatedDataUpdate
+        );
         if (!empty($validatedDataInsert)) {
             Alumno::insert($validatedDataInsert);
         }
-
-        // if (!empty($validatedDataUpdate)) {
-        //     foreach ($validatedDataUpdate as $updateItem) {
-        //         Alumno::where('numero', $updateItem['numero'])->update($updateItem);
-        //     }
-        // }
-        // Log::info("que a pasao", ["resultados" => $result]);
-        $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'Lista de Productos insertados correctamente.');
-        data_set($response, 'alert_text', 'Producto insertados.');
+        if (!empty($validatedDataUpdate)) {
+            foreach ($validatedDataUpdate as $updateItem) {
+                Alumno::where('numero', $updateItem['numero'])->update($updateItem);
+            }
+        }
+        if ($alert_text) {
+            $response = ObjectResponse::BadResponse($alert_text);
+        } else {
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Lista de Alumnos insertados correctamente.');
+            data_set($response, 'alert_text', 'Todos los alumnos se insertaron correctamente.');
+        }
         return response()->json($response, $response['status_code']);
     }
 }
