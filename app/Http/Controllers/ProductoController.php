@@ -9,9 +9,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use App\Services\GlobalService;
 
 class ProductoController extends Controller
 {
+    protected $validationService;
+    public function __construct(GlobalService $validationService)
+    {
+        $this->validationService = $validationService;
+    }
     protected $messages = [
         'required' => 'El campo :attribute es obligatorio.',
         'max' => 'El campo :attribute no puede tener más de :max caracteres.',
@@ -23,15 +29,17 @@ class ProductoController extends Controller
         'boolean' => 'El campo :attribute debe ser un valor booleano.',
     ];
     protected $rules = [
-        'descripcion' => 'required|string',
+        'numero' => 'required|integer',
+        'descripcion' => 'required|string|max:255',
         'costo' => 'required|numeric',
-        'frecuencia' => 'required|string',
+        'frecuencia' => 'required|string|max:20',
         'por_recargo' => 'required|numeric',
-        'aplicacion' => 'required|string',
+        'aplicacion' => 'required|string|max:25',
         'iva' => 'required|numeric',
         'cond_1' => 'required|integer',
         'cam_precio' => 'required|boolean',
-        'ref' => 'required|string',
+        'ref' => 'required|string|max:20',
+        'baja' => 'nullable|string|max:1',
     ];
 
     public function productFilter($type, $value)
@@ -224,41 +232,26 @@ class ProductoController extends Controller
     {
         $data = $request->all();
         $validatedDataInsert = [];
-        // $validatedDataUpdate = [];
-        foreach ($data as $item) {
-            $validated = Validator::make($item, [
-                'numero' => 'required|integer',
-                'descripcion' => 'required|string|max:255',
-                'costo' => 'required|numeric',
-                'frecuencia' => 'required|string|max:20',
-                'por_recargo' => 'required|numeric',
-                'aplicacion' => 'required|string|max:25',
-                'iva' => 'required|numeric',
-                'cond_1' => 'required|integer',
-                'cam_precio' => 'required|boolean',
-                'ref' => 'required|string|max:20',
-                'baja' => 'nullable|string|max:1',
-            ]);
-            if ($validated->fails()) {
-                Log::info($validated->messages()->all());
-                continue;
-            }
-            // $exists = Producto::where('numero', '=', $item['numero'])->exists();
-            // if (!$exists) {
-            $validatedDataInsert[] = $validated->validated();
-            // }
-            // else {
-            //     $validatedDataUpdate[] = $validated->validated();
-            // }
-        }
+        $alert_text = "";
+        $validatedDataUpdate = [];
+        $this->validationService->validateAndProcessData(
+            "numero",
+            $data,
+            $this->rules,
+            $this->messages,
+            $alert_text,
+            Producto::class,
+            $validatedDataInsert,
+            $validatedDataUpdate
+        );
         if (!empty($validatedDataInsert)) {
             Producto::insert($validatedDataInsert);
         }
-        // if (!empty($validatedDataUpdate)) {
-        //     foreach ($validatedDataUpdate as $updateItem) {
-        //         Producto::where('numero', $updateItem['numero'])->update($updateItem);
-        //     }
-        // }
+        if (!empty($validatedDataUpdate)) {
+            foreach ($validatedDataUpdate as $updateItem) {
+                Producto::where('numero', $updateItem['numero'])->update($updateItem);
+            }
+        }
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Lista de Productos insertados correctamente.');
         data_set($response, 'alert_text', 'Producto insertados.');
