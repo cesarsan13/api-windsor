@@ -84,6 +84,7 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::get("/tipo_cobro/siguiente", "siguiente");
     Route::post('/tipo_cobro', 'store');
     Route::post('/tipo_cobro/update', 'update');
+    Route::post('/tipo_cobro/batch', 'storeBatchTipoCobro');
 });
 
 //Cajeros

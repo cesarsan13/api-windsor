@@ -146,5 +146,31 @@ class TipoCobroController extends Controller
         }
         return response()->json($response, $response['status_code']);
     }
-    
+
+    public function storeBatchTipoCobro(Request $request) {
+        $data = $request->all();
+        $validatedDataInsert = [];
+        foreach ($data as $item) {
+            $validated = Validator::make($item, [
+                'numero'=> 'required|integer',
+                'descripcion'=>'required|string|max:50',
+                'comision'=>'nullable|numeric',
+                'aplicacion'=>'nullable|string|max:30',
+                'cue_banco'=>'nullable|string|max:34',
+                'baja'=>'nullable|string|max:1',
+            ]);
+            if ($validated->fails()) {
+                Log::info($validated->messages()->all());
+                continue;
+            }
+            $validatedDataInsert[] = $validated->validated();
+        }
+        if (!empty($validatedDataInsert)) {
+            TipoCobro::insert($validatedDataInsert);
+        }
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'Lista de Formas de Pago insertados correctamente.');
+        data_set($response, 'alert_text', 'Formas de Pago insertados.');
+        return response()->json($response, $response['status_code']);
+    }
 }

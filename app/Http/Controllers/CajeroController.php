@@ -29,20 +29,20 @@ class CajeroController extends Controller
             'unique' => 'El campo :attribute ya ha sido registrado',
         ];
 
-    public function index() {
-        $response = ObjectResponse::DefaultResponse();
-        try{
-            $caj = Cajeros::select('*')->where('baja','')
-            ->get()
-            ->makeHidden(['created_at', 'updated_at']);
-            $response = ObjectResponse::CorrectResponse();
-            data_set($response, 'message', 'Peticion satisfactoria. Lista de roles:');
-            data_set($response, 'data', $caj);
-        }catch(\Exception $ex){
-            $response  = ObjectResponse::CatchResponse($ex->getMessage());
+        public function index()
+        {
+            $response = ObjectResponse::DefaultResponse();
+            try {
+                $cajeros = Cajeros::where("baja", '<>', '*')
+                    ->get();
+                $response = ObjectResponse::CorrectResponse();
+                data_set($response, 'message', 'Peticion Satisfactoria | lista de Cajeros');
+                data_set($response, 'data', $cajeros);
+            } catch (\Exception $ex) {
+                $response = ObjectResponse::CatchResponse($ex->getMessage());
+            }
+            return response()->json($response, $response["status_code"]);
         }
-        return response()->json($response,$response["status_code"]);
-    }
     public function siguiente(){
         $response  = ObjectResponse::DefaultResponse();
         try {
