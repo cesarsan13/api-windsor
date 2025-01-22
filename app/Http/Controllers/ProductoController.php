@@ -29,7 +29,7 @@ class ProductoController extends Controller
         'boolean' => 'El campo :attribute debe ser un valor booleano.',
     ];
     protected $rules = [
-        'numero' => 'required|integer',
+        'numero' => 'required',
         'descripcion' => 'required|string|max:255',
         'costo' => 'required|numeric',
         'frecuencia' => 'required|string|max:20',
@@ -252,9 +252,14 @@ class ProductoController extends Controller
                 Producto::where('numero', $updateItem['numero'])->update($updateItem);
             }
         }
-        $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'Lista de Productos insertados correctamente.');
-        data_set($response, 'alert_text', 'Producto insertados.');
+        if ($alert_text) {
+            $response = ObjectResponse::BadResponse($alert_text);
+            // data_set($response, 'alert_text', $alert_text);
+        } else {
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Lista de Productos insertados correctamente.');
+            data_set($response, 'alert_text', 'Producto insertados.');
+        }
         return response()->json($response, $response['status_code']);
     }
 }
