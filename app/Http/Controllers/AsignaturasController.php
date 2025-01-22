@@ -30,8 +30,18 @@ class AsignaturasController extends Controller
         'boolean' => 'El campo :attribute debe ser un valor booleano.',
     ];
     protected $rules = [
-        'numero' => 'required|numeric',
+        'numero' => 'required|integer',
         'descripcion' => 'required|string',
+        'fecha_seg' => 'nullable|string|max:10',
+        'hora_seg' => 'nullable|string|max:10',
+        'cve_seg' => 'nullable|string|max:10',
+        'baja' => 'nullable|string|max:1',
+        'evaluaciones' => 'required|integer',
+        'actividad' => 'required|string|max:10',
+        'area' => 'required|integer',
+        'orden' => 'required|integer',
+        'lenguaje' => 'required|string|max:15',
+        'caso_evaluar' => 'required|string|max:15',
     ];
 
     public function subjectFilter($type, $value)

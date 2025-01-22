@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\ObjectResponse;
 use App\Models\Comentarios;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
 use App\Services\GlobalService;
 use Illuminate\Support\Facades\Log;
 
