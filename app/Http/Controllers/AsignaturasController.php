@@ -247,12 +247,11 @@ class AsignaturasController extends Controller
         if(!empty($validatedDataInsert)){
             Asignaturas::insert($validatedDataInsert);
         }
-        if(!empty($validatedDataUpdate)){
-            foreach ($validatedDataUpdate as $updateItem) {
-                Asignaturas::where('numero', $updateItem['numero'])->update($updateItem);
-            }
-        }
-
+        //if(!empty($validatedDataUpdate)){
+        //    foreach ($validatedDataUpdate as $updateItem) {
+        //        Asignaturas::where('numero', $updateItem['numero'])->update($updateItem);
+        //    }
+        //}
         if($alert_text){
             $response = ObjectResponse::BadResponse($alert_text);
         } else {
