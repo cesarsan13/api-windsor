@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\ObjectResponse;
 use App\Models\Comentarios;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
 use App\Services\GlobalService;
 use Illuminate\Support\Facades\Log;
 
@@ -175,11 +174,11 @@ class ComentariosController extends Controller
             Comentarios::insert($validatedDataInsert);
         }
 
-        if(!empty($validatedDataUpdate)){
-            foreach ($validatedDataUpdate as $updateItem) {
-                Comentarios::where('numero', $updateItem['numero'])->update($updateItem);
-            }
-        }
+        //if(!empty($validatedDataUpdate)){
+        //    foreach ($validatedDataUpdate as $updateItem) {
+        //        Comentarios::where('numero', $updateItem['numero'])->update($updateItem);
+        //    }
+        //}
         if($alert_text){
             $response = ObjectResponse::BadResponse($alert_text);
         } else {
