@@ -152,9 +152,14 @@ class FormFactController extends Controller
                 FormFact::where('numero_forma', $updateItem['numero_forma'])->update($updateItem);
             }
         }
-        $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'Lista de Productos insertados correctamente.');
-        data_set($response, 'alert_text', 'Producto insertados.');
+        if ($alert_text) {
+            $response = ObjectResponse::BadResponse($alert_text);
+            // data_set($response, 'alert_text', $alert_text);
+        } else {
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Lista de Productos insertados correctamente.');
+            data_set($response, 'alert_text', 'Producto insertados.');
+        }
         return response()->json($response, $response['status_code']);
     }
 }

@@ -29,7 +29,7 @@ class ProductoController extends Controller
         'boolean' => 'El campo :attribute debe ser un valor booleano.',
     ];
     protected $rules = [
-        'numero' => 'required|integer',
+        'numero' => 'required',
         'descripcion' => 'required|string|max:255',
         'costo' => 'required|numeric',
         'frecuencia' => 'required|string|max:20',
@@ -254,7 +254,7 @@ class ProductoController extends Controller
         }
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Lista de Productos insertados correctamente.');
-        data_set($response, 'alert_text', 'Productos insertados.');
+        data_set($response, 'alert_text', 'Producto insertados.');
         return response()->json($response, $response['status_code']);
     }
 }
