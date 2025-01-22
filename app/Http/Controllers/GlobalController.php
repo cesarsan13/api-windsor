@@ -45,7 +45,6 @@ class GlobalController extends Controller
             "active" => $active,
             "inactive" => $inactive,
         ];
-        DB::table($request->table)->truncate();
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Peticion satisfactoria');
         data_set($response, 'data', $data);
