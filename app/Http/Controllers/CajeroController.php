@@ -8,9 +8,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 // use Illuminate\Support\Facades\DB;
 // use Illuminate\Support\Facades\Hash; 
+use App\Services\GlobalService;
+
 
 class CajeroController extends Controller
 {
+    protected $validationService;
+    public function __construct(GlobalService $validationService)
+    {
+        $this->validationService = $validationService;
+    }
     protected $rules = [
             'numero'=> 'required|integer',
             'nombre'=>'required|string|max:50',
@@ -147,45 +154,32 @@ class CajeroController extends Controller
         return response()->json($response,$response["status_code"]);
     }
 
-    public function storeBatchCajero(Request $request) {
+    public function storeBatchCajero(Request $request)     {
         $data = $request->all();
         $validatedDataInsert = [];
-        // $validatedDataUpdate = [];
-        foreach ($data as $item) {
-            $validated = Validator::make($item, [
-                'numero'=> 'required|integer',
-                'nombre'=>'required|string|max:50',
-                'direccion'=>'required|string|max:50',
-                'colonia'=>'required|string|max:50',
-                'estado'=>'required|string|max:50',
-                'telefono'=>'required|string|max:20',
-                'fax'=>'required|string|max:50',
-                'mail'=>'required|string|max:50',
-                'baja'=>'nullable|string|max:1',
-                'clave_cajero'=>'required|string|max:50',
-            ]);
-            if ($validated->fails()) {
-                Log::info($validated->messages()->all());
-                continue;
-            }
-            // $exists = Cajeros::where('numero', '=', $item['numero'])->exists();
-            // if (!$exists) {
-                $validatedDataInsert[] = $validated->validated();
-            // } else {
-            //     $validatedDataUpdate[] = $validated->validated();
-            //}
-        }
+        $alert_text = "";
+        $validatedDataUpdate = [];
+        $this->validationService->validateAndProcessData(
+            "numero",
+            $data,
+            $this->rules,
+            $this->messages,
+            $alert_text,
+            Cajeros::class,
+            $validatedDataInsert,
+            $validatedDataUpdate
+        );
         if (!empty($validatedDataInsert)) {
             Cajeros::insert($validatedDataInsert);
         }
-        // if (!empty($validatedDataUpdate)) {
-        //     foreach ($validatedDataUpdate as $updateItem) {
-        //         Cajeros::where('numero', $updateItem['numero'])->update($updateItem);
-        //     }
-        // }
+        if (!empty($validatedDataUpdate)) {
+            foreach ($validatedDataUpdate as $updateItem) {
+                Cajeros::where('numero', $updateItem['numero'])->update($updateItem);
+            }
+        }
         $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'Lista de Cajeros insertados correctamente.');
-        data_set($response, 'alert_text', 'Cajero insertados.');
+        data_set($response, 'message', 'Lista de Productos insertados correctamente.');
+        data_set($response, 'alert_text', 'Productos insertados.');
         return response()->json($response, $response['status_code']);
     }
 }
