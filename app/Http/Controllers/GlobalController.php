@@ -50,4 +50,27 @@ class GlobalController extends Controller
         data_set($response, 'data', $data);
         return response()->json($response, $response['status_code']);
     }
+
+    public function registrosGenerales(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'table' => ['required', 'string'],
+        ]);
+        if ($validator->fails()) {
+            $alert_text = implode("<br>", $validator->messages()->all());
+            $response = ObjectResponse::BadResponse($alert_text);
+            data_set($response, 'message', 'Informacion no valida');
+            return response()->json($response, $response['status_code']);
+        }
+
+        $active = DB::table($request->table)->count();
+        
+        $data = [
+            "active" => $active
+        ];
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'Peticion satisfactoria');
+        data_set($response, 'data', $data);
+        return response()->json($response, $response['status_code']);
+    }
 }

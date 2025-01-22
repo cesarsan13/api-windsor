@@ -136,6 +136,7 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(GlobalController::class)->group(function () {
     Route::delete('/global', 'delete');
     Route::post('/global/baja', 'activeInactiveBaja');
+    Route::post('/global/general', 'registrosGenerales');
 });
 
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(AlumnoController::class)->group(function () {
