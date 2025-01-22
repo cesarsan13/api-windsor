@@ -6,9 +6,18 @@ use Illuminate\Http\Request;
 use App\Models\ObjectResponse;
 use App\Models\Comentarios;
 use Illuminate\Support\Facades\Validator;
+use App\Services\GlobalService;
+use Illuminate\Support\Facades\Log;
+
 
 class ComentariosController extends Controller
 {
+    protected $validationService;
+    public function __construct(GlobalService $validationService)
+    {
+        $this->validationService = $validationService;
+    }
+
     protected $messages = [
         'required' => 'El campo :attribute es obligatorio.',
         'max' => 'El campo :attribute no puede tener más de :max caracteres.',
@@ -148,31 +157,18 @@ class ComentariosController extends Controller
     public function storeBatchComentarios (Request $request){
         $data = $request->all();
         $validatedDataInsert = [];
+        $alert_text = "";
         $validatedDataUpdate = [];
-
-        foreach($data as $item){
-            $validated = Validator::make($item,[
-                'numero' => 'required|integer',
-                'comentario_1' => 'required|string|max:50',
-                'comentario_2' => 'nullable|string|max:50',
-                'comentario_3' => 'nullable|string|max:50',
-                'generales' => 'nullable|integer|max:1',
-                'baja' => 'nullable|string|max:1',
-            ]);
-
-            if ($validated->fails()) {
-                Log::info($validated->messages()->all());
-                continue;
-            }
-
-            $exists = Comentarios::where('numero', '=', $item['numero'])->exists();
-
-            if (!$exists) {
-                $validatedDataInsert[] = $validated->validated();
-            } else {
-                $validatedDataUpdate[] = $validated->validated();
-            }
-        }
+        $this->validationService->validateAndProcessData(
+            "numero",
+            $data,
+            $this->rules,
+            $this->messages,
+            $alert_text,
+            Comentarios::class,
+            $validatedDataInsert,
+            $validatedDataUpdate
+        );
 
         if(!empty($validatedDataInsert)){
             Comentarios::insert($validatedDataInsert);
@@ -183,10 +179,13 @@ class ComentariosController extends Controller
                 Comentarios::where('numero', $updateItem['numero'])->update($updateItem);
             }
         }
-
-        $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'Lista de Comentarios insertados correctamente.');
-        data_set($response, 'alert_text', 'Comentarios insertados.');
+        if($alert_text){
+            $response = ObjectResponse::BadResponse($alert_text);
+        } else {
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Lista de Comentarios insertados correctamente.');
+            data_set($response, 'alert_text', 'Todos los Comentarios se insertaron correctamente.');
+        }
         return response()->json($response, $response['status_code']);
     }
 }

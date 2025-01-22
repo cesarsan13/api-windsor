@@ -9,9 +9,16 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use App\Services\GlobalService;
 
 class AsignaturasController extends Controller
 {
+    protected $validationService;
+    public function __construct(GlobalService $validationService)
+    {
+        $this->validationService = $validationService;
+    }
+
     protected $messages = [
         'required' => 'El campo :attribute es obligatorio.',
         'max' => 'El campo :attribute no puede tener más de :max caracteres.',
@@ -214,34 +221,35 @@ class AsignaturasController extends Controller
     public function storeBatchAsignatura(Request $request){
         $data = $request->all();
         $validatedDataInsert = [];
-
-        foreach($data as $item){
-            $validated = Validator::make($item, [
-                'numero' => 'required|numeric',
-                'descripcion' => 'required|string|max:100',
-                'baja' => 'nullable|string|max:1',
-                'evaluaciones' => 'required|integer',
-                'actividad' => 'required|string|max:10',
-                'area' => 'required|integer',
-                'orden' => 'required|integer',
-                'lenguaje' => 'required|string|max:15',
-                'caso_evaluar' => 'required|string|max:15',
-            ]);
-
-            if($validated->fails()){
-                Log::info($validated->messages()->all());
-                continue;
-            }
-            $validatedDataInsert[] = $validated->validated();
-        }
+        $alert_text = "";
+        $validatedDataUpdate = [];
+        $this->validationService->validateAndProcessData(
+            "numero",
+            $data,
+            $this->rules,
+            $this->messages,
+            $alert_text,
+            Asignaturas::class,
+            $validatedDataInsert,
+            $validatedDataUpdate
+        );
 
         if(!empty($validatedDataInsert)){
             Asignaturas::insert($validatedDataInsert);
         }
+        if(!empty($validatedDataUpdate)){
+            foreach ($validatedDataUpdate as $updateItem) {
+                Asignaturas::where('numero', $updateItem['numero'])->update($updateItem);
+            }
+        }
 
-        $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'Lista de Asignaturas insertadas correctamente.');
-        data_set($response, 'alert_text', 'Asignaturas insertadas.');
+        if($alert_text){
+            $response = ObjectResponse::BadResponse($alert_text);
+        } else {
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Lista de Asignaturas insertadas correctamente.');
+            data_set($response, 'alert_text', 'Todas las Asignaturas se insertaron correctamente.');
+        }
         return response()->json($response, $response['status_code']);
     }
 }
