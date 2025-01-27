@@ -36,6 +36,21 @@ class ActividadController extends Controller
         'EB5' => 'required|integer',
         'baja' => 'nullable|string',
     ];
+
+    protected $rules2 = [
+        'materia' => 'required|integer',
+        'secuencia' => 'required|integer',
+        'matDescripcion' => 'required|string',
+        'descripcion' => 'required|string',
+        'evaluaciones' => 'nullable|integer',
+        'EB1' => 'required|integer',
+        'EB2' => 'required|integer',
+        'EB3' => 'required|integer',
+        'EB4' => 'required|integer',
+        'EB5' => 'required|integer',
+        'baja' => 'nullable|string',
+    ];
+
     public function getActividades()
     {
         $response = ObjectResponse::DefaultResponse();
@@ -142,7 +157,7 @@ class ActividadController extends Controller
         $this->validationService->validateAndProcessData(
             "materia",
             $data,
-            $this->rules,
+            $this->rules2,
             $this->messages,
             $alert_text,
             Actividad::class,
@@ -151,11 +166,6 @@ class ActividadController extends Controller
         );
         if (!empty($validatedDataInsert)) {
             Actividad::insert($validatedDataInsert);
-        }
-        if (!empty($validatedDataUpdate)) {
-            foreach ($validatedDataUpdate as $updateItem) {
-                Actividad::where('materia', $updateItem['materia'])->update($updateItem);
-            }
         }
         if ($alert_text) {
             $response = ObjectResponse::BadResponse($alert_text);
