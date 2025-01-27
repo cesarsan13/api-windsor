@@ -45,6 +45,7 @@ use App\Http\Controllers\ReferenciaController;
 use App\Http\Middleware\SetDatabaseConnection;
 use App\Http\Controllers\EstructurasController;
 use App\Http\Controllers\GlobalController;
+use App\Http\Controllers\SubMenusController;
 
 // Route::get('/proyectos', function () {
 //     return response()->json([
@@ -329,7 +330,10 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::post('/accesos-menu/save', 'save');
     Route::put('/accesos-menu/update', 'update');
 });
-
+Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(SubMenusController::class)->group(function () {
+    Route::get('/sub-menus', 'index');
+    Route::get('/sub-menus/baja', 'baja');
+});
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(MenusController::class)->group(function () {
     Route::get('/menu/get', 'index');
     Route::get('/menu/baja', 'indexBaja');
