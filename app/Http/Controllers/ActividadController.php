@@ -154,8 +154,9 @@ class ActividadController extends Controller
         $validatedDataInsert = [];
         $alert_text = "";
         $validatedDataUpdate = [];
-        $this->validationService->validateAndProcessData(
+        $this->validationService->validateAndProcessDataDoblePK(
             "materia",
+            "secuencia",
             $data,
             $this->rules2,
             $this->messages,
