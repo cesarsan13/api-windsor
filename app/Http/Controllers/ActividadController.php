@@ -9,9 +9,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use App\Services\GlobalService;
 
 class ActividadController extends Controller
 {
+    protected $validationService;
+    public function __construct(GlobalService $validationService)
+    {
+        $this->validationService = $validationService;
+    }
+
     protected $messages = [
         'required' => 'El campo :attribute es obligatorio.',
         'max' => 'El campo :attribute no puede tener más de :max caracteres.',
@@ -125,5 +132,39 @@ class ActividadController extends Controller
         data_set($response, 'message', 'peticion satisfactoria | Ultima Secuencia Actividad');
         data_set($response, 'data', $siguiente);
         return response()->json($response, $response['status_code']);
+    }
+
+    public function storeBatchActividad(Request $request){
+        $data = $request->all();
+        $validatedDataInsert = [];
+        $alert_text = "";
+        $validatedDataUpdate = [];
+        $this->validationService->validateAndProcessData(
+            "materia",
+            $data,
+            $this->rules,
+            $this->messages,
+            $alert_text,
+            Actividad::class,
+            $validatedDataInsert,
+            $validatedDataUpdate
+        );
+        if (!empty($validatedDataInsert)) {
+            Actividad::insert($validatedDataInsert);
+        }
+        if (!empty($validatedDataUpdate)) {
+            foreach ($validatedDataUpdate as $updateItem) {
+                Actividad::where('materia', $updateItem['materia'])->update($updateItem);
+            }
+        }
+        if ($alert_text) {
+            $response = ObjectResponse::BadResponse($alert_text);
+        } else {
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Lista de Actividades insertadas correctamente.');
+            data_set($response, 'alert_text', 'Todos las actividades se insertaron correctamente.');
+        }
+        return response()->json($response, $response['status_code']);
+
     }
 }

@@ -284,6 +284,7 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::post('/actividades/post', 'postActividad');
     Route::post('/actividades/update', 'updateActividad');
     Route::post('/actividades/ultimaSecuencia', 'ultimaSecuencia');
+    Route::post('/actividades/batch', 'storeBatchActividad');
 });
 
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(ActCobranzaController::class)->group(function () {
