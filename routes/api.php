@@ -402,5 +402,8 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(EjecutablesController::class)->group(function () {
     Route::get('/ejecutable/index', 'index');
     Route::get('/ejecutable/indexBaja', 'indexBaja');
+    Route::get('/ejecutable/ultimo', 'siguiente');
+    Route::post('/ejecutable/alta', 'alta');
+    Route::post('/ejecutable/update', 'update');
     Route::post('/ejecutable', 'storeExe');
 });
