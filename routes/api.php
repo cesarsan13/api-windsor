@@ -39,6 +39,7 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ConcentradoCalificacionesController;
+use App\Http\Controllers\EjecutablesController;
 use App\Http\Controllers\MenusController;
 use App\Http\Controllers\PropietarioController;
 use App\Http\Controllers\ReferenciaController;
@@ -396,4 +397,9 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::post('/referencia/post', 'save');
     Route::post('/referencia/update', 'update');
     Route::get('/referencia/ultimo', 'siguiente');
+});
+
+Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(EjecutablesController::class)->group(function () {
+    Route::get('/ejecutable', 'index');
+    Route::post('/ejecutable', 'storeExe');
 });
