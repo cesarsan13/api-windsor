@@ -28,7 +28,7 @@ class punto_menuSeeder extends Seeder
             ],
             [
                 'clave_punto' => 4,
-                'descripcion_punto' => 'Utilerías'
+                'descripcion_punto' => 'Utilerias'
             ],
         ];
 

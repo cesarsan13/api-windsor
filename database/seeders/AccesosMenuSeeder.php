@@ -378,6 +378,14 @@ class AccesosMenuSeeder extends Seeder
                 'menu' => 'Utilerias',
                 'baja' => ''
             ],
+            [
+                'numero' => 46,
+                'ruta' => '/aplicaciones_ejecutables',
+                'descripcion' => 'Aplicaciones .EXE',
+                'icono' => '',
+                'menu' => 'Utilerias',
+                'baja' => ''
+            ],
         ];
         foreach ($registros as $registro) {
             DB::table('accesos_menu')->updateOrInsert(

@@ -29,6 +29,20 @@ class EjecutablesController extends Controller
             return response()->json($response, $response['status_code']);
         }
     }
+    public function indexBaja()
+    {
+        $response = ObjectResponse::DefaultResponse();
+        try {
+            $ejecutables =  Ejecutables::where('baja', '=', '*')->get();
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Peticion satisfactoria');
+            data_set($response, 'data', $ejecutables);
+            return response()->json($response, $response['status_code']);
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+            return response()->json($response, $response['status_code']);
+        }
+    }
 
     public function storeExe(Request $request)
     {

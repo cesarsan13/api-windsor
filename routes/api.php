@@ -400,6 +400,7 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
 });
 
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(EjecutablesController::class)->group(function () {
-    Route::get('/ejecutable', 'index');
+    Route::get('/ejecutable/index', 'index');
+    Route::get('/ejecutable/indexBaja', 'indexBaja');
     Route::post('/ejecutable', 'storeExe');
 });
