@@ -37,22 +37,28 @@ class EjecutablesController extends Controller
         if ($validator->fails()) {
             $alert_text = implode("<br>", $validator->messages()->all());
             $response = ObjectResponse::BadResponse($alert_text);
-            data_set($response, 'message', 'Informacion no valida');
+            data_set($response, 'message', 'Información no válida');
             return response()->json($response, $response['status_code']);
         }
-        exec($request->ruta_archivo, $output, $return_var);
-        if ($return_var === 0) {
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Archivo ejecutado correctamente',
-                'output' => $output
-            ]);
-        } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Hubo un error al ejecutar el archivo',
-                'output' => $output
-            ]);
+        $rutaArchivo = escapeshellarg($request->ruta_archivo);
+        if (!file_exists($request->ruta_archivo)) {
+            $response = ObjectResponse::BadResponse("El archivo no existe en la ruta proporcionada: " . $request->ruta_archivo);
+            data_set($response, 'message', 'El archivo no existe en la ruta proporcionada');
+            return response()->json($response, $response['status_code']);
         }
+        $output = [];
+        $return_var = 0;
+        exec("start \"\" /B " . $rutaArchivo . " > NUL 2>&1", $output, $return_var);
+        if ($return_var === 0) {
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'peticion satisfactoria | Cajero actualizado');
+            data_set($response, 'alert_text', 'Cajero actualizado.');
+        } else { 
+            $response = ObjectResponse::CatchResponse("Hubo un error al ejecutar el archivo, por favor verifique que el archivo sea ejecutable o que laravel tenga los permisos necesarios para ejecutarlo.");
+            data_set($response, 'message', 'Hubo un error al ejecutar el archivo');
+            data_set($response, 'codigo_error', $return_var);
+            data_set($response, 'output', $output);
+        }
+        return response()->json($response, $response['status_code']);
     }
 }
