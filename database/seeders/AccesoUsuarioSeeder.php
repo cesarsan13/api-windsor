@@ -418,6 +418,15 @@ class AccesoUsuarioSeeder extends Seeder
                 'bajas' => 1,
                 'cambios' => 1,
                 'impresion' => 1
+            ],
+            [
+                'id_usuario' => 1,
+                'id_punto_menu' => 46,
+                't_a' => 1,
+                'altas' => 1,
+                'bajas' => 1,
+                'cambios' => 1,
+                'impresion' => 1
             ]
         ];
 
