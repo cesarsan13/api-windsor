@@ -38,13 +38,13 @@ class GlobalController extends Controller
             data_set($response, 'message', 'Informacion no valida');
             return response()->json($response, $response['status_code']);
         }
-
-        $active = DB::table($request->table)->select('baja')->where('baja', '<>', '*')->count();
-        $inactive = DB::table($request->table)->select('baja')->where('baja', '=', '*')->count();
-        $data = [
-            "active" => $active,
-            "inactive" => $inactive,
-        ];
+        $data = DB::table($request->table)->get();
+        // $active = DB::table($request->table)->select('baja')->where('baja', '<>', '*')->count();
+        // $inactive = DB::table($request->table)->select('baja')->where('baja', '=', '*')->count();
+        // $data = [
+        //     "active" => $active,
+        //     "inactive" => $inactive,
+        // ];
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Peticion satisfactoria');
         data_set($response, 'data', $data);
@@ -64,7 +64,7 @@ class GlobalController extends Controller
         }
 
         $active = DB::table($request->table)->count();
-        
+
         $data = [
             "active" => $active
         ];
