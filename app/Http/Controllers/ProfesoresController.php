@@ -95,6 +95,9 @@ class ProfesoresController extends Controller
 
     public function save(Request $request)
     {
+        $ultimo_profesor = $this->siguiente();
+        $nuevo_profesor = intval($ultimo_profesor->getData()->data) + 1;
+        $request->merge(['numero' => $nuevo_profesor]);
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         $response = ObjectResponse::DefaultResponse();
         if ($validator->fails()) {

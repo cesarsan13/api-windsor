@@ -97,7 +97,9 @@ class CajeroController extends Controller
     }
 
     public function PostCajeros(Request $request){
-        // dd($request->all());
+        $ultimo_cajero = $this->siguiente();
+        $nuevo_cajero = intval($ultimo_cajero->getData()->data) + 1;
+        $request->merge(['numero' => $nuevo_cajero]);
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         $response = ObjectResponse::DefaultResponse();
         if ($validator->fails()) {
