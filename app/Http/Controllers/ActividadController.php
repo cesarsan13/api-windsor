@@ -54,23 +54,34 @@ class ActividadController extends Controller
     public function getActividades()
     {
         $response = ObjectResponse::DefaultResponse();
-        $actividad = DB::table('actividades')->where('baja', '<>', '*')->get();
-        $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'peticion satisfactoria | lista de Actividades');
-        data_set($response, 'data', $actividad);
+        try{
+            $actividad = DB::table('actividades')->where('baja', '<>', '*')->get();
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'peticion satisfactoria | lista de Actividades');
+            data_set($response, 'data', $actividad);
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+        }
         return response()->json($response, $response['status_code']);
     }
+
     public function getActividadesBaja()
     {
         $response = ObjectResponse::DefaultResponse();
-        $actividad = DB::table('actividades')->where('baja', '=', '*')->get();
-        $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'peticion satisfactoria | lista de Actividades');
-        data_set($response, 'data', $actividad);
+        try{
+            $actividad = DB::table('actividades')->where('baja', '=', '*')->get();
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'peticion satisfactoria | lista de Actividades');
+            data_set($response, 'data', $actividad);
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+        }
         return response()->json($response, $response['status_code']);
     }
+
     public function postActividad(Request $request)
-    {
+    {   
+        try{
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         $response = ObjectResponse::DefaultResponse();
         if ($validator->fails()) {
@@ -108,8 +119,15 @@ class ActividadController extends Controller
         ]);
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Petición satisfactoria : Datos insertados correctamente');
+        data_set($response, 'alert_text', 'Actividad registrada');
+        data_set($response, 'alert_icon', 'success');
+        data_set($response, 'data', $nuevaActividad);
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+        }
         return response()->json($response, $response['status_code']);
     }
+
     public function updateActividad(Request $request)
     {
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
@@ -120,32 +138,46 @@ class ActividadController extends Controller
             data_set($response, 'message', 'Informacion no valida');
             return response()->json($response, $response['status_code']);
         }
-        $asignatura = Asignaturas::find($request->materia);
-        $actividad = Actividad::where('materia', $request->materia)
-            ->where('secuencia', $request->secuencia)
-            ->update([
-                'matDescripcion' => $asignatura->descripcion ?? '',
-                'descripcion' => $request->descripcion,
-                'evaluaciones' => $request->evaluaciones ?? 0,
-                'EB1' => $request->EB1,
-                'EB2' => $request->EB2,
-                'EB3' => $request->EB3,
-                'EB4' => $request->EB4,
-                'EB5' => $request->EB5,
-                'baja' => $request->baja ?? '',
-            ]);
-        $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'Peticion satisfactoria : Datos Actualizados');
-        data_set($response, 'data', $actividad);
+        try{
+            $asignatura = Asignaturas::find($request->materia);
+            $actividad = Actividad::where('materia', $request->materia)
+                ->where('secuencia', $request->secuencia)
+                ->update([
+                    'matDescripcion' => $asignatura->descripcion ?? '',
+                    'descripcion' => $request->descripcion,
+                    'evaluaciones' => $request->evaluaciones ?? 0,
+                    'EB1' => $request->EB1,
+                    'EB2' => $request->EB2,
+                    'EB3' => $request->EB3,
+                    'EB4' => $request->EB4,
+                    'EB5' => $request->EB5,
+                    'baja' => $request->baja ?? '',
+                ]);
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Peticion satisfactoria : Datos Actualizados');
+            data_set($response, 'alert_text', 'Actividad actualizada');
+            data_set($response, 'alert_icon', 'success');
+            //data_set($response, 'data', $actividad);
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+            data_set($response, 'message', 'Peticion fallida | Actualizacion de Actividad');
+            data_set($response, 'data', $ex);
+        }
+            //data_set($response, 'data', $actividad);
         return response()->json($response, $response['status_code']);
     }
     public function ultimaSecuencia(Request $request)
     {
         $response = ObjectResponse::DefaultResponse();
-        $siguiente = Actividad::where('materia','=', $request->materia)->max('secuencia')+1;        
-        $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'peticion satisfactoria | Ultima Secuencia Actividad');
-        data_set($response, 'data', $siguiente);
+        try{
+            $siguiente = Actividad::where('materia','=', $request->materia)->max('secuencia')+1;        
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'peticion satisfactoria | Ultima Secuencia Actividad');
+            data_set($response, 'alert_text', 'Siguiente Secuencia');
+            data_set($response, 'data', $siguiente);
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+        }
         return response()->json($response, $response['status_code']);
     }
 

@@ -142,9 +142,9 @@ class AsignaturasController extends Controller
             $asignatura->cve_seg = "";
             $asignatura->baja = "";
             $asignatura->evaluaciones = $request->evaluaciones;
-            if($request->actividad){
+            if($request->actividad === "true"){
                 $asignatura->actividad =  "Si";
-            }else{
+            }else if ($request->actividad === "false"){
                 $asignatura->actividad =  "No";
             }
             $asignatura->area = $request->area;
@@ -155,12 +155,13 @@ class AsignaturasController extends Controller
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'Petición satisfactoria | Asignatura registrada.');
             data_set($response, 'alert_text', 'Asignatura registrada');
+            data_set($response, 'alert_icon', 'success');
             data_set($response, 'data', $request->numero);
             return response()->json($response, $response['status_code']);
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
-            return response()->json($response, $response['status_code']);
         }
+        return response()->json($response, $response['status_code']);
     }
     public function updateSubject(Request $request,$numero)
     {
@@ -194,9 +195,9 @@ class AsignaturasController extends Controller
             }
             $asignatura->baja =  $request->baja;
             $asignatura->evaluaciones = $request->evaluaciones;
-            if($request->actividad){
+            if($request->actividad === "true"){
                 $asignatura->actividad =  "Si";
-            }else{
+            }else if ($request->actividad === "false"){
                 $asignatura->actividad =  "No";
             }
             $asignatura->area = $request->area;
