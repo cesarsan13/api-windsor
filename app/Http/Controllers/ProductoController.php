@@ -141,12 +141,17 @@ class ProductoController extends Controller
     }
     public function lastProduct()
     {
-        $maxId = DB::table('productos')->max('numero');
-        $response = ObjectResponse::CorrectResponse();
-        Log::info($maxId);
-        data_set($response, 'message', 'Peticion satisfactoria');
-        data_set($response, 'data', $maxId);
-        return response()->json($response, $response['status_code']);
+        $response = ObjectResponse::DefaultResponse();
+        try {
+            $siguiente = Producto::max('numero');
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'peticion satisfactoria | Siguiente Producto');
+            data_set($response, 'alert_text', 'Siguiente Producto');
+            data_set($response, 'data', $siguiente);
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response["status_code"]);
     }
     public function bajaProduct()
     {
@@ -164,6 +169,9 @@ class ProductoController extends Controller
     }
     public function storeProduct(Request $request)
     {
+        $ultimo_producto = $this->lastProduct();
+        $nuevo_producto = intval($ultimo_producto->getData()->data) + 1;
+        $request->merge(['numero' => $nuevo_producto]);
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         if ($validator->fails()) {
             $alert_text = implode("<br>", $validator->messages()->all());
@@ -171,24 +179,24 @@ class ProductoController extends Controller
             data_set($response, 'message', 'Informacion no valida');
             return response()->json($response, $response['status_code']);
         }
-        $producto = Producto::find($request->numero);
-        if ($producto) {
-            $response = ObjectResponse::BadResponse('El producto ya existe', 'Registro ya existente');
-            data_set($response, 'errors', ['numero' => ['Producto ya existe']]);
-            return response()->json($response, $response['status_code']);
-        }
+        // $producto = Producto::find($request->numero);
+        // if ($producto) {
+        //     $response = ObjectResponse::BadResponse('El producto ya existe', 'Registro ya existente');
+        //     data_set($response, 'errors', ['numero' => ['Producto ya existe']]);
+        //     return response()->json($response, $response['status_code']);
+        // }
         $producto = new Producto();
         $producto->numero = $request->numero;
-        $producto->descripcion = $request->descripcion;
-        $producto->costo = $request->costo;
-        $producto->frecuencia = $request->frecuencia;
-        $producto->por_recargo = $request->por_recargo;
-        $producto->aplicacion = $request->aplicacion;
-        $producto->iva = $request->iva;
-        $producto->cond_1 = $request->cond_1;
-        $producto->cam_precio = $request->cam_precio;
-        $producto->ref = $request->ref;
-        $producto->baja = $request->baja;
+        $producto->descripcion = $request->descripcion ?? "";
+        $producto->costo = $request->costo ?? "";
+        $producto->frecuencia = $request->frecuencia ?? "";
+        $producto->por_recargo = $request->por_recargo ?? "";
+        $producto->aplicacion = $request->aplicacion ?? "";
+        $producto->iva = $request->iva ?? "";
+        $producto->cond_1 = $request->cond_1 ?? "";
+        $producto->cam_precio = $request->cam_precio ?? "";
+        $producto->ref = $request->ref ?? "";
+        $producto->baja = $request->baja ?? "";
         $producto->save();
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Petición satisfactoria | Producto registrado.');
