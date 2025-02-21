@@ -68,9 +68,12 @@ class MenusController extends Controller
 
     public function save(Request $request)
     {
-        $response = ObjectResponse::CorrectResponse();
         try {
+            $ultimo_menu = $this->siguiente();
+            $nuevo_menu = intval($ultimo_menu->getData()->data);
+            $request->merge(['numero' => $nuevo_menu]);
             $validator = Validator::make($request->all(), $this->rules, $this->messages);
+            $response = ObjectResponse::CorrectResponse();
             if ($validator->fails()) {
                 $response = ObjectResponse::CatchResponse($validator->errors()->all());
                 return response()->json($response, $response['status_code']);
@@ -86,8 +89,10 @@ class MenusController extends Controller
             $acceso->nombre = $request->nombre;
             $acceso->baja = $request->baja ?? '';
             $acceso->save();
-            data_set($response, 'message', 'Peticion satisfactoria');
+            data_set($response, 'message', 'Peticion satisfactoria | Menu registrado.');
             data_set($response, 'alert_text', 'Menu Guardado');
+            data_set($response, 'alert_icon', 'success');
+            data_set($response, 'data', $request->numero);
         } catch (\Exception $e) {
             $response = ObjectResponse::CatchResponse($e->getMessage());
         }
