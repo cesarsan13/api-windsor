@@ -6,14 +6,23 @@ use Illuminate\Http\Request;
 use App\Models\ObjectResponse;
 use App\Models\TipoCobro;
 use Illuminate\Support\Facades\Validator;
+use App\Services\GlobalService;
+
 class TipoCobroController extends Controller
-{
+{   
+    protected $validationService;
+    public function __construct(GlobalService $validationService)
+    {
+        $this->validationService = $validationService;
+    }
+
     protected   $messages=[
         'required' => 'El campo :attribute es obligatorio.',
         'max' => 'El campo :attribute no puede tener más de :max caracteres.',
         'unique' => 'El campo :attribute ya ha sido registrado',
-        ];
-        protected $rules = [
+    ];
+
+    protected $rules = [
             'numero'=> 'required|integer',
             'descripcion'=>'required|string|max:50',
             'comision'=>'nullable|numeric',
@@ -21,37 +30,34 @@ class TipoCobroController extends Controller
             'cue_banco'=>'nullable|string|max:34',
             'baja'=>'nullable|string|max:1',
     ];
+
      public function index(){
         $response  = ObjectResponse::DefaultResponse();
         try {
-            $tipos_cobro = TipoCobro::where("baja",'<>','*')
-            ->get();
+            $tipos_cobro = TipoCobro::where("baja",'<>','*')->get();
             $response = ObjectResponse::CorrectResponse();
             data_set($response,'message','peticion satisfactoria | lista de tipos de cobro');
             data_set($response,'data',$tipos_cobro);
-
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
-        // dd($response);
-
         return response()->json($response,$response["status_code"]);
     }
-     public function indexBaja(){
+
+    public function indexBaja(){
         $response  = ObjectResponse::DefaultResponse();
         try {
-            $tipos_cobro = TipoCobro::where("baja",'=','*')
-            ->get();
+            $tipos_cobro = TipoCobro::where("baja",'=','*')->get();
             $response = ObjectResponse::CorrectResponse();
             data_set($response,'message','peticion satisfactoria | lista de tipos de cobro inactivos');
             data_set($response,'data',$tipos_cobro);
-
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response,$response["status_code"]);
     }
-        public function siguiente(){
+
+    public function siguiente(){
         $response  = ObjectResponse::DefaultResponse();
         try {
             $siguiente = TipoCobro::max('numero');
@@ -67,18 +73,20 @@ class TipoCobroController extends Controller
     }
 
     public function store(Request $request){
-        $validator = Validator::make($request->all(), $this->rules, $this->messages);
-        $response = ObjectResponse::DefaultResponse();
-        
-        if ($validator->fails()) {
-            $alert_text = implode("<br>", $validator->messages()->all());
-            $response = ObjectResponse::BadResponse($alert_text);
-            data_set($response, 'message', 'Informacion no valida');
-            data_set($response, 'alert_icon', 'error');
-            return response()->json($response, $response['status_code']);
-        }
-        
-        try {
+        try{
+            $ultimo_tipoCobro = $this->siguiente();
+            $nuevo_tipoCobro = intval($ultimo_tipoCobro->getData()->data) + 1;
+            $request->merge(['numero' => $nuevo_tipoCobro]);
+            $validator = Validator::make($request->all(), $this->rules, $this->messages);
+            $response = ObjectResponse::DefaultResponse();
+            if ($validator->fails()) {
+                $alert_text = implode("<br>", $validator->messages()->all());
+                $response = ObjectResponse::BadResponse($alert_text);
+                data_set($response, 'message', 'Informacion no valida');
+                data_set($response, 'alert_icon', 'error');
+                return response()->json($response, $response['status_code']);
+            }
+
             $datosFiltrados = $request->only([
                 'numero',
                 'descripcion',
@@ -86,9 +94,9 @@ class TipoCobroController extends Controller
                 'aplicacion',
                 'cue_banco',
             ]);
-            
+
             $datosFiltrados['comision'] = str_replace(',', '', (string)$datosFiltrados['comision']);
-    
+
             $nuevoCobro = TipoCobro::create([
                 "numero" => $datosFiltrados['numero'],
                 "descripcion" => $datosFiltrados['descripcion'],
@@ -97,15 +105,15 @@ class TipoCobroController extends Controller
                 "cue_banco" => $datosFiltrados['cue_banco'] ?? '',
                 "baja" => $datosFiltrados['baja'] ?? '',
             ]);
-            
+
             $response = ObjectResponse::CorrectResponse();
-            data_set($response, 'message', 'Petición satisfactoria | Tipo de Cobro registrado.');
+            data_set($response, 'message', 'Petición satisfactoria | Forma de Pago registrado.');
             data_set($response, 'alert_text', 'Forma de Pago registrada');
             data_set($response, 'alert_icon', 'success');
+            data_set($response, 'data', $request->numero);
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
-        
         return response()->json($response, $response['status_code']);
     }
     
@@ -136,7 +144,7 @@ class TipoCobroController extends Controller
                     "baja" => $baja,
                 ]);
             $response = ObjectResponse::CorrectResponse();
-            data_set($response, 'message', 'Petición satisfactoria | Tipo de cobro actualizado');
+            data_set($response, 'message', 'Petición satisfactoria | Forma de Pago actualizado');
             data_set($response, 'alert_text', 'Forma de Pago actualizada');
             data_set($response, 'alert_icon', 'success');
         } catch (\Exception $ex) {
@@ -150,27 +158,32 @@ class TipoCobroController extends Controller
     public function storeBatchTipoCobro(Request $request) {
         $data = $request->all();
         $validatedDataInsert = [];
-        foreach ($data as $item) {
-            $validated = Validator::make($item, [
-                'numero'=> 'required|integer',
-                'descripcion'=>'required|string|max:50',
-                'comision'=>'nullable|numeric',
-                'aplicacion'=>'nullable|string|max:30',
-                'cue_banco'=>'nullable|string|max:34',
-                'baja'=>'nullable|string|max:1',
-            ]);
-            if ($validated->fails()) {
-                Log::info($validated->messages()->all());
-                continue;
-            }
-            $validatedDataInsert[] = $validated->validated();
-        }
+        $alert_text = "";
+        $validatedDataUpdate = [];
+
+        $this->validationService->validateAndProcessData(
+            "numero",
+            $data,
+            $this->rules,
+            $this->messages,
+            $alert_text,
+            TipoCobro::class,
+            $validatedDataInsert,
+            $validatedDataUpdate
+        );
+        
         if (!empty($validatedDataInsert)) {
             TipoCobro::insert($validatedDataInsert);
         }
-        $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'Lista de Formas de Pago insertados correctamente.');
-        data_set($response, 'alert_text', 'Formas de Pago insertados.');
+
+        if($alert_text){
+            $response = ObjectResponse::BadResponse($alert_text);
+        } else {
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Lista de Formas de Pago insertados correctamente.');
+            data_set($response, 'alert_text', 'Formas de Pago insertados.');
+        }
+
         return response()->json($response, $response['status_code']);
     }
 }
