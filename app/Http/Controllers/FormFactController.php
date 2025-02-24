@@ -39,7 +39,7 @@ class FormFactController extends Controller
         try {
             $siguiente = FormFact::max('numero_forma');
             $response = ObjectResponse::CorrectResponse();
-            data_set($response, 'message', 'peticion satisfactoria | Siguiente Forma Factura');
+            data_set($response, 'message', 'Peticion satisfactoria | Siguiente Forma Factura');
             data_set($response, 'alert_text', 'Siguiente Forma Factura');
             data_set($response, 'data', $siguiente);
         } catch (\Exception $ex) {
@@ -63,7 +63,7 @@ class FormFactController extends Controller
                     "baja" => $request->baja ?? '',
                 ]);
             $response = ObjectResponse::CorrectResponse();
-            data_set($response, 'message', 'peticion satisfactoria | Forma Factura actualizada');
+            data_set($response, 'message', 'Peticion satisfactoria | Forma Factura actualizada');
             data_set($response, 'alert_text', 'Forma Factura actualizada');
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
@@ -86,14 +86,17 @@ class FormFactController extends Controller
     ];
 
     public function PostFormFact(Request $request)
-    {
-        $validator = Validator::make($request->all(), $this->rules, $this->messages);
-        $response = ObjectResponse::DefaultResponse();
-        if ($validator->fails()) {
-            $response = ObjectResponse::CatchResponse($validator->errors()->all());
-            return response()->json($response, $response['status_code']);
-        }
+    {   
         try {
+            $ultimoFormFact = $this->siguiente();
+            $nuevo_FormFact = intval($ultimoFormFact->getData()->data) + 1;
+            $request->merge(['numero_forma' => $nuevo_FormFact]);
+            $validator = Validator::make($request->all(), $this->rules, $this->messages);
+            $response = ObjectResponse::DefaultResponse();
+            if ($validator->fails()) {
+                $response = ObjectResponse::CatchResponse($validator->errors()->all());
+                return response()->json($response, $response['status_code']);
+            }
             $datosFiltrados = $request->only([
                 'numero_forma',
                 'nombre_forma',
@@ -107,12 +110,16 @@ class FormFactController extends Controller
                 "baja" => $datosFiltrados['baja'] ?? '',
             ]);
             $response = ObjectResponse::CorrectResponse();
-            data_set($response, 'message', 'peticion satisfactoria | Forma Factura registrada.');
+            data_set($response, 'message', 'Peticion satisfactoria | Forma Factura registrada.');
+            data_set($response, 'alert_text', 'Forma Factura registrada');
+            data_set($response, 'alert_icon', 'success');
+            data_set($response, 'data', $request->numero_forma);
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
         return response()->json($response, $response['status_code']);
     }
+
     public function indexBaja()
     {
         $response  = ObjectResponse::DefaultResponse();
@@ -120,7 +127,7 @@ class FormFactController extends Controller
             $formFact = FormFact::where("baja", '=', '*')
                 ->get();
             $response = ObjectResponse::CorrectResponse();
-            data_set($response, 'message', 'peticion satisfactoria | lista de Forma Facturas inactivos');
+            data_set($response, 'message', 'Peticion satisfactoria | Lista de Forma Facturas inactivos');
             data_set($response, 'data', $formFact);
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
