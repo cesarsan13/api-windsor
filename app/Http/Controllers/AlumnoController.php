@@ -513,11 +513,17 @@ class AlumnoController extends Controller
     }
     public function lastAlumn()
     {
-        $maxId = DB::table('alumnos')->max('numero');
-        $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'Peticion satisfactoria');
-        data_set($response, 'data', $maxId);
-        return response()->json($response, $response['status_code']);
+        $response = ObjectResponse::DefaultResponse();
+        try {
+            $siguiente = DB::table('alumnos')->max('numero');
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'peticion satisfactoria | Siguiente Alumno');
+            data_set($response, 'alert_text', 'Siguiente Alumno');
+            data_set($response, 'data', $siguiente);
+       } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response["status_code"]);
     }
     public function dataAlumSex()
     {
@@ -659,10 +665,9 @@ class AlumnoController extends Controller
     }
     public function storeAlumn(Request $request)
     {
-
         $response = $this->lastAlumn();
-        $nuevo_id = $response->getData()->data;
-        $request->merge(['numero' => $nuevo_id + 1]);
+        $nuevo_id = intval($response->getData()->data) + 1;
+        $request->merge(['numero' => $nuevo_id]);
         $validator = Validator::make($request->all(), $this->rules);
 
         if ($validator->fails()) {
