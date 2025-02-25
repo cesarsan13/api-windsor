@@ -334,6 +334,8 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(SubMenusController::class)->group(function () {
     Route::get('/sub-menus', 'index');
     Route::get('/sub-menus/baja', 'baja');
+    Route::post('/sub-menus', 'store');
+    Route::post('/sub-menus/update', 'update');
 });
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(MenusController::class)->group(function () {
     Route::get('/menu/get', 'index');
