@@ -84,6 +84,9 @@ class HorarioController extends Controller
     }
     public function postHorario(Request $request)
     {
+        $ultimo_horario = $this->ultimoHorario();
+        $nuevo_horario = intval($ultimo_horario->getData()->data) + 1;
+        $request->merge(['numero' => $nuevo_horario]);
         $validator = Validator::make($request->all(), $this->rules, $this->messages);
         $response = ObjectResponse::DefaultResponse();
         if ($validator->fails()) {
@@ -156,12 +159,16 @@ class HorarioController extends Controller
     public function ultimoHorario()
     {
         $response = ObjectResponse::DefaultResponse();
-        $siguiente = Horario::max('numero');
-        $siguiente = $siguiente !== null ? $siguiente + 1 : 1;
-        $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'peticion satisfactoria | lista de Horarios');
-        data_set($response, 'data', $siguiente);
-        return response()->json($response, $response['status_code']);
+        try {
+            $siguiente = Horario::max('numero');
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'peticion satisfactoria | Siguiente Horario');
+            data_set($response, 'alert_text', 'Siguiente Horario');
+            data_set($response, 'data', $siguiente);
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+        }
+        return response()->json($response, $response["status_code"]);
     }
 
     public function storeBatchHorario(Request $request) {
@@ -185,22 +192,11 @@ class HorarioController extends Controller
                 Log::info($validated->messages()->all());
                 continue;
             }
-            // $exists = Horario::where('numero', '=', $item['numero'])->exists();
-            // if (!$exists) {
                 $validatedDataInsert[] = $validated->validated();
-        //     } else {
-        //         $validatedDataUpdate[] = $validated->validated();
-        //     }
         }
         if (!empty($validatedDataInsert)) {
             Horario::insert($validatedDataInsert);
         }
-
-        // if (!empty($validatedDataUpdate)) {
-        //     foreach ($validatedDataUpdate as $updateItem) {
-        //         Cajeros::where('numero', $updateItem['numero'])->update($updateItem);
-        //     }
-        // }
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Lista de Horarios insertados correctamente.');
         data_set($response, 'alert_text', 'Horario insertados.');
