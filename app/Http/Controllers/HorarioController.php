@@ -139,22 +139,31 @@ class HorarioController extends Controller
             data_set($response, 'message', 'Informacion no valida');
             return response()->json($response, $response['status_code']);
         }
-        $horario = Horario::where('numero', $request->numero)
-            ->update([
-                'cancha' => $request->cancha,
-                'dia' => $request->dia,
-                'horario' => $request->horario,
-                'max_niños' => $request->max_niños,
-                'sexo' => $request->sexo,
-                'edad_ini' => $request->edad_ini,
-                'edad_fin' => $request->edad_fin,
-                'salon' => $request->salon,
-                'baja' => $request->baja ?? ''
-            ]);
-        $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'Horario Actualizado Correctamente');
-        data_set($response, 'data', $horario);
-        return response()->json($response, $response['status_code']);
+        try {
+            $horario = Horario::where('numero', $request->numero)
+                ->update([
+                    'cancha' => $request->cancha,
+                    'dia' => $request->dia,
+                    'horario' => $request->horario,
+                    'max_niños' => $request->max_niños,
+                    'sexo' => $request->sexo,
+                    'edad_ini' => $request->edad_ini,
+                    'edad_fin' => $request->edad_fin,
+                    'salon' => $request->salon,
+                    'baja' => $request->baja ?? ''
+                ]);
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Horario Actualizado Correctamente');
+            data_set($response, 'alert_text', 'Horario actualizado');
+            data_set($response, 'alert_icon', 'success');
+            data_set($response, 'data', $horario);
+        } catch (\Exception $ex) {
+            $response = ObjectResponse::CatchResponse($ex->getMessage());
+            data_set($response, 'message', 'Peticion fallida | Actualizacion de Horario');
+            data_set($response, 'data', $ex);
+            data_set($response, 'data', $horario);
+        }
+            return response()->json($response, $response['status_code']);
     }
     public function ultimoHorario()
     {
