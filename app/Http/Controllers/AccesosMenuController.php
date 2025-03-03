@@ -60,9 +60,12 @@ class AccesosMenuController extends Controller
     }
     public function save(Request $request)
     {
-        $response = ObjectResponse::CorrectResponse();
         try {
+            $ultimo_AccesoMenu = $this->siguiente();
+            $nuevo_AccessoMenu = intval($ultimo_AccesoMenu->getData()->data) + 1;
+            $request->merge(['numero' => $nuevo_AccessoMenu]);
             $validator = Validator::make($request->all(), $this->rules, $this->messages);
+            $response = ObjectResponse::CorrectResponse();
             if ($validator->fails()) {
                 $response = ObjectResponse::CatchResponse($validator->errors()->all());
                 return response()->json($response, $response['status_code']);

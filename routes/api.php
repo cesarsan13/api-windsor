@@ -342,7 +342,7 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::get('/menu/baja', 'indexBaja');
     Route::get('/menu/siguiente', 'siguiente');
     Route::post('/menu/save', 'save');
-    Route::put('/menu/update', 'update');
+    Route::post('/menu/update', 'update');
 });
 
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(CalificacionesController::class)->group(function () {

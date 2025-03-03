@@ -22,7 +22,7 @@ class MenusController extends Controller
     {
         $response = ObjectResponse::DefaultResponse();
         try {
-            $menus = Menus::select('numero', 'nombre')
+            $menus = Menus::select('numero', 'nombre', 'baja')
                 ->where('baja', '<>', '*')
                 ->orderBy('nombre', 'ASC')
                 ->get();
@@ -38,7 +38,7 @@ class MenusController extends Controller
     {
         $response = ObjectResponse::DefaultResponse();
         try {
-            $menus = Menus::select('numero', 'nombre')
+            $menus = Menus::select('numero', 'nombre', 'baja')
                 ->where('baja', '=', '*')
                 ->orderBy('nombre', 'ASC')
                 ->get();
