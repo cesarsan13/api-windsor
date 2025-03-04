@@ -31,6 +31,7 @@ class SubMenusController extends Controller
                 'accesos_menu.descripcion as menu_descripcion',
                 'accesos_menu.menu',
                 'accesos_menu.ruta as menu_ruta',
+                'sub_menus.baja',
             )
                 ->leftJoin('accesos_menu', 'accesos_menu.numero', '=', 'sub_menus.id_acceso')
                 ->where('sub_menus.baja', '<>', '*')
@@ -61,6 +62,7 @@ class SubMenusController extends Controller
                 'accesos_menu.descripcion as menu_descripcion',
                 'accesos_menu.menu',
                 'accesos_menu.ruta as menu_ruta',
+                'sub_menus.baja',
             )
                 ->leftJoin('accesos_menu', 'accesos_menu.numero', '=', 'sub_menus.id_acceso')
                 ->where('sub_menus.baja', '=', '*')
