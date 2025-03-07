@@ -274,8 +274,8 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
 });
 
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(ClasesController::class)->group(function () {
-    Route::post('/clase', 'postClases');
-    Route::post('/clase/updateClases', 'updateClases');
+    Route::post('/saveClase', 'postClases');
+    Route::post('/updateClase', 'updateClases');
     Route::get('/clase/baja', 'indexBaja');
     Route::get("/clase", "index");
 });

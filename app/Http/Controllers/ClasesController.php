@@ -24,11 +24,13 @@ class ClasesController extends Controller
         'domingo' => 'nullable|string|max:10',
         'baja' => 'nullable|string|max:1',
     ];
+
     protected   $messages = [
         'required' => 'El campo :attribute es obligatorio.',
         'max' => 'El campo :attribute no puede tener más de :max caracteres.',
         'unique' => 'El campo :attribute ya ha sido registrado',
     ];
+
     public function index()
     {
         $response = ObjectResponse::DefaultResponse();
@@ -36,11 +38,11 @@ class ClasesController extends Controller
             $clas = Clases::select(
                 'clases.*',
                 DB::raw("CONCAT(profesores.nombre, ' ', profesores.ap_paterno, ' ', profesores.ap_materno) as profesor_nombre"),
-                'materias.descripcion as materia_descripcion',
+                'asignaturas.descripcion as materia_descripcion',
                 'horarios.horario as grupo_descripcion'
             )
                 ->leftJoin('profesores', 'clases.profesor', '=', 'profesores.numero')
-                ->leftJoin('materias', 'clases.materia', '=', 'materias.numero')
+                ->leftJoin('asignaturas', 'clases.materia', '=', 'asignaturas.numero')
                 ->leftJoin('horarios', 'clases.grupo', '=', 'horarios.numero')
                 ->where('clases.baja', '')
                 ->get()
@@ -89,6 +91,7 @@ class ClasesController extends Controller
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'peticion satisfactoria | Clase actualizada');
             data_set($response, 'alert_text', 'Clase actualizada.');
+            data_set($response, 'alert_icon', 'success');
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
             data_set($response, 'message', 'Peticion fallida | Actualizacion de Clase');
@@ -144,12 +147,14 @@ class ClasesController extends Controller
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'message', 'peticion satisfactoria | Clase registrada.');
             data_set($response, 'alert_text', 'Clase registrada.');
+            data_set($response, 'alert_icon', 'success');
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
             data_set($response, 'alert_text', $ex->getMessage());
         }
         return response()->json($response, $response['status_code']);
     }
+
     public function indexBaja()
     {
         $response  = ObjectResponse::DefaultResponse();
@@ -157,11 +162,11 @@ class ClasesController extends Controller
             $clas = Clases::select(
                 'clases.*',
                 DB::raw("CONCAT(profesores.nombre, ' ', profesores.ap_paterno, ' ', profesores.ap_materno) as profesor_nombre"),
-                'materias.descripcion as materia_descripcion',
+                'asignaturas.descripcion as materia_descripcion',
                 'horarios.horario as grupo_descripcion'
             )
                 ->leftJoin('profesores', 'clases.profesor', '=', 'profesores.numero')
-                ->leftJoin('materias', 'clases.materia', '=', 'materias.numero')
+                ->leftJoin('asignaturas', 'clases.materia', '=', 'asignaturas.numero')
                 ->leftJoin('horarios', 'clases.grupo', '=', 'horarios.numero')
                 ->where('clases.baja', '*')
                 ->get()
