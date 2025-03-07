@@ -78,6 +78,8 @@ Route::middleware([SetDatabaseConnection::class])->controller(RegisterController
 Route::middleware([SetDatabaseConnection::class])->controller(AuthController::class)->group(function () {
     Route::post('/login', 'login');
     Route::post('/recuperacion', 'recuperaContra');
+    Route::post('/verificacion', 'enviarCodigoVerificacion');
+    Route::post('/comprobacion', 'verificarCodigo');
 });
 
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(TipoCobroController::class)->group(function () {
