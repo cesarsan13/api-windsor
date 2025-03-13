@@ -79,7 +79,7 @@ Route::middleware([SetDatabaseConnection::class])->controller(AuthController::cl
     Route::post('/login', 'login');
     Route::post('/recuperacion', 'recuperaContra');
     // Route::post('/codigo-enviar', 'enviarCodigoVerificacion');
-    Route::post('/codigo-verificar', 'verificarCodigo');
+    //Route::post('/codigo-verificar', 'verificarCodigo');
 });
 
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(TipoCobroController::class)->group(function () {
