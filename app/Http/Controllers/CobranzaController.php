@@ -117,7 +117,7 @@ class CobranzaController extends Controller
     {
         $cobranza = CobranzaDiaria::where('recibo', $request->recibo)
             ->update([
-                "cue_banco" => $request->cue_banco,
+                "cuen_banco" => $request->cue_banco,
                 "referencia" => $request->referencia,
                 "importe" => $request->importe
             ]);
