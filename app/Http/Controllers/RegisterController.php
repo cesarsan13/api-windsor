@@ -16,12 +16,21 @@ class RegisterController extends Controller
         'max' => 'El campo :attribute no puede tener más de :max caracteres.',
         'min' => 'El campo :attribute debe tener al menos :min caracteres.',
         'unique' => 'El :attribute ya ha sido registrado anteriormente.',
+        'password.regex' => 'La contraseña debe tener al menos 8 caracteres, incluyendo una mayúscula, una minúscula, un número y un carácter especial.',
     ];
     protected $rules = [
         'name' => 'required|string|max:250|unique:users',
         'nombre' => 'required|string|max:50|unique:users',
         'email' => 'required|email|max:40|unique:users',
-        'password' => 'required|string|min:6',
+        'password' => [
+            'required',
+            'string',
+            'min:8',
+            'regex:/[A-Z]/',          
+            'regex:/[a-z]/',         
+            'regex:/[0-9]/',         
+            'regex:/[!@#$%^&*(),.?":{}|<>]/' 
+        ],  
     ];
 
     public function Register(Request $request)
@@ -32,9 +41,9 @@ class RegisterController extends Controller
 
         $validatorUsuario = Validator::make($request->all(), $this->rules, $this->messages);
         if ($validatorUsuario->fails()) {
-            $errors = implode('<br>', $validatorUsuario->errors()->all());
+            $errors = implode(' ', $validatorUsuario->errors()->all());
             $response = ObjectResponse::CatchResponse($errors);
-            data_set($response, 'alert_text', $errors);
+            // data_set($response, 'alert_text', $errors);
             return response()->json($response, $response['status_code']);
         }        
         try {
