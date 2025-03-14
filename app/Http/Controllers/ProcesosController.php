@@ -126,14 +126,13 @@ class ProcesosController extends Controller
 
     public function cancelarRecibo(Request $request)
     {
-        // Log::info($request);
         $fecha = $request->fecha;
         $recibo = $request->recibo;
         $cobranza_diaria = DB::table('cobranza_diaria')
             ->where('recibo', '=', $recibo)
             ->where('fecha_cobro', '=', $fecha)
             ->first();
-        // Log::info($cobranza_diaria);
+
         if (!$cobranza_diaria) {
             $response = ObjectResponse::BadResponse();
             data_set($response, 'alert_title', 'Cancelación de Recibos');
@@ -143,7 +142,7 @@ class ProcesosController extends Controller
         $encab_pedido = DB::table('encab_pedido')
             ->where('recibo', '=', $recibo)
             ->first();
-        // Log::info($encab_pedido);
+
         if (!$encab_pedido) {
             $response = ObjectResponse::BadResponse();
             data_set($response, 'alert_title', 'Cancelación de Recibos');
@@ -153,6 +152,7 @@ class ProcesosController extends Controller
         $detalle_pedido = DB::table('detalle_pedido')
             ->where('recibo', '=', $recibo)
             ->first();
+        
         if (!$detalle_pedido) {
             $response = ObjectResponse::BadResponse();
             data_set($response, 'alert_title', 'Cancelación de Recibos');

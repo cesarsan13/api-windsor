@@ -27,7 +27,8 @@ class ActCobranzaController extends Controller
     public function getDocumentosAlumno(Request $request) {
         $response = ObjectResponse::DefaultResponse();
         $documentoAlumno = DB::table('documentos_cobranza')
-        ->join('productos', 'documentos_cobranza.producto', '=', 'productos.numero')
+        //->join('productos', 'documentos_cobranza.producto', '=', 'productos.numero')
+        ->join('productos', DB::raw('CAST(documentos_cobranza.producto AS CHAR)'), '=', DB::raw('CAST(productos.numero AS CHAR)'))
         ->select('documentos_cobranza.producto','productos.descripcion','documentos_cobranza.numero_doc','documentos_cobranza.fecha','documentos_cobranza.importe','documentos_cobranza.descuento','documentos_cobranza.fecha_cobro','documentos_cobranza.importe_pago')
         ->where('alumno','=',$request->alumno)->get();
         $response = ObjectResponse::CorrectResponse();
