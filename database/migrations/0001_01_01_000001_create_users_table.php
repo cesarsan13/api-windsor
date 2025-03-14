@@ -20,8 +20,6 @@ return new class extends Migration
             $table->string('password');
             $table->integer('numero_prop')->nullable(false);
             $table->boolean('es_admin')->default(false)->nullable(false);
-            $table->string('verification_code')->nullable(true);
-            $table->timestamp('code_expires_at')->nullable(true);
             $table->string('baja', 1)->default('')->nullable(false);
             $table->rememberToken();
             $table->timestamps();
