@@ -6,12 +6,12 @@ use App\Models\Actividad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\ObjectResponse;
-use Illuminate\Support\Facades\Log;
 use App\Models\Calificaciones;
 use App\Models\Alumno;
 use App\Models\Profesores;
 use App\Models\Clases;
 use App\Models\Materias;
+use App\Models\Asignaturas;
 use Illuminate\Support\Facades\Validator;
 
 class ProcesosController extends Controller
@@ -26,6 +26,7 @@ class ProcesosController extends Controller
         'integer' => 'El campo :attribute debe ser un número.',
         'boolean' => 'El campo :attribute debe ser un valor booleano.',
     ];
+
     public function actualizarDocumentoCartera()
     {
         try {
@@ -54,7 +55,6 @@ class ProcesosController extends Controller
     public function procesoCartera(Request $request)
     {
         try {
-            // $cond_ant = $request->cond_ant;
             $cond_ant = 0;
             $fecha = $request->fecha;
             $cond_1 = $request->cond_1;
@@ -63,7 +63,6 @@ class ProcesosController extends Controller
                 ->where('cond_1', '=', $cond_1)
                 ->where('baja', '<>', '*')
                 ->get();
-            // Log::info($productos);
             foreach ($productos as $producto) {
                 try {
                     if ($cond_ant != $producto->cond_1) {
@@ -80,7 +79,6 @@ class ProcesosController extends Controller
                         ->orWhere('cond_2', '=', $cond_1)
                         ->where('baja', '<>', '*')
                         ->get();
-                    // Log::info($alumnos);
                     foreach ($alumnos as $alumno) {
                         try {
                             if (strtolower($alumno->estatus) === "activo") {
@@ -89,7 +87,6 @@ class ProcesosController extends Controller
                                     ->where('producto', '=', $producto->numero)
                                     ->where('numero_doc', '=', $periodo)
                                     ->exists();
-                                // Log::info($documentoExistente);
                                 if (!$documentoExistente) {
                                     $insertdoc = DB::table('documentos_cobranza')->insert([
                                         'alumno' => $alumno->numero,
@@ -100,7 +97,6 @@ class ProcesosController extends Controller
                                         'descuento' => $alumno->descuento,
                                         'importe' => $producto->costo,
                                     ]);
-                                    // Log::info($insertdoc);
                                 }
                             }
                         } catch (\Exception $e) {
@@ -242,11 +238,11 @@ class ProcesosController extends Controller
         data_set($response, 'data', $alumnos);
         return response()->json($response, $response['status_code']);
     }
+
     public function buscarCalificaciones_2(Request $request)
     {
         try {
             $rules = [
-                // 'alumno' => 'required',
                 'numero' => 'required',
                 'nombre' => 'required',
                 'grupo' => 'required',
@@ -290,14 +286,12 @@ class ProcesosController extends Controller
                     ->where('bimestre', '=', $bimestre)
                     ->first();
             }
-            Log::info($calificacion);
             $response_data[] = [
                 'numero' => $numero,
                 'nombre' => $nombre,
                 'unidad' => $unidad ?? '',
                 'calificacion' => $calificacion->calificacion ?? '',
             ];
-            // }
 
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'alert_title', 'Lista de calificaciones');
@@ -379,8 +373,7 @@ class ProcesosController extends Controller
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
-
-        $materias = Materias::select('descripcion', 'area', 'actividad', 'caso_evaluar')
+        $materias = Asignaturas::select('descripcion', 'area', 'actividad', 'caso_evaluar')
             ->where('numero', '=', $request->numero)
             ->get();
 
@@ -402,8 +395,7 @@ class ProcesosController extends Controller
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
-
-        $materias = Materias::select('evaluaciones')
+        $materias = Asignaturas::select('evaluaciones')
             ->where('numero', '=', $request->numero)
             ->get();
 
@@ -448,13 +440,13 @@ class ProcesosController extends Controller
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
-        $resultados = Clases::join('materias', 'clases.materia', '=', 'materias.numero')
+        $resultados = Clases::join('materias', 'clases.materia', '=', 'asignaturas.numero')
             ->join('horarios', 'clases.grupo', '=', 'horarios.numero')
-            ->select('clases.grupo', 'horarios.horario', 'clases.materia', 'materias.actividad', 'materias.descripcion', 'materias.area', 'materias.caso_evaluar')
+            ->select('clases.grupo', 'horarios.horario', 'clases.materia', 'asignaturas.actividad', 'asignaturas.descripcion', 'asignaturas.area', 'asignaturas.caso_evaluar')
             ->where('clases.baja', ' ')
-            ->where('materias.baja', '')
+            ->where('asignaturas.baja', '')
             ->where('clases.grupo', $request->grupo)
-            ->orderBy('materias.descripcion')
+            ->orderBy('asignaturas.descripcion')
             ->get();
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'data', $resultados);
@@ -617,15 +609,15 @@ class ProcesosController extends Controller
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
-        $clases = Clases::select('materias.numero', 'materias.descripcion', 'materias.area', 'materias.caso_evaluar')
-            ->leftJoin('materias', 'clases.materia', '=', 'materias.numero')
+        $clases = Clases::select('asignaturas.numero', 'asignaturas.descripcion', 'asignaturas.area', 'asignaturas.caso_evaluar')
+            ->leftJoin('asignaturas', 'clases.materia', '=', 'asignaturas.numero')
             ->where('clases.baja', '<>', '*')
-            ->where('materias.baja', '<>', '*')
+            ->where('asignaturas.baja', '<>', '*')
             ->where('clases.grupo', $request->grupo)
-            ->orderBy('materias.area')
-            ->orderBy('materias.orden')
+            ->orderBy('asignaturas.area')
+            ->orderBy('asignaturas.orden')
             ->get();
-        $materias = Materias::where('baja', '<>', '*')->get();
+        $materias = Asignaturas::where('baja', '<>', '*')->get();
         $calificaciones = Calificaciones::where('baja', '<>', '*')->get();
         $actividad = Actividad::where('baja', '<>', '*')->get();
         $data = [
@@ -652,7 +644,7 @@ class ProcesosController extends Controller
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
-        $boleta = Materias::select('actividad')
+        $boleta = Asignaturas::select('actividad')
             ->where('numero', '=', $request->numero)
             ->get();
         $response = ObjectResponse::CorrectResponse();
@@ -675,10 +667,9 @@ class ProcesosController extends Controller
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
-        $materias = Materias::select('evaluaciones')
+        $materias = Asignaturas::select('evaluaciones')
             ->where('numero', '=', $request->materia)
             ->first();
-        // Log::info($materias);
         $calificacion = Calificaciones::where('grupo', '=', $request->grupo)
             ->where('bimestre', '=', $request->bimestre)
             ->where('alumno', '=', $request->alumno)
@@ -686,7 +677,6 @@ class ProcesosController extends Controller
             ->where('materia', '=', $request->materia)
             ->where('unidad', '<=', $materias->evaluaciones)
             ->sum('calificacion');
-        // ->first();
         if ($calificacion) {
             $resultados = $calificacion;
         } else {
@@ -743,7 +733,6 @@ class ProcesosController extends Controller
             ];
         } else {
             $calificacion = ($sumatoria / $evaluaciones);
-            Log::info($calificacion);
             if ($calificacion < 5.0) {
                 $calificacion = "5.0";
                 $data = [
@@ -823,19 +812,19 @@ class ProcesosController extends Controller
             $alumnoQuery->orderBy('nombre', 'asc');
         }
         $alumno = $alumnoQuery->get();
-        $materias = Clases::select('clases.materia', 'materias.actividad', 'materias.evaluaciones')
-            ->leftJoin('materias', 'clases.materia', '=', 'materias.numero')
+        $materias = Clases::select('clases.materia', 'asignaturas.actividad', 'asignaturas.evaluaciones')
+            ->leftJoin('asignaturas', 'clases.materia', '=', 'asignaturas.numero')
             ->where('clases.grupo', '=', $request->grupo)
-            ->where('materias.area', '=', '1')
-            ->where('materias.baja', '<>', '*')
+            ->where('asignaturas.area', '=', '1')
+            ->where('asignaturas.baja', '<>', '*')
             ->where('clases.baja', '<>', '*')
             ->get();
 
-        $materias2 = Clases::select('clases.materia', 'materias.actividad', 'materias.evaluaciones')
-            ->leftJoin('materias', 'clases.materia', '=', 'materias.numero')
+        $materias2 = Clases::select('clases.materia', 'asignaturas.actividad', 'asignaturas.evaluaciones')
+            ->leftJoin('asignaturas', 'clases.materia', '=', 'asignaturas.numero')
             ->where('clases.grupo', '=', $request->grupo)
-            ->where('materias.area', '=', '4')
-            ->where('materias.baja', '<>', '*')
+            ->where('asignaturas.area', '=', '4')
+            ->where('asignaturas.baja', '<>', '*')
             ->where('clases.baja', '<>', '*')
             ->get();
 
