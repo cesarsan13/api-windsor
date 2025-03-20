@@ -12,13 +12,13 @@ class ConcentradoCalificacionesController extends Controller
     public function getMateriasPorGrupo($idHorario){
         $response  = ObjectResponse::DefaultResponse();
         try {
-            $resultados = Clases::leftJoin('materias', 'clases.materia', '=', 'materias.numero')
-                ->select('materias.numero', 'materias.descripcion', 'materias.area')
+            $resultados = Clases::leftJoin('asignaturas as M', 'clases.materia', '=', 'M.numero')
+                ->select('M.numero', 'M.descripcion', 'M.area')
                 ->where('clases.baja', ' ')
-                ->where('materias.baja', '!=', '*')
+                ->where('M.baja', '!=', '*')
                 ->where('grupo', $idHorario)
-                ->orderBy('materias.area')
-                ->orderBy('materias.orden')->get();
+                ->orderBy('M.area')
+                ->orderBy('M.orden')->get();
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'data', $resultados);
             data_set($response, 'message', 'peticion satisfactoria');
@@ -35,10 +35,9 @@ class ConcentradoCalificacionesController extends Controller
             ->select('C.alumno as numero', 'C.bimestre', 'C.materia', 'C.actividad', 'C.unidad', 'C.calificacion', 'M.area')
             ->leftJoin('horarios as H', 'H.horario', '=', 'C.grupo')
             ->leftJoin('alumnos as A', 'A.numero', '=', 'C.alumno')
-            ->leftJoin('materias as M', 'M.numero', '=', 'C.materia')
+            ->leftJoin('asignaturas as M', 'M.numero', '=', 'C.materia')
             ->where('H.numero','=', $idHorario)
             ->where('C.bimestre', '=', $idBimestre)
-            //->orderBy('A.nombre', 'ASC')
             ->get();
 
             $response = ObjectResponse::CorrectResponse();
@@ -73,16 +72,17 @@ class ConcentradoCalificacionesController extends Controller
     function getMateriasReg($idHorario){
         $response = ObjectResponse::DefaultResponse();
         try{
-            $resultados = DB::table('materias as M')
+            $resultados = DB::table('asignaturas as M')
             ->select('M.numero', 'M.descripcion', 'M.evaluaciones', 'M.actividad', 'M.area')
             ->leftJoin('clases as C', 'C.materia', '=', 'M.numero')
-            ->where('M.baja', '!=', '*')
+            ->where('M.baja', '<>', '*')
+            ->where('C.baja', '<>', '*')
             ->where('C.grupo', '=', $idHorario)
             ->get();
 
             $response = ObjectResponse::CorrectResponse();
             data_set($response, 'data', $resultados);
-            data_set($response, 'message', 'peticion satisfactoria');
+            data_set($response, 'message', 'peticion satisfactoria aaa');
         } catch (\Exception $ex) {
             $response = ObjectResponse::CatchResponse($ex->getMessage());
         }
@@ -111,10 +111,8 @@ class ConcentradoCalificacionesController extends Controller
         $response  = ObjectResponse::DefaultResponse();
         try {
             $resultados = DB::table('calificaciones as C')
-            ->select('C.alumno', 'C.bimestre', 'C.materia', 'C.actividad', 'C.unidad', 'C.calificacion')  //'A.descripcion',
+            ->select('C.alumno', 'C.bimestre', 'C.materia', 'C.actividad', 'C.unidad', 'C.calificacion')
             ->leftJoin('horarios as H', 'H.horario', '=', 'C.grupo')
-            //->leftJoin('actividades as A', 'A.secuencia', '=', 'C.actividad')
-            //->where('A.materia', '=', 'C.materia')
             ->where('H.numero','=', $idHorario)
             ->where('C.bimestre', '=', $idBimestre)
             ->where('C.alumno', '=', $idAlumno)
