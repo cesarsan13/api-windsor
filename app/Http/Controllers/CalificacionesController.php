@@ -7,6 +7,7 @@ use App\Models\Alumno;
 use App\Models\Calificaciones;
 use App\Models\Clases;
 use App\Models\Materias;
+use App\Models\Asignaturas;
 use App\Models\ObjectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -24,18 +25,19 @@ class CalificacionesController extends Controller
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
-        $resultados = Clases::leftJoin('materias', 'clases.materia', '=', 'materias.numero')
-            ->select('materias.numero', 'materias.descripcion', 'materias.area', 'materias.caso_evaluar')
-            ->where('clases.baja', ' ')
-            ->where('materias.baja', '')
+        $resultados = Clases::leftJoin('asignaturas as M', 'clases.materia', '=', 'M.numero')
+            ->select('M.numero', 'M.descripcion', 'M.area', 'M.caso_evaluar')
+            ->where('clases.baja','<>', '*' )
+            ->where('M.baja','<>','*')
             ->where('grupo', $request->grupo)
-            ->orderBy('materias.area')
-            ->orderBy('materias.orden')->get();
+            ->orderBy('M.area')
+            ->orderBy('M.orden')->get();
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'data', $resultados);
         data_set($response, 'message', 'peticion satisfactoria');
         return response()->json($response, $response['status_code']);
     }
+
     public function getNewCalificacionesMateria(Request $request)
     {
         $rules = [
@@ -48,7 +50,7 @@ class CalificacionesController extends Controller
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
-        $materias = Materias::select('numero', 'actividad', 'evaluaciones')->get();
+        $materias = Asignaturas::select('numero', 'actividad', 'evaluaciones')->get();
         $calificaciones = Calificaciones::select('alumno', 'bimestre', 'materia', 'actividad', 'unidad', 'calificacion')
             ->where('grupo', $request->grupo)
             ->get();
@@ -59,6 +61,7 @@ class CalificacionesController extends Controller
         data_set($response, 'message', 'peticion satisfactoria');
         return response()->json($response, $response['status_code']);
     }
+
     public function getCalificacionesAlumnosArea1(Request $request)
     {
         $rules = [
@@ -74,18 +77,18 @@ class CalificacionesController extends Controller
 
         $alumno = Alumno::select('numero','nombre')->where('grupo', '=', $request->grupo)->get();
 
-        $materiasArea1 = Clases::select('clases.materia', 'materias.actividad', 'materias.descripcion', 'materias.area', 'materias.evaluaciones')
-            ->leftJoin('materias', 'clases.materia', '=', 'materias.numero')
+        $materiasArea1 = Clases::select('clases.materia', 'M.actividad', 'M.descripcion', 'M.area', 'M.evaluaciones')
+            ->leftJoin('asignaturas as M', 'clases.materia', '=', 'M.numero')
             ->where('clases.grupo', '=', $request->grupo)
-            ->where('materias.area', '=', '1')
-            ->where('materias.baja', '<>', '*')
+            ->where('M.area', '=', '1')
+            ->where('M.baja', '<>', '*')
             ->where('clases.baja', '<>', '*')
             ->get();
-        $materiasArea4 = Clases::select('clases.materia', 'materias.actividad', 'materias.descripcion', 'materias.area', 'materias.evaluaciones')
-            ->leftJoin('materias', 'clases.materia', '=', 'materias.numero')
+        $materiasArea4 = Clases::select('clases.materia', 'M.actividad', 'M.descripcion', 'M.area', 'M.evaluaciones')
+            ->leftJoin('asignaturas as M', 'clases.materia', '=', 'M.numero')
             ->where('clases.grupo', '=', $request->grupo)
-            ->where('materias.area', '=', '4')
-            ->where('materias.baja', '<>', '*')
+            ->where('M.area', '=', '4')
+            ->where('M.baja', '<>', '*')
             ->where('clases.baja', '<>', '*')
             ->get();
 
@@ -123,12 +126,10 @@ class CalificacionesController extends Controller
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
-        $materia = Materias::select('actividad', 'evaluaciones')->where('numero', $request->materia)->first();
-        //Log::info($materia);
+        $materia = Asignaturas::select('actividad', 'evaluaciones')->where('numero', $request->materia)->first();
         $calificaciones = Calificaciones::select('alumno', 'bimestre', 'materia', 'actividad', 'unidad', 'calificacion')
             ->where('grupo', $request->grupo)
             ->get();
-        //Log::info($calificaciones);
         $data = [];
         if (!$materia) {
             $response = ObjectResponse::CorrectResponse();
@@ -162,7 +163,6 @@ class CalificacionesController extends Controller
                     ->get();
                 $suma = 0;
                 $evaluaciones = 0;
-                //Log::info($cali);
                 foreach ($cali as $cal) {
                     // Aplicar el filtro sobre las calificaciones
                     $filteredCalificaciones = $calificaciones->filter(function ($calificacion) use ($cal, $request) {
@@ -172,19 +172,14 @@ class CalificacionesController extends Controller
                             $calificacion->bimestre == $request->bimestre  &&
                             $calificacion->actividad == $cal->secuencia &&
                             $calificacion->unidad <= $cal->{'EB' . ($request->bimestre)};
-                    });
-                    //Log::info("info" . $filteredCalificaciones);                    
+                    });                   
                     $cpa = $filteredCalificaciones->sum('calificacion');
-                    //Log::info("cpa" . $cpa);
                     if ($cpa > 0) {
                         $nose = $cal->{'EB' . ($request->bimestre)};
-                        //Log::info($nose);
                         $suma += ($cpa / $nose);
                         $evaluaciones += 1;
                     }
                 }
-                //Log::info("suma:" . $suma);
-                //Log::info("evalueaciones:" . $evaluaciones);
                 if ($suma === 0 || $evaluaciones === 0) {
                     $cal = 0;
                     $data = [
@@ -192,16 +187,13 @@ class CalificacionesController extends Controller
                     ];
                 } else {
                     $calificacion = ($suma / $evaluaciones);
-                    //Log::info("Calificacion final:" . $calificacion);
                     if ($calificacion < 5.0) {
                         $calificacion = 5.0;
-                        //Log::info('esto es la calificacion:' . $calificacion);
                         $data = [
                             "calificacion" => $calificacion
                         ];
                     } else {
                         $calificacion = ($suma / $evaluaciones);
-                        //Log::info('esto es la calificacion:' . $calificacion);
                         $data = [
                             "calificacion" => $calificacion
                         ];
@@ -214,8 +206,6 @@ class CalificacionesController extends Controller
                 ->where('materia', $request->materia)
                 ->where('bimestre', '=', $request->bimestre)
                 ->sum('calificacion');
-            Log::info("Bimestre: " . $request->bimestre);
-            Log::info("calificacion:" . $cali);
             $suma = 0;
             if (!$cali) {
                 $suma = 0;

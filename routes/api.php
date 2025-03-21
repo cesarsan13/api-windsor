@@ -311,10 +311,10 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
 Route::controller(MailController::class)->group(function () {
     Route::post('send-mail', 'index');
 });
-Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(CalificacionesController::class)->group(function () {
-    Route::post('/calificaciones/materias', 'getMaterias');
-    Route::post('/calificaciones', 'getCalificacionesMateria');
-});
+//Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(CalificacionesController::class)->group(function () {
+//    Route::post('/calificaciones/materias', 'getMaterias');
+//    Route::post('/calificaciones', 'getCalificacionesMateria');
+//});
 
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(ConcentradoCalificacionesController::class)->group(function () {
     Route::get('/concentradoCalificaciones/ActividadesReg', 'getActividadesReg');
@@ -361,12 +361,12 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::put('/accesos-menu/update', 'update');
 });
 
-Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(CalificacionesController::class)->group(function () {
-    Route::post('/calificaciones/materias', 'getMaterias');
-    Route::post('/calificaciones', 'getCalificacionesMateria');
-    Route::post('/calificaciones/new', 'getNewCalificacionesMateria');
-    Route::post('/calificaciones/alumnosArea1', 'getCalificacionesAlumnosArea1');
-});
+//Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(CalificacionesController::class)->group(function () {
+//    Route::post('/calificaciones/materias', 'getMaterias');
+//    Route::post('/calificaciones', 'getCalificacionesMateria');
+//    Route::post('/calificaciones/new', 'getNewCalificacionesMateria');
+//    Route::post('/calificaciones/alumnosArea1', 'getCalificacionesAlumnosArea1');
+//});
 
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(CobranzaController::class)->group(function () {
     Route::post('/cobranzaDiaria', 'getCobranza');
