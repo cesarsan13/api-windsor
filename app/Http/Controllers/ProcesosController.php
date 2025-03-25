@@ -440,11 +440,11 @@ class ProcesosController extends Controller
             data_set($response, 'errors', $validator->errors());
             return response()->json($response, $response['status_code']);
         }
-        $resultados = Clases::join('materias', 'clases.materia', '=', 'asignaturas.numero')
+        $resultados = Clases::join('asignaturas', 'clases.materia', '=', 'asignaturas.numero')
             ->join('horarios', 'clases.grupo', '=', 'horarios.numero')
             ->select('clases.grupo', 'horarios.horario', 'clases.materia', 'asignaturas.actividad', 'asignaturas.descripcion', 'asignaturas.area', 'asignaturas.caso_evaluar')
-            ->where('clases.baja', ' ')
-            ->where('asignaturas.baja', '')
+            ->where('clases.baja', "<>", "*")
+            ->where('asignaturas.baja', "<>", "*")
             ->where('clases.grupo', $request->grupo)
             ->orderBy('asignaturas.descripcion')
             ->get();
