@@ -11,19 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('horarios')) {
         Schema::create('horarios', function (Blueprint $table) {            
-            $table->bigInteger('numero')->primary()->default(0); //(11)
-            $table->integer('cancha')->default(0)->nullable(false); //(11)
-            $table->string('dia',50)->default('')->nullable(false); //(15)
-            $table->string('horario',50)->default('')->nullable(false); //(20)
-            $table->integer('max_niños')->default(0)->nullable(false); //(11)
-            $table->string('sexo',50)->default('')->nullable(false); //(8)
-            $table->integer('edad_ini')->default(0)->nullable(false); //(11)
-            $table->integer('edad_fin')->default(0)->nullable(false); //(11)
-            $table->string('salon',10)->default('')->nullable(false); //(8)
+            $table->bigInteger('numero')->primary()->default(0); 
+            $table->integer('cancha')->default(0)->nullable(false);
+            $table->string('dia',50)->default('')->nullable(false); 
+            $table->string('horario',50)->default('')->nullable(false); 
+            $table->integer('max_niños')->default(0)->nullable(false); 
+            $table->string('sexo',50)->default('')->nullable(false); 
+            $table->integer('edad_ini')->default(0)->nullable(false);
+            $table->integer('edad_fin')->default(0)->nullable(false); 
+            $table->string('salon',10)->default('')->nullable(false); 
             $table->char('baja',1)->default('')->nullable(false);
             $table->timestamps();
         });
+    }
     }
 
     /**

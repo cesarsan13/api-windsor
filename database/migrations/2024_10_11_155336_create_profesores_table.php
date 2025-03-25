@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('profesores')) {
         Schema::create('profesores', function (Blueprint $table) {
             $table->unsignedBigInteger('numero')->primary();
             $table->string('nombre', 50)->default('')->nullable(false);
@@ -32,6 +33,7 @@ return new class extends Migration
             $table->string('baja', 1)->default('')->nullable(false);
             $table->timestamps();
         });
+    }
     }
 
     /**

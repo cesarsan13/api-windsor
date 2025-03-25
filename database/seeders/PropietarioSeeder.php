@@ -13,17 +13,24 @@ class PropietarioSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('propietario')->insert([
-            'Numero' => 1,
-            'Nombre' => 'COLEGIO BILINGUE WINDSOR',
-            'Clave_Seguridad' => 'GKPIFG>@FE',
-            'Busqueda_Max' => 313,
-            'Inscripcion' => 0.00,
-            'Con_Recibos' => 0,
-            'Con_Facturas' => 0,
-            'Clave_Bonificacion' => '1',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $registros = [
+            [
+
+                'numero' => 1,
+                'nombre' => 'COLEGIO BILINGUE WINDSOR',
+                'clave_seguridad' => 'GKPIFG>@FE',
+                'busqueda_max' => 313,
+                'inscripcion' => 0.00,
+                'con_recibos' => 0,
+                'con_facturas' => 0,
+                'clave_bonificacion' => '1',
+            ],
+        ];
+        foreach ($registros as $registro) {
+            DB::table('propietario')->updateOrInsert(
+                ['numero' => $registro['numero']],
+                $registro 
+            );
+        }
     }
 }

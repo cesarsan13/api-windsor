@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('asignaturas')) {
         Schema::create('asignaturas', function (Blueprint $table) {
             $table->bigInteger('numero')->primary()->default(0);
             $table->string('descripcion', 100)->nullable(false)->default('');
@@ -26,6 +27,7 @@ return new class extends Migration
             $table->string('caso_evaluar', 15)->nullable(false)->default('');
             $table->timestamps();
         });
+    }
     }
 
     /**

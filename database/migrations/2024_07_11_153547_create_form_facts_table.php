@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('facturas_formas')) {
         Schema::create('facturas_formas', function (Blueprint $table) {
-            $table->bigInteger('numero')-> primary()->default(0); //(11)
-            $table->string('nombre',50) -> default(''); //(30)
+            $table->bigInteger('numero')-> primary()->default(0); 
+            $table->string('nombre',50) -> default(''); 
             $table->double('longitud')->nullable(false)->default(0);
             $table->string('baja',1) -> default('');
             $table->timestamps();
         });
+    }
     }
 
     /**

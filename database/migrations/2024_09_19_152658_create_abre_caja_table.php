@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('abre_caja')) {
         Schema::create('abre_caja', function (Blueprint $table) {
         $table->double('caja');
         $table->double('cajero');
@@ -24,6 +25,7 @@ return new class extends Migration
         $table->primary(['caja', 'cajero', 'fecha', 'hora']);
         $table->timestamps();
         });
+    }
     }
 
     /**

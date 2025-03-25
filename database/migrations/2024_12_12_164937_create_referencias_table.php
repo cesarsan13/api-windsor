@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('referencias')) {
         Schema::create('referencias', function (Blueprint $table) {
             $table->unsignedBigInteger('numero')->primary();
             $table->string('referencia', 10)->default('')->nullable(false);
@@ -18,6 +19,7 @@ return new class extends Migration
             $table->string('baja', 1)->default('');
             $table->timestamps();
         });
+    }
     }
 
     /**

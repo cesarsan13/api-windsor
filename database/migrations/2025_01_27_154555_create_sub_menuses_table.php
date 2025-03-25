@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('sub_menus')) {
         Schema::create('sub_menus', function (Blueprint $table) {
             $table->unsignedBigInteger('numero');
             $table->unsignedBigInteger('id_acceso');
@@ -19,6 +20,7 @@ return new class extends Migration
             $table->primary(['numero', 'id_acceso']);
             $table->timestamps();
         });
+    }
     }
 
     /**

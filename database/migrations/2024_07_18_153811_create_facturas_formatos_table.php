@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('facturas_formato')) {
         Schema::create('facturas_formato', function (Blueprint $table) {
             $table->unsignedBigInteger('numero_forma')->nullable(false)->default(0); //(11)
             $table->bigInteger('numero_dato')->nullable(false)->default(0); //(11)
@@ -41,6 +42,7 @@ return new class extends Migration
             $table->double('importe_transaccion')->nullable(false)->default(0);
 
         });
+    }
     }
 
     /**

@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('menus')) {
         Schema::create('menus', function (Blueprint $table) {
             $table->unsignedBigInteger('numero')->primary();
             $table->string('nombre', 80)->default('')->nullable(false);
             $table->string('baja', 1)->default('');
             $table->timestamps();
         });
+    }
     }
 
     /**

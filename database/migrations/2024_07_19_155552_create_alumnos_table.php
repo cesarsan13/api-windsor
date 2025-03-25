@@ -10,6 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('alumnos')) {
         Schema::create('alumnos', function (Blueprint $table) {
             $table->bigInteger('numero')->primary()->default(0); //(11)
             $table->string('nombre', 50)->nullable(false)->default('');
@@ -104,6 +105,7 @@ return new class extends Migration {
             $table->string('grupo', 15)->nullable(false)->default('');
             $table->timestamps();
         });
+    }
     }
 
     /**

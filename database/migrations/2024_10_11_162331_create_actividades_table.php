@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('actividades')) {
         Schema::create('actividades', function (Blueprint $table) {
             $table->integer('materia')->default(0);
             $table->string('matDescripcion', 100)->nullable(false)->default('');
@@ -26,6 +27,7 @@ return new class extends Migration
             $table->primary(['materia','secuencia']);
             $table->timestamps();
         });
+    }
     }
 
     /**

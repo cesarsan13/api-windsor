@@ -10,6 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('cobranza_diaria')) {
         Schema::create('cobranza_diaria', function (Blueprint $table) {
             $table->integer('recibo'); //(11)
             $table->string('fecha_cobro', 11); //(11)
@@ -33,6 +34,7 @@ return new class extends Migration {
             $table->primary(['recibo', 'fecha_cobro', 'hora']);
             $table->timestamps();
         });
+    }
     }
 
     /**

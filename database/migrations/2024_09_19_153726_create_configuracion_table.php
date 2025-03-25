@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('configuracion')) {
         Schema::create('configuracion', function (Blueprint $table) {
             $table->bigInteger('numero_configuracion')-> primary()->default(0); 
             $table->string('descripcion_configuracion',50) -> default('');
@@ -18,6 +19,7 @@ return new class extends Migration
             $table->string('texto_configuracion',70) -> default(''); 
             $table->timestamps();
         });
+    }
     }
 
     /**

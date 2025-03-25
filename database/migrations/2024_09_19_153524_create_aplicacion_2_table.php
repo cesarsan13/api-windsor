@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('aplicacion_2')) {
         Schema::create('aplicacion_2', function (Blueprint $table) {
             $table->bigInteger('numero')-> primary()->default(0);
             $table->string('numero_cuenta', 35);   
@@ -20,6 +21,7 @@ return new class extends Migration
             $table->string('fecha_referencia', 11)->nullable();
             $table->timestamps();            
         });
+    }
     }
 
     /**

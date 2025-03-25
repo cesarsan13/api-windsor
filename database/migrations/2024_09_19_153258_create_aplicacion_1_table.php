@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('aplicacion_1')) {
         Schema::create('aplicacion_1', function (Blueprint $table) {
             $table->bigInteger('numero')-> primary()->default(0);
             $table->string('numero_cuenta', 35);   
@@ -21,6 +22,7 @@ return new class extends Migration
             $table->timestamps();
         });
     }
+}
 
     /**
      * Reverse the migrations.

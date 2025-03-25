@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('encab_pedido')) {
         Schema::create('encab_pedido', function (Blueprint $table) { //encab_pedido
             $table->bigInteger('recibo')->primary()->default(0); //(11)
             $table->string('fecha', 15);
@@ -31,6 +32,7 @@ return new class extends Migration
             $table->string('fecha_factura', 15)->nullable(); //(11)
             $table->timestamps();
         });
+    }
     }
 
     /**

@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('ejecutables')) {
         Schema::create('ejecutables', function (Blueprint $table) {
             $table->unsignedBigInteger('numero');
             $table->string('descripcion', 50)->default('')->nullable(false);
@@ -20,6 +21,7 @@ return new class extends Migration
             $table->primary(['numero']);
             $table->timestamps();
         });
+    }
     }
 
     /**

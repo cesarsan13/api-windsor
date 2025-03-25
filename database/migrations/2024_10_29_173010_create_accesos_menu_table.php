@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('accesos_menu')) {
         Schema::create('accesos_menu', function (Blueprint $table) {
             $table->unsignedBigInteger('numero')->primary();
             $table->string('ruta')->default('');
@@ -21,6 +22,7 @@ return new class extends Migration
             $table->timestamps();
         });
     }
+}
 
     /**
      * Reverse the migrations.

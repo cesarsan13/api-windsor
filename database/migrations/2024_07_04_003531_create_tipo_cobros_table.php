@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('tipo_cobro')) {
         Schema::create('tipo_cobro', function (Blueprint $table) {
-            $table->unsignedBigInteger('numero')->primary(); //(11)
+            $table->unsignedBigInteger('numero')->primary(); 
             $table->string("descripcion",50)->default('')->nullable(false); 
-            $table->float("comision")->default(0)->nullable(false); //double
+            $table->float("comision")->default(0)->nullable(false); 
             $table->string("aplicacion",30)->default('')->nullable(false); 
             $table->string("cue_banco",34)->default('')->nullable(false);
             $table->string("baja",1)->default('')->nullable(false);
         });
+    }
     }
 
     /**

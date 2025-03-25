@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('seguridad')) {
         Schema::create('seguridad', function (Blueprint $table) {
             $table->smallInteger('numero_prop');       
             $table->string('clave_seguridad', 4);    
@@ -19,6 +20,7 @@ return new class extends Migration
             $table->timestamps();
         });
     }
+}
 
     /**
      * Reverse the migrations.

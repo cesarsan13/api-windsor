@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('detalle_pedido')) {
         Schema::create('detalle_pedido', function (Blueprint $table) {
             $table->integer('recibo')->default(0); //(11)
             $table->integer('alumno')->default(0); //(11)
@@ -27,6 +28,7 @@ return new class extends Migration
             // $table->foreign('articulo')->references('numero')->on('productos');
             $table->timestamps();
         });
+    }
     }
 
     /**

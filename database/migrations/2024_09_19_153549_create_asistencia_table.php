@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('asistencia')) {
         Schema::create('asistencia', function (Blueprint $table) {
             $table->integer('socio')->primary()->default(0); 
             $table->string('codigo', 50);         
@@ -19,6 +20,7 @@ return new class extends Migration
             $table->integer('rechazo')->unsigned(); 
             $table->timestamps();
         });
+    }
     }
 
     /**

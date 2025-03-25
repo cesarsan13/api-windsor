@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('trab_rep_cobr')) {
         Schema::create('trab_rep_cobr', function (Blueprint $table) {
             $table->double('recibo');     
             $table->string('fecha', 11);     
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->primary(['recibo', 'fecha', 'articulo', 'documento', 'alumno']);
             $table->timestamps();
         });
+    }
     }
 
     /**

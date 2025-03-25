@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('punto_menu')) {
         Schema::create('punto_menu', function (Blueprint $table) {
             $table->string('clave_punto', 15);   
             $table->string('descripcion_punto', 35)->nullable();  
@@ -18,6 +19,7 @@ return new class extends Migration
             $table->timestamps();
         });
     }
+}
 
     /**
      * Reverse the migrations.

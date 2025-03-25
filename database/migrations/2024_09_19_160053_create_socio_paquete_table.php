@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('socio_paquete')) {
         Schema::create('socio_paquete', function (Blueprint $table) {
             $table->integer('socio')->unsigned(); 
             $table->string('paquete', 6);              
@@ -20,6 +21,7 @@ return new class extends Migration
             $table->primary(['socio', 'paquete', 'fecha_inicio']);
             $table->timestamps();
         });
+    }
     }
 
     /**

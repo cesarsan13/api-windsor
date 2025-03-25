@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('calificaciones')) {
         Schema::create('calificaciones', function (Blueprint $table) {
             $table->integer('bimestre')->default(0);
             $table->string('grupo', 15)->default('');
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->primary(['bimestre', 'grupo', 'alumno', 'materia', 'actividad', 'unidad']);
             $table->timestamps();
         });
+    }
     }
 
     /**

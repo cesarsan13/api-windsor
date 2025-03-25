@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('documentos_cobranza')) {
         Schema::create('documentos_cobranza', function (Blueprint $table) {
             $table->integer("alumno"); //(11)
             $table->integer('producto'); //(6)
@@ -28,6 +29,7 @@ return new class extends Migration
             $table->primary(['alumno', 'producto', 'numero_doc','fecha']);
             $table->timestamps();
         });
+    }
     }
 
     /**

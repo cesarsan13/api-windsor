@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('acceso_usuarios')) {
         Schema::create('acceso_usuarios', function (Blueprint $table) {
             $table->unsignedBigInteger('id_usuario');
             $table->unsignedBigInteger('id_punto_menu');
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->primary(['id_usuario','id_punto_menu']);
             $table->timestamps();
         });
+    }
     }
 
     /**

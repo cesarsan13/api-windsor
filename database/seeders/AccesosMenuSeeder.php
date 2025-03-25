@@ -378,10 +378,18 @@ class AccesosMenuSeeder extends Seeder
                 'menu' => 'Utilerias',
                 'baja' => ''
             ],
+            // [
+            //     'numero' => 46,
+            //     'ruta' => '/aplicaciones_ejecutables',
+            //     'descripcion' => 'Aplicaciones .EXE',
+            //     'icono' => '',
+            //     'menu' => 'Utilerias',
+            //     'baja' => ''
+            // ],
             [
                 'numero' => 46,
-                'ruta' => '/aplicaciones_ejecutables',
-                'descripcion' => 'Aplicaciones .EXE',
+                'ruta' => '/sub_menu',
+                'descripcion' => 'Sub Menus',
                 'icono' => '',
                 'menu' => 'Utilerias',
                 'baja' => ''

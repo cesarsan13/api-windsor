@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::connection('dynamic')->hasTable('propietario')) {
         Schema::create('propietario', function (Blueprint $table) {            
             $table->bigInteger('numero')->primary()->default(0); //(11)
             $table->string('nombre', 50);
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->string('clave_bonificacion', 10);
             $table->timestamps();
         });
+    }
     }
 
     /**
