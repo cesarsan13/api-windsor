@@ -252,6 +252,7 @@ class ReportesController extends Controller
         data_set($response, 'data', $resultados);
         return response()->json($response, $response['status_code']);
     }
+    
     public function getBecas(Request $request)
     {
         $response = ObjectResponse::DefaultResponse();
