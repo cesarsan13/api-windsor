@@ -37,8 +37,6 @@ class CobranzaController extends Controller
 
         $resultProducto = $queryProducto->get();
 
-
-
         $queryTipoPago = DB::table('cobranza_diaria')
             ->join('tipo_cobro AS tipo_pago_1', 'cobranza_diaria.tipo_pago_1', '=', 'tipo_pago_1.numero')
             ->leftJoin('tipo_cobro AS tipo_pago_2', 'cobranza_diaria.tipo_pago_2', '=', 'tipo_pago_2.numero') // Usa leftJoin si tipo_pago_2 puede ser nulo

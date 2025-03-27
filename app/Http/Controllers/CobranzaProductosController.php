@@ -45,22 +45,19 @@ class CobranzaProductosController extends Controller
         DB::table('trab_rep_cobr')->delete();
         $fecha1 = $this->formatFechaString($fecha1);
         $fecha2 = $this->formatFechaString($fecha2);
-        // Log::info($fecha1);
-        // Log::info($fecha2);
         $Tsql = DB::table('detalle_pedido')
             ->leftJoin('alumnos', 'detalle_pedido.articulo', '=', 'alumnos.numero')
             ->whereBetween('fecha', [$fecha1, $fecha2]);
         if (trim($articulo) !== '' && trim($artFin) !== '') {
-            // Log::info("Entro");
             $Tsql->whereBetween('articulo', [$articulo, $artFin]);
         }
         $result = $Tsql->select('detalle_pedido.*', 'alumnos.nombre')->get();
-        // Log::info($result);
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'peticion satisfactoria');
         data_set($response, 'data', $result);
         return response()->json($response, $response['status_code']);
     }
+
     public function insertTrabRepCobr(Request $request)
     {
         $validator = Validator::make($request->all(), $this->rules);
