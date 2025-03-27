@@ -252,7 +252,7 @@ class ReportesController extends Controller
         data_set($response, 'data', $resultados);
         return response()->json($response, $response['status_code']);
     }
-    
+
     public function getBecas(Request $request)
     {
         $response = ObjectResponse::DefaultResponse();
@@ -293,7 +293,6 @@ class ReportesController extends Controller
 
     public function getCobranzaAlumno(Request $request)
     {
-
         $tomaFecha = $request->input('tomafecha');
         $fecha_cobro_ini = $request->input('fecha_cobro_ini');
         $fecha_cobro_fin = $request->input('fecha_cobro_fin');
@@ -316,14 +315,13 @@ class ReportesController extends Controller
                 DB::raw("COALESCE(TC2.descripcion, '') AS desc_Tipo_Pago_2"),
                 'CS.nombre'
             )
-
             ->leftJoin('productos AS PS', 'DP.articulo', '=', 'PS.numero')
             ->leftJoin('alumnos AS A', 'DP.alumno', '=', 'A.numero')
             ->leftJoin('cobranza_diaria AS CD', 'DP.recibo', '=', 'CD.recibo')
             ->leftJoin('cajeros AS CS', 'CD.cajero', '=', 'CS.numero')
             ->leftJoin('documentos_cobranza AS DC', 'DP.alumno', '=', 'DC.alumno')
-            ->leftJoin(DB::raw('tipo_cobro AS TC1'), 'TC1.numero', '=', 'CD.tipo_pago_1')
-            ->leftJoin(DB::raw('tipo_cobro AS TC2'), 'TC2.numero', '=', 'CD.tipo_pago_2')
+            ->leftJoin('tipo_cobro AS TC1', 'TC1.numero', '=', 'CD.tipo_pago_1')
+            ->leftJoin('tipo_cobro AS TC2', 'TC2.numero', '=', 'CD.tipo_pago_2')
             ->where('importe_cobro', '>', 0)
             ->where('PS.descripcion', '!=', null);
 
@@ -349,8 +347,6 @@ class ReportesController extends Controller
 
         $query->orderBy('id_al', 'ASC');
         $respuesta = $query->get();
-        /*dd($query->toSql());*/
-
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'peticion satisfactoria | lista de Cobranza Alumnos');
         data_set($response, 'data', $respuesta);
