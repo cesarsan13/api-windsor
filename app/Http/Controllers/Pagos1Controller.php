@@ -13,7 +13,6 @@ use App\Models\Encab_Pedido;
 use App\Models\Propietario;
 use App\Models\Producto;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class Pagos1Controller extends Controller
 {
@@ -154,116 +153,113 @@ class Pagos1Controller extends Controller
 
     public function guardarDetallePedido(Request $request)
     {
-        $Tw_Base_Iva = 0;
-        // $validator = Validator::make($request->all(), [
-        //     'recibo' => 'required',
-        //     'alumno' => 'required',
-        //     'fecha' => 'required',
-        //     'articulo' => 'required',
-        //     'cantidad' => 'required',
-        //     'precio_unitario' => 'required',
-        //     'descuento' => 'required',
-        //     'documento' => 'required',
-        //     'total_general' => 'required',
-        // ]);
-        // if ($validator->fails()) {
-        //     $response = ObjectResponse::CatchResponse($validator->errors()->all());
-        //     return response()->json($response, $response['status_code']);
-        // }
-
-        $producto = DB::table('productos')
-            ->where('numero', '=', $request->articulo)
-            ->first();
-
-        $iva = $producto->iva;
-        if ($iva) {
-            $Tw_Base_Iva =  $iva;
-        } else {
-            $Tw_Base_Iva =  0;
-        }
-
-        $detalleExistente = DetallePedido::where('recibo', $request->recibo)
-            ->where('alumno', $request->alumno)
-            ->where('articulo', $request->articulo)
-            ->where('documento', $request->documento)
-            ->first();
-        if (!$detalleExistente) {
-            $detalle = new DetallePedido();
-            $detalle->recibo = $request->recibo;
-            $detalle->alumno = $request->alumno;
-            $detalle->fecha = $request->fecha;
-            $detalle->articulo = $request->articulo;
-            $detalle->cantidad = $request->cantidad;
-            $detalle->precio_unitario = $request->precio_unitario;
-            $detalle->descuento = $request->descuento;
-            $detalle->iva = $Tw_Base_Iva;
-            $detalle->documento = $request->documento;
-            //agregar defaults a los campos que no tienen por defecto
-            $detalle->numero_factura = 0;
-            $detalle->save();
-        }
-
-        $documento = $request->documento;
-        if ($documento > 0) {
-            $total_general = (float)$request->total_general;
-            DocsCobranza::where('alumno', $request->alumno)
-                ->where('producto', $request->articulo)
-                ->where('numero_doc', $request->documento)
-                ->update([
-                    'fecha_cobro' => $request->fecha,
-                    'importe_pago' => DB::raw('COALESCE(importe_pago, 0) + ' . $total_general)
+        try{
+            $validatedDataInsert = [];
+            $Tw_Base_Iva = 0;
+            foreach($request->all() as $item){    
+                $validator = Validator::make($item, [
+                    'recibo' => 'required',
+                    'alumno' => 'required',
+                    'fecha' => 'required',
+                    'articulo' => 'required',
+                    'cantidad' => 'required',
+                    'precio_unitario' => 'required',
+                    'descuento' => 'required',
+                    'documento' => 'required',     
+                    'iva' => 'nullable',
+                    'numero_factura' => 'nullable'
                 ]);
-        }
 
-        $doc_cob = DB::table('documentos_cobranza')
-            ->where('producto', '=', $request->articulo)
-            ->where('numero_doc', '=', $request->documento)
-            ->where('alumno', '=', $request->alumno)
-            ->first();
+                if ($validator->fails()) {
+                    $response = ObjectResponse::CatchResponse($validator->errors()->all());
+                    return response()->json($response, $response['status_code']);
+                }
+                $producto = DB::table('productos')
+                    ->where('numero', '=', (int) $item['articulo'])
+                    ->first();
 
-        if ($doc_cob) {
-            $descuento = $request->descuento;
-            $descuentoP = $doc_cob->descuento;
-            if ($descuentoP != $descuento) {
-                DB::table('documentos_cobranza')
-                    ->where('alumno', $request->alumno)
-                    ->where('producto', $request->articulo)
-                    ->where('numero_doc', $request->documento)
-                    ->update([
-                        'descuento' => $request->descuento,
-                    ]);
+                $iva = $producto->iva;
+                if ($iva) {
+                    $Tw_Base_Iva =  $iva;
+                } else {
+                    $Tw_Base_Iva =  0;
+                }
+                
+                $detalleExistente = DB::table('detalle_pedido')
+                    ->where('recibo', '=', (int) $item['recibo'])
+                    ->where('alumno', '=', (int) $item['alumno'])
+                    ->where('articulo', '=', (int) $item['articulo'])
+                    ->where('documento', '=', (int) $item['documento'])
+                    ->first();
+
+                if(!$detalleExistente){
+                    $validatedDataInsert[] = [
+                        'recibo' =>  $item['recibo'],
+                        'alumno' =>  $item['alumno'],
+                        'fecha' => $item['fecha'],
+                        'articulo' =>  $item['articulo'],
+                        'cantidad' =>  $item['cantidad'],
+                        'precio_unitario' =>  $item['precio_unitario'],
+                        'descuento' =>  $item['descuento'],
+                        'iva' =>  $Tw_Base_Iva,
+                        'documento' =>  $item['documento'],
+                        'numero_factura' => 0, // Valor por defecto
+                    ];
+                }
+                
+                if (!empty($validatedDataInsert)) {
+                    DetallePedido::insert($validatedDataInsert);
+                }
+
+                $documento = $item['documento'];
+                if ($documento > 0) {
+                    $total_general = (float)$item['total_general'];
+                    DB::table('documentos_cobranza')
+                        ->where('alumno', $item['alumno'])
+                        ->where('producto', $item['articulo'])
+                        ->where('numero_doc', $item['documento'])
+                        ->update([
+                            'fecha_cobro' => $item['fecha'],
+                            'importe_pago' => DB::raw('COALESCE(importe_pago, 0) + ' . $total_general)
+                        ]);
+                }
+
+                $doc_cob = DB::table('documentos_cobranza')
+                    ->where('producto', '=', $item['articulo'])
+                    ->where('numero_doc', '=', $item['documento'])
+                    ->where('alumno', '=', $item['alumno'])
+                    ->first();
+
+                if ($doc_cob) {
+                    $descuento = $item['descuento'];
+                    $descuentoP = $doc_cob['descuento'];
+                    if ($descuentoP != $descuento) {
+                        DB::table('documentos_cobranza')
+                            ->where('alumno', $item['alumno'])
+                            ->where('producto', $item['articulo'])
+                            ->where('numero_doc', $item['documento'])
+                            ->update([
+                                'descuento' => $item['descuento'],
+                            ]);
+                    }
+                }
             }
-        }
 
-        $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'Petición Satisfactoria');
-        data_set($response, 'alert_text', 'Exito!, datos guardados');
-        return response()->json($response, $response['status_code']);
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Petición Satisfactoria');
+            data_set($response, 'alert_text', 'Exito!, datos guardados');
+            data_set($response, 'data', $validatedDataInsert);
+            return response()->json($response, $response['status_code']);
+        } catch (\Exception $e) {
+            $response = ObjectResponse::CatchResponse($e->getMessage());
+            data_set($response, 'message', 'Lista de Detalle Pedido no se insertaron.');
+            data_set($response, 'alert_text', 'Producto no insertado.');
+            return response()->json($response, $response['status_code']);
+        }
     }
 
     public function guardaEcabYCobrD(Request $request)
     {
-        // $validator = Validator::make($request->all(), [
-        //     'recibo' => 'required',
-        //     'alumno' => 'required',
-        //     'fecha' => 'required',
-        //     'cajero' => 'required',
-        //     'total_neto' => 'required',
-        //     'n_banco' => 'required',
-        //     'imp_pago' => 'required',
-        //     'referencia_1' => 'required',
-        //     'n_banco_2' => 'required',
-        //     'imp_pago_2' => 'required',
-        //     'referencia_2' => 'required',
-        //     'quien_paga' => 'required',
-        //     'comenta' => 'required',
-        //     'comentario_ad' => 'required',
-        // ]);
-        // if ($validator->fails()) {
-        //     $response = ObjectResponse::CatchResponse($validator->errors()->all());
-        //     return response()->json($response, $response['status_code']);
-        // }
-
         $encab_pedido = new Encab_Pedido();
         $encab_pedido->recibo = $request->recibo;
         $encab_pedido->alumno = $request->alumno;
@@ -353,70 +349,62 @@ class Pagos1Controller extends Controller
         $data = $request->all();
         $validatedDataInsert = [];
         $Tw_Base_Iva = 0;
-        try{
-            foreach($data as $item){    
-                $validator = Validator::make($item, [
-                     'recibo' => 'required',
-                     'alumno' => 'required',
-                     'fecha' => 'required',
-                     'articulo' => 'required',
-                     'cantidad' => 'required',
-                     'precio_unitario' => 'required',
-                     'descuento' => 'required',
-                     'documento' => 'required',     
-                     //'iva' => 'required',
-                     //'numero_factura' => 'required'
-                ]);
 
-                if ($validator->fails()) {
-                    Log::info($validator->messages()->all());
-                    continue;
-                }
-
-                $validated = $validator->validated();
-                //Verifica que el producto existas, y asigna el iva 
-                $producto = Producto::where('numero', '=', $validated['articulo'])->first();
-                $Tw_Base_Iva = $producto->iva ?? 0;
+        foreach($data as $item){    
+            $validator = Validator::make($item, [
+                 'recibo' => 'required',
+                 'alumno' => 'required',
+                 'articulo' => 'required',
+                 'documento' => 'required',
+                 'fecha' => 'required',
+                 'cantidad' => 'required',
+                 'precio_unitario' => 'required',
+                 'descuento' => 'required',
+                 'iva' => 'required',
+                 'numero_factura' => 'required'
+             ]);
              
-                //Verifica si existe ya el registro
-                $detalleExistente = DetallePedido::where('recibo', $validated['recibo'])
-                    ->where('alumno', $validated['alumno'])
-                    ->where('articulo', $validated['articulo'])
-                    ->where('documento', $validated['documento'])
-                    ->first();
+             if ($validator->fails()) {
+                continue;
+             }
 
-                if(!$detalleExistente){
-                    $validatedDataInsert = [
-                        'recibo' => $validated['recibo'],
-                        'alumno' => $validated['alumno'],
-                        'fecha' => $validated['fecha'],
-                        'articulo' => $validated['articulo'],
-                        'cantidad' => $validated['cantidad'],
-                        'precio_unitario' => $validated['precio_unitario'],
-                        'descuento' => $validated['descuento'],
-                        'iva' => $Tw_Base_Iva,
-                        'documento' => $validated['documento'],
-                        'numero_factura' => $validated['numero_factura'], // Valor por defecto
-                    ];
-                }
+            $validated = $validator->validated();
+            //Verifica que el producto existas, y asigna el iva 
+            $producto = Producto::where('numero', '=', $validated['articulo'])->first();
+            
+            $Tw_Base_Iva = $producto->iva ?? 0;
+            
+            //Verifica si existe ya el registro
+            $detalleExistente = DetallePedido::where('recibo', $validated['recibo'])
+                ->where('alumno', $validated['alumno'])
+                ->where('articulo', $validated['articulo'])
+                ->where('documento', $validated['documento'])
+                ->first();
+             
+            if(!$detalleExistente){
+                $validatedDataInsert[] = [
+                    'recibo' => $validated['recibo'],
+                    'alumno' => $validated['alumno'],
+                    'fecha' => $validated['fecha'],
+                    'articulo' => $validated['articulo'],
+                    'cantidad' => $validated['cantidad'],
+                    'precio_unitario' => $validated['precio_unitario'],
+                    'descuento' => $validated['descuento'],
+                    'iva' => $Tw_Base_Iva,
+                    'documento' => $validated['documento'],
+                    'numero_factura' => $validated['numero_factura'], // Valor por defecto
+                ];
             }
-
-            if (!empty($validatedDataInsert)) {
-                DetallePedido::create($validatedDataInsert);
-
-            }
-
-            $response = ObjectResponse::CorrectResponse();
-            data_set($response, 'message', 'Lista de Detalle Pedido insertados correctamente.');
-            data_set($response, 'alert_text', 'Producto insertados.');
-            return response()->json($response, $response['status_code']);
-
-        } catch (\Exception $e) {
-            $response = ObjectResponse::CatchResponse($e->getMessage());
-            data_set($response, 'message', 'Lista de Detalle Pedido no se insertaron si entrooo.');
-            data_set($response, 'alert_text', 'Producto no insertado.');
-            return response()->json($response, $response['status_code']);
         }
+
+        if (!empty($validatedDataInsert)) {
+            DetallePedido::insert($validatedDataInsert);
+        }
+
+        $response = ObjectResponse::CorrectResponse();
+        data_set($response, 'message', 'Lista de Detalle Pedido insertados correctamente.');
+        data_set($response, 'alert_text', 'Producto insertados.');
+        return response()->json($response, $response['status_code']);
     }
 
 }

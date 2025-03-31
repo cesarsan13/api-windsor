@@ -226,7 +226,8 @@ Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->control
     Route::post("/pagos1/guarda-documentos", "guardarDocumentoCobranza");
     Route::post("/pagos1/busca-propietario", "buscaPropietario");
     Route::post("/pagos1/guardar-detalle-pedido", "storeBatchDetallePedido");
-    Route::post("/pagos1/guarda-EncabYCobrD", "guardaEcabYCobrD");
+    Route::post("/pagos1/detalle-pedido-guardar", "guardarDetallePedido");
+    Route::post("/pagos1/encabYCobrD-guardar", "guardaEcabYCobrD");
     Route::post("/pagos1/busca-doc-cobranza", "obtenerDocumentosCobranza");
 });
 
