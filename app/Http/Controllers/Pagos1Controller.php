@@ -13,6 +13,7 @@ use App\Models\Encab_Pedido;
 use App\Models\Propietario;
 use App\Models\Producto;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class Pagos1Controller extends Controller
 {
@@ -154,7 +155,6 @@ class Pagos1Controller extends Controller
     public function guardarDetallePedido(Request $request)
     {
         try{
-            $validatedDataInsert = [];
             $Tw_Base_Iva = 0;
             foreach($request->all() as $item){    
                 $validator = Validator::make($item, [
@@ -175,9 +175,9 @@ class Pagos1Controller extends Controller
                     return response()->json($response, $response['status_code']);
                 }
                 $producto = DB::table('productos')
-                    ->where('numero', '=', (int) $item['articulo'])
+                    ->where('numero', '=', (string) $item['articulo'])
                     ->first();
-
+                
                 $iva = $producto->iva;
                 if ($iva) {
                     $Tw_Base_Iva =  $iva;
@@ -192,17 +192,18 @@ class Pagos1Controller extends Controller
                     ->where('documento', '=', (int) $item['documento'])
                     ->first();
 
+                $validatedDataInsert = [];
                 if(!$detalleExistente){
                     $validatedDataInsert[] = [
-                        'recibo' =>  $item['recibo'],
-                        'alumno' =>  $item['alumno'],
-                        'fecha' => $item['fecha'],
-                        'articulo' =>  $item['articulo'],
-                        'cantidad' =>  $item['cantidad'],
-                        'precio_unitario' =>  $item['precio_unitario'],
-                        'descuento' =>  $item['descuento'],
+                        'recibo' => (int) $item['recibo'],
+                        'alumno' => (int) $item['alumno'],
+                        'fecha' => (string) $item['fecha'],
+                        'articulo' => (string) $item['articulo'],
+                        'cantidad' => (int) $item['cantidad'],
+                        'precio_unitario' => (int) $item['precio_unitario'],
+                        'descuento' => (int) $item['descuento'],
                         'iva' =>  $Tw_Base_Iva,
-                        'documento' =>  $item['documento'],
+                        'documento' => (int) $item['documento'],
                         'numero_factura' => 0, // Valor por defecto
                     ];
                 }
@@ -215,31 +216,31 @@ class Pagos1Controller extends Controller
                 if ($documento > 0) {
                     $total_general = (float)$item['total_general'];
                     DB::table('documentos_cobranza')
-                        ->where('alumno', $item['alumno'])
-                        ->where('producto', $item['articulo'])
-                        ->where('numero_doc', $item['documento'])
+                        ->where('alumno', (int) $item['alumno'])
+                        ->where('producto', (string) $item['articulo'])
+                        ->where('numero_doc',(int) $item['documento'])
                         ->update([
-                            'fecha_cobro' => $item['fecha'],
+                            'fecha_cobro' => (string) $item['fecha'],
                             'importe_pago' => DB::raw('COALESCE(importe_pago, 0) + ' . $total_general)
                         ]);
                 }
 
                 $doc_cob = DB::table('documentos_cobranza')
-                    ->where('producto', '=', $item['articulo'])
-                    ->where('numero_doc', '=', $item['documento'])
-                    ->where('alumno', '=', $item['alumno'])
+                    ->where('producto', '=', (string) $item['articulo'])
+                    ->where('numero_doc', '=', (int) $item['documento'])
+                    ->where('alumno', '=', (int) $item['alumno'])
                     ->first();
 
                 if ($doc_cob) {
-                    $descuento = $item['descuento'];
-                    $descuentoP = $doc_cob['descuento'];
+                    $descuento = (int) $item['descuento'];
+                    $descuentoP = (int)  $doc_cob['descuento'];
                     if ($descuentoP != $descuento) {
                         DB::table('documentos_cobranza')
-                            ->where('alumno', $item['alumno'])
-                            ->where('producto', $item['articulo'])
-                            ->where('numero_doc', $item['documento'])
+                            ->where('alumno', (int) $item['alumno'])
+                            ->where('producto', (string)  $item['articulo'])
+                            ->where('numero_doc', (int) $item['documento'])
                             ->update([
-                                'descuento' => $item['descuento'],
+                                'descuento' => (int) $item['descuento'],
                             ]);
                     }
                 }
