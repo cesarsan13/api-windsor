@@ -270,13 +270,12 @@ class AlumnoController extends Controller
         data_set($response, 'envio', $baja . $tipoOrden);
         return response()->json($response, $response['status_code']);
     }
-    public function getReportAlumn(Request $request)
-    {
+    public function getReportAlumn(Request $request) {
         $baja = $request->input('baja');
         $tipoOrden = $request->input('tipoOrden');
         $alumnos1 = $request->input('alumnos1');
         $alumnos2 = $request->input('alumnos2');
-
+    
         $query = DB::table('alumnos as al')
             ->leftJoin('horarios as hr1', 'al.horario_1', '=', 'hr1.numero')
             ->select(
@@ -372,13 +371,13 @@ class AlumnoController extends Controller
                 'al.grupo',
                 'al.baja'
             );
-
+    
         if ($baja === true) {
             $query->where('al.nombre', '<>', ' ');
         } else {
             $query->where('al.baja', '<>', '*');
         }
-
+    
         if ($alumnos1 > 0 || $alumnos2 > 0) {
             if ($alumnos2 == 0) {
                 $query->where('al.numero', '=', $alumnos1);
@@ -386,15 +385,19 @@ class AlumnoController extends Controller
                 $query->whereBetween('al.numero', [$alumnos1, $alumnos2]);
             }
         }
-
-        $query->orderBy($tipoOrden, 'ASC');
+    
+        if ($tipoOrden !== 'todos') {
+            $query->orderBy($tipoOrden, 'ASC');
+        }
+    
         $resultados = $query->get();
-
+    
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'Peticion satisfactoria');
         data_set($response, 'data', $resultados);
         return response()->json($response, $response['status_code']);
     }
+    
     public function showAlumn()
     {
         $response = ObjectResponse::DefaultResponse();
