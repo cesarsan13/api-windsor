@@ -183,6 +183,7 @@ class ReportesController extends Controller
     public function getRelaciondeRecibos(Request $request)
     {
         $tomaFecha = $request->input('tomaFecha');
+        $selectedAllAlumnos = $request->input('selectedAllAlumnos');
         $fecha_ini = $request->input('fecha_ini');
         $fecha_fin = $request->input('fecha_fin');
         $factura_ini = $request->input('factura_ini');
@@ -237,11 +238,17 @@ class ReportesController extends Controller
             }
         }
 
-        if ($alumno_ini > 0 || $alumno_fin > 0) {
-            if ($alumno_fin == 0) {
-                $query->where('ep.alumno', '=', $alumno_ini);
-            } else {
-                $query->whereBetween('ep.alumno', [$alumno_ini, $alumno_fin]);
+        if($selectedAllAlumnos === true){
+                $primerAlumno = DB::table('alumnos')->min('numero');
+                $ultimoAlumno = DB::table('alumnos')->max('numero');
+                $query->whereBetween('ep.alumno', [ $primerAlumno, $ultimoAlumno]);
+        } else {
+            if ($alumno_ini > 0 || $alumno_fin > 0) {
+                if ($alumno_fin == 0) {
+                    $query->where('ep.alumno', '=', $alumno_ini);
+                } else {
+                    $query->whereBetween('ep.alumno', [$alumno_ini, $alumno_fin]);
+                }
             }
         }
 
