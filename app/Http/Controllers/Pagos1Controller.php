@@ -259,55 +259,87 @@ class Pagos1Controller extends Controller
         }
     }
 
+    //Esta parte se encarga de generar el pago
     public function guardaEcabYCobrD(Request $request)
     {
-        $encab_pedido = new Encab_Pedido();
-        $encab_pedido->recibo = $request->recibo;
-        $encab_pedido->alumno = $request->alumno;
-        $encab_pedido->fecha = $request->fecha;
-        $encab_pedido->cajero = $request->cajero;
-        $encab_pedido->importe_total = $request->total_neto;
-        $encab_pedido->tipo_pago_1 = $request->n_banco;
-        $encab_pedido->importe_pago_1 = $request->imp_pago;
-        $encab_pedido->referencia_1 = $request->referencia_1;
-        $encab_pedido->tipo_pago_2 = $request->n_banco_2;
-        $encab_pedido->importe_pago_2 = $request->imp_pago_2;
-        $encab_pedido->referencia_2 = $request->referencia_2;
-        $encab_pedido->nombre_quien = $request->quien_paga;
-        $encab_pedido->comentario = $request->comenta;
-        $encab_pedido->comentario_ad = $request->comentario_ad;
-        $encab_pedido->save();
+        try{
+            $validator = Validator::make($request->all(), [
+                'recibo' => 'required',
+                'alumno' => 'required',
+                'fecha' => 'required',
+                'articulo' => 'required',
+                'cajero' => 'required',
+                'total_neto' => 'required',
+                'n_banco' => 'required',
+                'imp_pago' => 'required',
+                'referencia_1' => 'nullable',
+                'n_banco_2' => 'nullable',
+                'imp_pago_2' => 'nullable',
+                'referencia_2' => 'nullable',
+                'quien_paga' => 'nullable',
+                'comenta' => 'nullable',
+                'comentario_ad' => 'nullable',
+            ]);
 
-        $cobr_diaria = new CobranzaDiaria();
-        $cobr_diaria->recibo = $request->recibo;
-        $cobr_diaria->alumno = $request->alumno;
-        $cobr_diaria->fecha_cobro = $request->fecha;
-        $cobr_diaria->cajero = $request->cajero;
-        $cobr_diaria->importe_cobro = $request->total_neto;
-        $cobr_diaria->tipo_pago_1 = $request->n_banco;
-        $cobr_diaria->importe_pago_1 = $request->imp_pago;
-        $cobr_diaria->referencia_1 = $request->referencia_1;
-        $cobr_diaria->tipo_pago_2 = $request->n_banco_2;
-        $cobr_diaria->importe_pago_2 = $request->imp_pago_2;
-        $cobr_diaria->referencia_2 = $request->referencia_2;
-        $cobr_diaria->quien_paga = $request->quien_paga;
-        $cobr_diaria->comentario = $request->comenta;
-        $cobr_diaria->hora = Carbon::now()->format('H:i:s');
-        $cobr_diaria->comentario_ad = $request->comentario_ad;
-        $cobr_diaria->save();
+            if ($validator->fails()) {
+                $response = ObjectResponse::CatchResponse($validator->errors()->all());
+                return response()->json($response, $response['status_code']);
+            }
 
-        $prop = Propietario::where('numero', 1)->first();
-        if ($prop) {
-            $recibo = $prop->con_recibos;
-            $recibo += 1;
-            $prop->con_recibos = $recibo;
-            $prop->save();
+            $encab_pedido = new Encab_Pedido();
+            $encab_pedido->recibo = (int) $request->recibo;
+            $encab_pedido->alumno = (int) $request->alumno;
+            $encab_pedido->fecha = (string) $request->fecha;
+            $encab_pedido->cajero = (int) $request->cajero;
+            $encab_pedido->importe_total = (int) $request->total_neto;
+            $encab_pedido->tipo_pago_1 = (int) $request->n_banco;
+            $encab_pedido->importe_pago_1 = (int) $request->imp_pago;
+            $encab_pedido->referencia_1 = (string) $request->referencia_1 ?? null;
+            $encab_pedido->tipo_pago_2 =  (int) $request->n_banco_2 ?? null;
+            $encab_pedido->importe_pago_2 = (int) $request->imp_pago_2 ?? null;
+            $encab_pedido->referencia_2 = (string) $request->referencia_2 ?? null;
+            $encab_pedido->nombre_quien = (string) $request->quien_paga ?? null;
+            $encab_pedido->comentario = (string) $request->comenta ?? null;
+            $encab_pedido->comentario_ad = (string) $request->comentario_ad ?? null;
+            $encab_pedido->save();
+
+            $cobr_diaria = new CobranzaDiaria();
+            $cobr_diaria->recibo = (int) $request->recibo;
+            $cobr_diaria->alumno = (int) $request->alumno;
+            $cobr_diaria->fecha_cobro = (string) $request->fecha;           
+            $cobr_diaria->cajero = (int) $request->cajero;
+            $cobr_diaria->importe_cobro = (int) $request->total_neto;
+            $cobr_diaria->tipo_pago_1 = (int) $request->n_banco;
+            $cobr_diaria->importe_pago_1 =  (int) $request->imp_pago;
+            $cobr_diaria->referencia_1 = (string) $request->referencia_1 ?? null;
+            $cobr_diaria->tipo_pago_2 = (int) $request->n_banco_2 ?? null;
+            $cobr_diaria->importe_pago_2 = (int) $request->imp_pago_2 ?? null;
+            $cobr_diaria->referencia_2 = (string) $request->referencia_2 ?? null;
+            $cobr_diaria->quien_paga = (int) $request->quien_paga ?? null;  //aqui se manda como int, pero lo recibe la api como string hay que ver eso 
+            $cobr_diaria->comentario = (string) $request->comenta ?? null;
+            $cobr_diaria->hora = Carbon::now()->format('H:i:s');
+            $cobr_diaria->comentario_ad = (string) $request->comentario_ad ?? null; //aqui se manda como string, pero lo recibe la api como int hay que ver eso 
+            $cobr_diaria->save();
+
+            $prop = Propietario::where('numero', 1)->first();
+            if ($prop) {
+                $recibo = $prop->con_recibos;
+                $recibo += 1;
+                $prop->con_recibos = $recibo;
+                $prop->save();
+            }
+
+            $response = ObjectResponse::CorrectResponse();
+            data_set($response, 'message', 'Petición Satisfactoria');
+            data_set($response, 'alert_text', 'Exito!, datos guardados');
+            return response()->json($response, $response['status_code']);
+        
+        } catch (\Exception $e) {
+            $response = ObjectResponse::CatchResponse($e->getMessage());
+            data_set($response, 'message', 'No se inserto el Pago');
+            data_set($response, 'alert_text', $e->getMessage());
+            return response()->json($response, $response['status_code']);
         }
-
-        $response = ObjectResponse::CorrectResponse();
-        data_set($response, 'message', 'Petición Satisfactoria');
-        data_set($response, 'alert_text', 'Exito!, datos guardados');
-        return response()->json($response, $response['status_code']);
     }
 
     public function obtenerDocumentosCobranza(Request $request)
