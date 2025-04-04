@@ -301,6 +301,7 @@ class ReportesController extends Controller
     public function getCobranzaAlumno(Request $request)
     {
         $tomaFecha = $request->input('tomafecha');
+        $selectedAllAlumnos = $request->input('selectedAllAlumnos');
         $fecha_cobro_ini = $request->input('fecha_cobro_ini');
         $fecha_cobro_fin = $request->input('fecha_cobro_fin');
         $alumno_ini = $request->input('alumno_ini');
@@ -336,11 +337,17 @@ class ReportesController extends Controller
             $query->whereBetween('CD.fecha_cobro', [$fecha_cobro_ini, $fecha_cobro_fin]);
         }
 
-        if ($alumno_ini > 0 || $alumno_fin > 0) {
-            if ($alumno_fin == 0) {
-                $query->where('CD.alumno', '=', $alumno_ini);
-            } else {
-                $query->whereBetween('CD.alumno', [$alumno_ini, $alumno_fin]);
+        if($selectedAllAlumnos === true){
+            $primerAlumno = DB::table('alumnos')->min('numero');
+            $ultimoAlumno = DB::table('alumnos')->max('numero');
+            $query->whereBetween('CD.alumno', [$primerAlumno, $ultimoAlumno]);
+        } else {
+            if ($alumno_ini > 0 || $alumno_fin > 0) {
+                if ($alumno_fin == 0) {
+                    $query->where('CD.alumno', '=', $alumno_ini);
+                } else {
+                    $query->whereBetween('CD.alumno', [$alumno_ini, $alumno_fin]);
+                }
             }
         }
 
