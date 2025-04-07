@@ -264,21 +264,29 @@ class ReportesController extends Controller
     {
         $response = ObjectResponse::DefaultResponse();
         $query = Alumno::select('*')->where('estatus','Activo')->where('descuento','>','0');
-        if ((int)$request->alumno1 || (int)$request->alumno2) {
-            if ((int)$request->alumno2 === 0) {                
-                $query->where('numero', (int)$request->alumno1);
-            } else {
-                $query->whereBetween('numero', [(int)$request->alumno1, (int)$request->alumno2]);
+        
+        if($request->selectedAllAlumnos === true){
+            $primerAlumno = DB::table('alumnos')->min('numero');
+            $ultimoAlumno = DB::table('alumnos')->max('numero');
+            $query->whereBetween('numero', [$primerAlumno, $ultimoAlumno]);
+        } else {
+            if ((int)$request->alumno1 || (int)$request->alumno2) {
+                if ((int)$request->alumno2 === 0) {                
+                    $query->where('numero', (int)$request->alumno1);
+                } else {
+                    $query->whereBetween('numero', [(int)$request->alumno1, (int)$request->alumno2]);
+                }
             }
         }
         $alumnos = $query->orderBy('descuento', 'DESC')->get();        
         $resultados = [];
         foreach ($alumnos as $alumno) {
             $horario = Horario::where('numero', $alumno->horario_1)->first();
-            $producto = Producto::where('numero', $alumno->cond_1)->first();
-            $costoProd = $producto ? $producto->costo : 0;
+            $producto = Producto::where('numero', trim($alumno->cond_1))->first();
+            $costoProd = $producto ? (float)$producto->costo : 0.0;
 
             $twDescuento = $costoProd * ($alumno->descuento / 100);
+            Log::info($twDescuento);
             $costoFinal = $costoProd - $twDescuento;
 
             $resultados[] = [
