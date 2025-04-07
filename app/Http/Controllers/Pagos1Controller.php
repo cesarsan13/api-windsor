@@ -188,7 +188,7 @@ class Pagos1Controller extends Controller
                 $detalleExistente = DB::table('detalle_pedido')
                     ->where('recibo', '=', (int) $item['recibo'])
                     ->where('alumno', '=', (int) $item['alumno'])
-                    ->where('articulo', '=', (int) $item['articulo'])
+                    ->where('articulo', '=', (string) $item['articulo'])
                     ->where('documento', '=', (int) $item['documento'])
                     ->first();
 

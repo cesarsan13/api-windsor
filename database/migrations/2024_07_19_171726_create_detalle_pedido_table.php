@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('detalle_pedido', function (Blueprint $table) {
             $table->integer('recibo')->default(0); //(11)
             $table->integer('alumno')->default(0); //(11)
-            $table->integer('articulo')->default(0); //(20)
+            $table->string('articulo')->default(0); //(20)
             $table->integer('documento')->default(0); //(11)
             $table->string('fecha',11);
             $table->integer('cantidad'); //(11)

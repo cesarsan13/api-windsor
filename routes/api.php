@@ -199,7 +199,7 @@ Route::controller(DocumentosCobranzaController::class)->group(function () {
     Route::post('/documentoscobranza/all', 'getCobranzaFiltrada')->middleware([SetDatabaseConnection::class, CustomSanctum::class]);
 });
 Route::middleware([SetDatabaseConnection::class, CustomSanctum::class])->controller(CobranzaProductosController::class)->group(function () {
-    Route::get('/cobranzaProducto/{fecha1}/{fecha2}/{articulo?}/{artFin?}', 'infoDetallePedido');
+    Route::get('/cobranzaProducto/{fecha1}/{fecha2}/{selectedAllProductos}/{articulo}', 'infoDetallePedido'); ///{artFin}
     Route::get('/cobranzaProductos/{porNombre?}', 'infoTrabRepCobr');
     Route::post('/cobranzaProducto/insert', 'insertTrabRepCobr');
 });

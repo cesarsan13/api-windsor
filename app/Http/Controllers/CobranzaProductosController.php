@@ -19,7 +19,7 @@ class CobranzaProductosController extends Controller
     protected $rules = [
         'recibo' => 'required|integer',
         'fecha' => 'required|max:11',
-        'articulo' => 'required|integer',
+        'articulo' => 'required|string',
         'documento' => 'required|integer',
         'alumno' => 'required|integer',
         'nombre' => 'required|max:50',
@@ -39,19 +39,25 @@ class CobranzaProductosController extends Controller
         return $fechaObj->format('Y/m/d');
     }
 
-
-    public function infoDetallePedido($fecha1, $fecha2, $articulo, $artFin)
+    public function infoDetallePedido($fecha1, $fecha2, $selectedAllProductos, $articulo) //,$artFin
     {
         DB::table('trab_rep_cobr')->delete();
         $fecha1 = $this->formatFechaString($fecha1);
         $fecha2 = $this->formatFechaString($fecha2);
         $Tsql = DB::table('detalle_pedido')
-            ->leftJoin('alumnos', 'detalle_pedido.articulo', '=', 'alumnos.numero')
+            ->leftJoin('alumnos', 'detalle_pedido.alumno', '=', 'alumnos.numero')
             ->whereBetween('fecha', [$fecha1, $fecha2]);
-        if (trim($articulo) !== '' && trim($artFin) !== '') {
-            $Tsql->whereBetween('articulo', [$articulo, $artFin]);
+
+        if ($selectedAllProductos === true){
+            $Tsql->whereBetween('articulo', [trim(0000), trim(9999)]);
+        } else {
+            if (trim($articulo) !== '0' ) { //&& trim($artFin) !== ''
+                //$Tsql->whereBetween('articulo', [trim($articulo), trim($artFin)]);
+                $Tsql->where('articulo', '=', trim($articulo));
+            }
         }
         $result = $Tsql->select('detalle_pedido.*', 'alumnos.nombre')->get();
+        
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'peticion satisfactoria');
         data_set($response, 'data', $result);
@@ -72,7 +78,7 @@ class CobranzaProductosController extends Controller
         $trabrepcobr = new TrabRepCobr();
         $trabrepcobr->recibo = $request->recibo;
         $trabrepcobr->fecha = $request->fecha;
-        $trabrepcobr->articulo = $request->articulo;
+        $trabrepcobr->articulo = (string) $request->articulo;
         $trabrepcobr->documento = $request->documento;
         $trabrepcobr->alumno = $request->alumno;
         $trabrepcobr->nombre = $request->nombre;
@@ -95,7 +101,6 @@ class CobranzaProductosController extends Controller
         $query->leftJoin('productos', 'trab_rep_cobr.articulo', '=', 'productos.numero');
         $query->select('trab_rep_cobr.*', 'productos.descripcion');
         $results = $query->get();
-        // dd($query);
         $response = ObjectResponse::CorrectResponse();
         data_set($response, 'message', 'peticion satisfactoria | lista de TrabRepCobr');
         data_set($response, 'data', $results);
