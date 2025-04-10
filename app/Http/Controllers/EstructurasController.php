@@ -21,13 +21,11 @@ class EstructurasController extends Controller
             set_time_limit(0);
             $this->setDatabase($configuracion, $configuracion["database"]);
     
-            // **Eliminar todas las tablas y volver a crearlas**
-            Artisan::call('migrate:fresh', [
+            Artisan::call('migrate', [
                 '--database' => "dynamic",
                 '--force' => true,
             ]);
     
-            // **Ejecutar todos los seeders**
             Artisan::call('db:seed', [
                 '--database' => 'dynamic',
                 '--force' => true, 
