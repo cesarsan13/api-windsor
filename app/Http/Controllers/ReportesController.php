@@ -310,6 +310,7 @@ class ReportesController extends Controller
     {
         $tomaFecha = $request->input('tomafecha');
         $selectedAllAlumnos = $request->input('selectedAllAlumnos');
+        $selectedAllCajeros = $request->input('selectedAllCajeros');
         $fecha_cobro_ini = $request->input('fecha_cobro_ini');
         $fecha_cobro_fin = $request->input('fecha_cobro_fin');
         $alumno_ini = $request->input('alumno_ini');
@@ -359,11 +360,17 @@ class ReportesController extends Controller
             }
         }
 
-        if ($cajero_ini > 0 || $cajero_fin > 0) {
-            if ($cajero_fin == 0) {
-                $query->where('CD.cajero', '=', $cajero_ini);
-            } else {
-                $query->whereBetween('CD.cajero', [$cajero_ini, $cajero_fin]);
+        if($selectedAllCajeros === true){
+            $primerCajero = DB::table('cajeros')->min('numero');
+            $ultimoCajero = DB::table('cajeros')->max('numero');
+            $query->whereBetween('CD.cajero', [$primerCajero, $ultimoCajero]);
+        } else {
+            if ($cajero_ini > 0 || $cajero_fin > 0) {
+                if ($cajero_fin == 0) {
+                    $query->where('CD.cajero', '=', $cajero_ini);
+                } else {
+                    $query->whereBetween('CD.cajero', [$cajero_ini, $cajero_fin]);
+                }
             }
         }
 
